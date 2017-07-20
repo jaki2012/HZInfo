@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>设备材料或备品备件采购计划管理</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+    <link href="../static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+	
+    <script src="../static/jquery/jquery-1.11.3.min.js" type="text/javascript"></script>
+	<script src="../static/bootstrap/3.3.0/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../static/echarts/js/echarts.min.js" type="text/javascript"></script>
+	<script src="../static/echarts/js/theme_hnac.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script src="../static/bootstrap-select/js/bootstrap-select-lim50.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+    <script>
+        function Appendzero(obj)  
+	    {  
+	        if(obj<10) return "0" +""+ obj;  
+	        else return obj;  
+	    }  
+        function timeInit(){
+            var d = new Date();
+            var date;
+            var dateDiv = document.getElementById("dateDiv");
+            date = "" + Appendzero(d.getFullYear()) + "-" + Appendzero(d.getMonth() + 1) + "-" + Appendzero(d.getDate());
+            $("#inputDate").val(date);
+            dateDiv.setAttribute("data-date-format","yyyy-mm-dd");
+            $('.form_datetime').datetimepicker({
+                language: 'zh-CN',
+                format:'yyyy-mm-dd',
+                weekStart: 0,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 1
+            });
+            
+        }
+        function loadUnitTable(){
+			$('#procurementTable').DataTable( {
+				"ajax": {
+					    "url": "../pumpStation/getUnitByStationId.do",
+					    "type":"POST",
+					    "dataSrc": "rows"
+				    },
+                "bFilter":true,
+				"oLanguage": {
+	                	"sProcessing":   "处理中...",
+	                	"sLoadingRecords": "载入中...",
+				    	"sLengthMenu": "每页显示 _MENU_ 条记录",
+				    	"sZeroRecords": "抱歉， 没有找到",
+				    	"sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+				    	"sInfoEmpty": "没有数据",
+				    	"sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+				    	"oPaginate": {
+				    	"sFirst": "首页",
+				    	"sEmptyTable":     "表中数据为空",
+				    	"sPrevious": "前一页",
+				    	"sNext": "后一页",
+				    	"sLast": "尾页"
+				    	},
+				    	"sSearch": "查找",
+				    	"sZeroRecords": "没有检索到数据"
+			    	},
+				columns: [
+                          { title:"序号" , data : 'code'},
+				          { title:"项目名称" , data : 'flowRate',orderable:false},
+				          { title:"申报部门" , data : 'pumpManufactureDate',orderable:false},
+                          { title:"计划单号" , data: 'pumpManufactureDate',orderable:false},
+                          { title:"填报时间" , data : 'pumpManufactureDate',orderable:false},
+                          { title:"操作" , data: 'pumpManufactureDate'}
+					],
+				"columnDefs" : [
+                    {
+						// 定义操作列 填报时间
+						"targets" : 4,
+						orderable:false,
+						"data" : null,
+						"render" : function(data, type,row) {
+                            return hzcommon.timeStampToString(data).substring(0,10);
+                        }
+					},
+					{
+						// 定义操作列
+						"targets" : 5,//操作按钮目标列
+						'orderable' : false,
+						"data" : null,
+						'width' : '62px',
+						"render" : function(data, type,row) {
+							var id = '"' + row.id + '"';
+							var html = "<div><input type='button' class='btn btn-primary' onclick='dataGridbtnView("+ id + ")' style='margin:0px;height:25px;line-height:5px;' value='查看'/></div>";
+							return html;
+						}
+					}]
+			} );
+		}        
+
+        function dataGridbtnView(id){
+			//hzcommon.setKey("hzinfoskipparam", id);
+			window.location.href="../pipe/procurementView"; 
+		}
+        
+        $(function(){
+            loadUnitTable();
+            timeInit();  
+            $('.dataTables_length').css('float','right').parent().removeClass('col-sm-6').addClass('col-sm-12'); //分页类型条位置更好到右边
+        })
+    </script>
+</head>
+<body style="padding-left: 23px;padding-right:23px;">
+   <center>
+        <form id="form1">
+           <div style="width:90% ;text-align: left;">
+                <h3>
+                    <font face="微软雅黑" id="pageTitle">设备材料/备品备件采购计划列表</font>
+                </h3><br/>
+                <div >                   
+                    <br/>
+                    <table id="procurementTable" class="table table-bordered table-striped table-hover" width="100%" style="margin-top:20px">
+
+                    </table>      
+                    <br/>                    
+                </div>
+            </div>
+        </form>
+    </center>
+</body>
+</html>

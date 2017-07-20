@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>机电设备信息</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" />
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css" />   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css" />   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css"/>
+	<link rel="stylesheet" href="../static/bootstrap-validator/css/bootstrapValidator.min.css" />
+	
+	<script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+
+    <script type="text/javascript">
+    $(function(){
+		$("#goback").click(function(event){
+			//hzcommon.setKey("hzinfoskipparam", "");
+			window.history.back();
+    	});
+	});
+    </script>
+</head>
+<body style="padding:0;margin:0;">
+	<center>
+		<div >
+			<h3> <font face="微软雅黑" id="pageTitle" >机电设备信息</font></h3>
+			<div style = "width:1330px; padding:0;margin:5px;" class="panel panel-default">
+				<table class="table  table-bordered" style="text-align: left;">
+					<tr>
+						<td colspan="4" width="12%" height="37px"><label >站名称</label></td>
+						<td colspan="4" width="12%"><span>总干一泵</span></td>					
+						<td colspan="4" width="12%"><label >地址</label></td> 
+						<td width="36%" colspan="12"><span>莫兰县什川镇河口村</span></td>					
+						<td colspan="4"><label >建成时间</label></td> 
+						<td colspan="4"><span>1989</span></td>					
+						<td colspan="4"><label >改建时间</label></td> 
+						<td colspan="4"><span>2005</span></td>
+					</tr>
+					<tr>
+						<td colspan="4" rowspan="2"><label>装机容量(kw)</label></td>
+						<td colspan="4" rowspan="2"><label>机组台数(台/套)</label></td>
+						<td colspan="4" rowspan="2"><label>设计提水量(m³/s)</label></td>
+						<td width="12%" rowspan="2" colspan="4"><label>实际提水量(m³/s)</label></td>
+						<td width="12%" rowspan="2" colspan="4"><label>总扬程(m)</label></td>
+						<td width="12%" rowspan="2" colspan="4"><label>净扬程(m)</label></td>
+						<td colspan="16"><label>6KV供电</label></td>
+					</tr>
+					<tr>
+						<td colspan="8"><label>供电变电所</label></td>
+						<td colspan="8"><label>镇路编号</label></td>
+					</tr>
+					<tr>
+						<td colspan="4"><span>8600</span></td>
+						<td colspan="4"><span>7</span></td>
+						<td colspan="4"><span>6.03</span></td>
+						<td colspan="4"><span>6.5</span></td>
+						<td colspan="4"><span>104</span></td>
+						<td colspan="4"><span>97</span></td>
+						<td colspan="8"><span>河口变电所</span></td>
+						<td colspan="8"><span>611/613</span></td>
+					</tr>
+					<tr>
+						<td colspan="4" rowspan="2"><label>主厂房面积(m²)</label></td>
+						<td colspan="4" rowspan="2"><label>副厂房面积(m²)</label></td>
+						<td colspan="4" rowspan="2"><label>管理房面积(m²)</label></td>
+						<td colspan="6"><label>进水池</label></td>
+						<td colspan="6"><label>出水池</label></td>
+						<td colspan="8"><label>进线规格</label></td>
+						<td colspan="8"><label>站用变压器</label></td>
+					</tr>
+					<tr>
+						<td width="9%" colspan="3"><label>形状</label></td>
+						<td width="9%" colspan="3"><label>尺寸</label></td>
+						<td width="9%" colspan="3"><label>形状</label></td>
+						<td width="9%" colspan="3"><label>尺寸</label></td>
+						<td colspan="4"><label>型号</label></td>
+						<td colspan="4"><label>长度(m)</label></td>
+						<td colspan="4"><label>型号</label></td>
+						<td colspan="4"><label>容量(KVA)</label></td>
+					</tr>
+					<tr>
+						<td colspan="4"><span>662.4</span></td>
+						<td colspan="4"><span>232</span></td>
+						<td colspan="4"><span>418</span></td>
+						<td colspan="3"><span>圆形</span></td>
+						<td colspan="3"><span>5×5×3</span></td>
+						<td colspan="3"><span>矩形</span></td>
+						<td colspan="3"><span>9×4.6×3</span></td>
+						<td colspan="4"><span>2×3×240</span></td>
+						<td colspan="4"><span>2×52</span></td>
+						<td colspan="4"><span>S11-XR-200</span></td>
+						<td colspan="4"><span>2×200</span></td>
+					</tr>
+					</table>
+					<hr style="margin:0px;height:1px;border:0px;background-color:#D5D5D5;color:#D5D5D5;"/>
+					<table  class="table  table-bordered" style="text-align: left;border: 1px;">
+					<tr>
+						<td colspan="5" width="50%"><label>高压开关柜</label></td>
+						<td colspan="5"><label>低压开关柜</label></td>
+					</tr>
+					<tr>
+						<td><label>名称</label></td>
+						<td><label>型号</label></td>
+						<td><label>数量(面)</label></td>
+						<td><label>产地</label></td>
+						<td><label>出厂/安装日期</label></td>
+						<td><label>名称</label></td>
+						<td><label>型号</label></td>
+						<td><label>数量(面)</label></td>
+						<td><label>产地</label></td>
+						<td><label>出厂/安装日期</label></td>
+					</tr>
+					<tr>
+						<td><span>进线柜</span></td>
+						<td><span>GG-1A(F)</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td><span>进线柜</span></td>
+						<td><span>NGG1</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+					</tr>
+					<tr>
+						<td><span>进线柜</span></td>
+						<td><span>GG-1A(F)</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td><span>进线柜</span></td>
+						<td><span>NGG1</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+					</tr>
+					<tr>
+						<td><span>进线柜</span></td>
+						<td><span>GG-1A(F)</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td><span>进线柜</span></td>
+						<td><span>NGG1</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+					</tr>
+					<tr>
+						<td><span>进线柜</span></td>
+						<td><span>GG-1A(F)</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+					</tr>
+					<tr>
+						<td><span>电压互感器柜</span></td>
+						<td><span>GG-1A(F)</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td colspan="25"><label>其它设备</label></td>
+					</tr>
+					<tr>
+						<td><span>1#-7#电动机控制柜</span></td>
+						<td><span>GG-1A(F)</span></td>
+						<td><span>7</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td><label>名称</label></td>
+						<td><label>型号</label></td>
+						<td><label>数量(面)</label></td>
+						<td><label>产地</label></td>
+						<td><label>出厂/安装日期</label></td>
+					</tr>
+					<tr>
+						<td><span>电容器柜</span></td>
+						<td><span>GG-1A(F)</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td><span>进线柜</span></td>
+						<td><span>NGG1</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+					</tr>
+					<tr>
+						<td><span>站用变电控制柜</span></td>
+						<td><span>GG-1A(F)</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td><span>进线柜</span></td>
+						<td><span>NGG1</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+					</tr>
+					<tr>
+						<td><span>星点柜</span></td>
+						<td><span>LFZB-10W</span></td>
+						<td><span>5</span></td>
+						<td><span>天水</span></td>
+						<td><span>2005.8/2005</span></td>
+						<td><span>进线柜</span></td>
+						<td><span>NGG1</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+					</tr>
+					<tr>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span>进线柜</span></td>
+						<td><span>NGG1</span></td>
+						<td><span>2</span></td>
+						<td><span>正泰</span></td>
+						<td><span>2005.8/2005</span></td>
+					</tr>
+					<tr>
+						<td><label>备注：</label><span></span></td>
+					</tr>
+				</table>			
+			</div>   
+		</div> 
+		<div style="text-align: left;width:1330px;">
+    		<button type="button" id="export" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">导出</button>
+			&nbsp;&nbsp;
+    		<button type="button" id="print" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">打印</button>
+    		&nbsp;&nbsp;
+    		<button type="button" id="goback" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">返回</button>
+		</div>
+	</center>
+</body>
+</html>

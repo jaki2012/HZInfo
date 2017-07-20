@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>管线登记卡</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" />
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css" />   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css" />   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css"/>
+	<link rel="stylesheet" href="../static/bootstrap-validator/css/bootstrapValidator.min.css" />
+	
+	<script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+
+    <script type="text/javascript">
+    $(function(){
+		$("#goback").click(function(event){
+			//hzcommon.setKey("hzinfoskipparam", "");
+			window.history.back();
+    	});
+	});
+    </script>
+</head>
+<body style="padding:0;margin:0;">
+	<center>
+		<div >
+			<h3> <font face="微软雅黑" id="pageTitle" >管线登记卡</font></h3>
+			<div style = "width:1330px; padding:0;margin:5px;" class="panel panel-default">
+				<table class="table  table-bordered" style="text-align: center;">
+					<tr>
+						<td rowspan="3" style="vertical-align:middle;"><label>机组编号</label></td>
+						<td colspan="2"><label>电力电缆</label></td>
+						<td colspan="13"style="text-align:center;"><label>管道</label></td>
+					</tr>
+					<tr>
+						<td rowspan="2" style="vertical-align:middle;"><label>型号</label></td>
+						<td rowspan="2" style="vertical-align:middle;"><label>长度(m)</label></td>
+						<td colspan="4"><label>进水管</label></td>
+						<td colspan="4"><label>出水管</label></td>
+						<td colspan="5"><label>汇总管</label></td>
+					</tr>
+					<tr>
+						<td><label>材料</label></td>
+						<td><label>直径(mm)</label></td>
+						<td><label>长度(m)</label></td>
+						<td><label>安装日期</label></td>
+						<td><label>材料</label></td>
+						<td><label>直径(mm)</label></td>
+						<td><label>长度(m)</label></td>
+						<td><label>安装日期</label></td>
+						<td><label>材料</label></td>
+						<td><label>直径(mm)</label></td>
+						<td><label>长度(m)</label></td>
+						<td><label>安装日期</label></td>
+					</tr>
+					<tr>
+						<td><span>1</span></td>
+						<td><span>VLV-35</span></td>
+						<td><span>31</span></td>
+						<td><span>钢管</span></td>
+						<td><span>800</span></td>
+						<td><span>16</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>8.1</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>178</span></td>
+						<td><span>11</span></td>
+					</tr>
+					<tr>
+						<td><span>2</span></td>
+						<td><span>VLV-35</span></td>
+						<td><span>31</span></td>
+						<td><span>钢管</span></td>
+						<td><span>800</span></td>
+						<td><span>16</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>8.1</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>178</span></td>
+						<td><span>11</span></td>
+					</tr>
+					<tr>
+						<td><span>3</span></td>
+						<td><span>VLV-35</span></td>
+						<td><span>31</span></td>
+						<td><span>钢管</span></td>
+						<td><span>800</span></td>
+						<td><span>16</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>8.1</span></td>
+						<td><span>11</span></td>
+						<td colspan="5"><label>压力管</label></td>
+					</tr>
+					<tr>
+						<td><span>4</span></td>
+						<td><span>VLV-35</span></td>
+						<td><span>31</span></td>
+						<td><span>钢管</span></td>
+						<td><span>800</span></td>
+						<td><span>16</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>8.1</span></td>
+						<td><span>11</span></td>
+						<td><label>型号</label></td>
+						<td><label>数量(台)</label></td>
+						<td><label>产地</label></td>
+						<td><label>安装日期</label></td>
+					</tr>
+					<tr>
+						<td><span>5</span></td>
+						<td><span>VLV-35</span></td>
+						<td><span>31</span></td>
+						<td><span>钢管</span></td>
+						<td><span>800</span></td>
+						<td><span>16</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>8.1</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span>
+						<td><span>600</span></td>
+						<td><span>178</span></td>
+						<td><span>11</span></td>
+					</tr>
+					<tr>
+						<td><span>6</span></td>
+						<td><span>VLV-35</span></td>
+						<td><span>31</span></td>
+						<td><span>钢管</span></td>
+						<td><span>800</span></td>
+						<td><span>16</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>8.1</span></td>
+						<td><span>11</span></td>						
+						<td colspan="5"></td>
+					</tr>
+					<tr>
+						<td><span>7</span></td>
+						<td><span>VLV-35</span></td>
+						<td><span>31</span></td>
+						<td><span>钢管</span></td>
+						<td><span>800</span></td>
+						<td><span>16</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>8.1</span></td>
+						<td><span>11</span></td>						
+						<td colspan="5"></td>
+					</tr>
+					<tr>
+						<td><span>8</span></td>
+						<td><span>VLV-35</span></td>
+						<td><span>31</span></td>
+						<td><span>钢管</span></td>
+						<td><span>800</span></td>
+						<td><span>16</span></td>
+						<td><span>11</span></td>
+						<td><span>钢管</span></td>
+						<td><span>600</span></td>
+						<td><span>8.1</span></td>
+						<td><span>11</span></td>						
+						<td colspan="5"></td>
+					</tr>
+					<tr>
+						<td><label>备注：</label><span></span></td>
+					</tr>
+				</table>			
+			</div>   
+		</div> 
+		<div style="text-align: left;width:1330px;">
+    		<button type="button" id="export" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">导出</button>
+			&nbsp;&nbsp;
+    		<button type="button" id="print" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">打印</button>
+    		&nbsp;&nbsp;
+    		<button type="button" id="goback" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">返回</button>
+		</div>
+	</center>
+</body>
+</html>

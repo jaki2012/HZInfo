@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title></title>
+    <link rel="stylesheet" href="/HZInfo/static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="/HZInfo/static/hnac-ui/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="/HZInfo/static/hnac-ui/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="/HZInfo/static/hnac-ui/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="/HZInfo/static/bootstrap-notify/animate.css">   	
+	<script type="text/javascript" src="/HZInfo/static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="/HZInfo/static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/HZInfo/static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="/HZInfo/static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="/HZInfo/static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="/HZInfo/static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="/HZInfo/static/js/hzcommon.js"></script>
+	<script type="text/javascript">
+		var gArrDataUser = [];
+		function loadSelectedUserList(roleid){
+			if (roleid == null){
+				return;
+			}
+			else if (roleid == ""){
+				return;
+			}
+			var i = 0;
+			$.ajax({
+         	   url:"/HZInfo/sys/user/getUserListByRole.do",
+         	   dataType:"json",
+         	   type:"POST",
+         	   data:{"rolefilter":roleid},
+	           success:function(data){
+	        	   for (i = 0; i < gArrDataUser.length; i++){
+	        		   gArrDataUser[i].selected = false;
+	        	   }
+         		   var arrdata2 = [];
+         		   for (i = 0; i < data.total; i++){
+         			   for (j = 0; j < gArrDataUser.length; j++){
+         				   if (gArrDataUser[j].title == data.rows[i].UserAccount){
+         					  gArrDataUser[j].selected = true;
+         					  continue;
+         				   }
+         			   }
+         		   }
+         		   var tree = $("#userList").fancytree("getTree");
+      			   tree.reload(gArrDataUser);
+         	   }
+            });
+		}
+	
+		function loadUserList(){
+ 		   var arrdata = [];
+ 		   for (i = 0; i < 5; i++){
+ 			   arrdata[i] = new Object();
+ 			   arrdata[i].title = "测点" + (i+1);
+ 			   arrdata[i].key = "测点" + (i+1);
+ 			   arrdata[i].tooltip = "测点" + (i+1);
+ 			   arrdata[i].selected = false;
+ 		   }
+ 		   gArrDataUser = arrdata;
+ 		   $("#userList").fancytree({
+ 			    checkbox: true,
+ 			    icon: false,
+ 			    selectMode: 2,
+					source: arrdata,
+					autoScroll: true
+ 		   });
+		};
+		function loadRoleList(){
+			var gArrDataRole = [];
+ 		   for (i = 0; i < 5; i++){
+ 			   gArrDataRole[i] = new Object();
+ 			   gArrDataRole[i].title = "单位" + (i+1);
+ 			   gArrDataRole[i].key = "单位" + (i+1);
+ 			   gArrDataRole[i].tooltip = "单位" + (i+1);
+ 		   }
+ 		   $("#roleList").fancytree({
+ 			    checkbox: false,
+ 			    icon: false,
+ 			    selectMode: 1,
+					source: gArrDataRole,
+					autoScroll: true,
+					activate: function(event, data) {
+						//loadSelectedUserList(data.node.key);
+					}
+ 		   });
+		};
+		function reloadRoleList(){
+			$.ajax({
+            	   url:"/HZInfo/sys/user/getRoleList.do",
+            	   dataType:"json",
+            	   type:"POST",
+            	   data:{"accountfilter":""},
+            	   success:function(data){
+            		   gArrDataRole = [];
+            		   for (i = 0; i < data.total; i++){
+            			   gArrDataRole[i] = new Object();
+            			   gArrDataRole[i].title = data.rows[i].RoleName;
+            			   gArrDataRole[i].key = data.rows[i].RoleID;
+            			   gArrDataRole[i].tooltip = data.rows[i].RoleName;
+            		   }
+            		   var tree = $("#roleList").fancytree("getTree");
+           			   tree.reload(gArrDataRole);
+            	   }
+               });
+		};
+		$(function(){
+			var v = document.documentElement.clientHeight - 190;
+			if (v < 200)
+				v = 200;
+			document.getElementById('listDiv').style.height = v + 'px';
+        	loadUserList();
+			loadRoleList();
+		});
+	</script>
+    
+</head>
+<style type="text/css">
+	ul.fancytree-container {
+		height: 100%;
+		width: 100%;
+	}
+</style>
+<body style="padding-left: 23px;padding-right: 23px">
+  <center>
+    <form id="form1">
+    <div style="width:90%;text-align: left;">
+        <h3 style="text-align: left;" >
+			<font face="微软雅黑">用水单位测点配置</font>
+		</h3>		
+		<br/>
+		<div style="height: 7%;">			  	  	
+			<table border="0">	
+				 <tr>
+				  	 	 <td style="width: 340px;background-color:whitesmoke"><h4><font face="微软雅黑">&nbsp;&nbsp;&nbsp;用水单位</font></h4></td>
+				  	 	 <td style="width: 130px;"></td>	
+				  	 	 <td style="width: 370px;background-color:whitesmoke"><h4><font face="微软雅黑">&nbsp;&nbsp;&nbsp;测点</font></h4></td>
+				  	 	 <td></td>
+				 </tr>
+			</table>	
+			<div style="height: 20px;">
+		</div> 
+        <div style="width:100%;height:510px" id="listDiv">
+        	<div id="roleList" style="width: 340px; height:100%;float:left;"  class="fancytree-empty">
+			</div>
+			<div id="userList" style="width: 370px; height:100%;float:left;margin-left:130px" class="fancytree-checkbox">
+			</div>
+		</div>		
+		<br/>
+			    <table border="0">
+			         <tr>
+			        	<td align="right" style="width: 840px;"><button type="button" id="btnSetRole" class="btn btn-primary"  style="background: #3790e2;height: 28px;width: 90px;line-height: 3px;">保存设置</button></td>
+			         </tr>
+			    </table>	 
+		</div>
+    </div>
+    </form>
+</center></body>
+</html>

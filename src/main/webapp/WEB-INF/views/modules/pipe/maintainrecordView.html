@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>管线设备/设施保养维修记录</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	<link href="../static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+    <script src="../static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>  
+    <style type="text/css">
+        .tab-filter .form-control{border-radius: 0; border:0; border-bottom: 1px solid #ddd; box-shadow: none;}
+    </style>  
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+    
+    <script>
+        function loadUnitTable(){
+			$('#maintainTable').DataTable( {
+				"ajax": {
+					    "url": "../pumpStation/getUnitByStationId.do",
+					    "type":"POST",
+					    "dataSrc": "rows"
+				    },
+                "bFilter":false,
+                "bPaginate":false,
+				"oLanguage": {
+	                	"sProcessing":   "处理中...",
+	                	"sLoadingRecords": "载入中...",
+				    	"sLengthMenu": "每页显示 _MENU_ 条记录",
+				    	"sZeroRecords": "抱歉， 没有找到",
+				    	"sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+				    	"sInfoEmpty": "没有数据",
+				    	"sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+				    	"oPaginate": {
+				    	"sFirst": "首页",
+				    	"sEmptyTable":     "表中数据为空",
+				    	"sPrevious": "前一页",
+				    	"sNext": "后一页",
+				    	"sLast": "尾页"
+				    	},
+				    	"sSearch": "查找",
+				    	"sZeroRecords": "没有检索到数据"
+			    	},
+				columns: [
+                          { title:"序号" , data : 'code'},
+				          { title:"名称" , data : 'code',orderable:false},
+                          { title:"类型" , data : 'pumpManufactureDate',orderable:false},
+				          { title:"维修原因/维修、保养内容" , data : 'pumpManufactureDate',orderable:false},
+                          { title:"上报时间" , data: 'pumpManufactureDate'},
+                          { title:"上报人" , data : 'flowRate',orderable:false},
+                          { title:"处理建议/保养级别" , data: 'flowRate',orderable:false},
+                          { title:"维护人" , data : 'flowRate',orderable:false},
+                          { title:"维护开始时间" , data: 'pumpManufactureDate'},
+                          { title:"维护完成时间" , data: 'pumpManufactureDate'}
+					],
+				"columnDefs" : [
+                    {
+						// 定义操作列 上报时间
+						"targets" : 4,
+						orderable:false,
+						"data" : null,
+						"render" : function(data, type,row) {
+                            return hzcommon.timeStampToString(data).substring(0,13);
+                        }
+					},
+                    {
+						// 定义操作列 维护开始时间
+						"targets" : 8,
+						orderable:false,
+						"data" : null,
+						"render" : function(data, type,row) {
+                            return hzcommon.timeStampToString(data).substring(0,13);
+                        }
+					},
+                    {
+						// 定义操作列 维护完成时间
+						"targets" : 9,
+						orderable:false,
+						"data" : null,
+						"render" : function(data, type,row) {
+                            return hzcommon.timeStampToString(data).substring(0,13);
+                        }
+					}]
+			} );
+		};
+        $(function(){
+            timeInit();
+            loadUnitTable(); 
+        })
+        
+        function Appendzero(obj)  
+	    {  
+	        if(obj<10) return "0" +""+ obj;  
+	        else return obj;  
+	    }  
+        function timeInit(){
+            var d = new Date();
+			var dend = new Date();
+			var start,end;
+            var inputStart = document.getElementById("divStart");
+            var inputEnd = document.getElementById("divEnd");
+            start = "" + Appendzero(d.getFullYear()) + "-" + Appendzero(d.getMonth() + 1) + "-" + Appendzero(d.getDate())+" "+ Appendzero(d.getHours());
+            dend.setHours(d.getHours()-1);
+            end = "" + Appendzero(dend.getFullYear()) + "-" + Appendzero(dend.getMonth() + 1) + "-" + Appendzero(dend.getDate())+" "+Appendzero(dend.getHours());
+            $("#inputStart").val(end);
+            $("#inputEnd").val(start);
+            inputStart.setAttribute("data-date-format","yyyy-mm-dd hh");
+            inputEnd.setAttribute("data-date-format","yyyy-mm-dd hh");
+            $('.form_datetime').datetimepicker({ 
+                language: 'zh-CN',
+                format:"yyyy-mm-dd hh",
+                weekStart: 0,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 1,
+                forceParse: 1
+            });            
+        }
+    </script>
+</head>
+<body style="padding-left: 23px;padding-right:23px;">
+   <center>
+        <form id="form1">
+           <div style="width:90% ;text-align: left;">
+                <h3>
+                    <font face="微软雅黑" id="pageTitle">管线设备/设施保养维修记录</font>
+                </h3><br/>
+                <div >
+                    <table border="0">
+                        <tr>
+                        <colgroup span="1" style="width: 100px;"></colgroup>
+                        <colgroup span="1" style="width: 160px;"></colgroup>
+                        <colgroup span="1" style="width: 100px;"></colgroup>
+                        <colgroup span="1" style="width: 160px;"></colgroup>
+                        <colgroup span="1" style="width: 80px;"></colgroup>
+                        <colgroup span="1" style="width: 120px;"></colgroup>
+                        <colgroup span="1" style="width: 100px;"></colgroup>
+                        <colgroup span="1" style="width: 100px;"></colgroup>
+                        <colgroup span="1" style="width: 100px;"></colgroup>
+                        <td align="center" style="width:100px">
+                            上报开始时间
+                        </td>
+                        <td>
+                            <div class="form-group" style="height: 20px;">
+                                <div id="divStart" class="input-group date form_datetime col-md-5"  data-link-field="dtp_input1"
+                                    style="width: 160px;">
+                                    <input id="inputStart" class="form-control" size="16" type="text" value="">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                                <input type="hidden" id="inputStart" value="请选择" /><br/>
+                            </div>
+                        </td>
+                        <td align="center" style="width:100px">
+                            上报结束时间
+                        </td>
+                        <td>
+                            <div class="form-group" style="height: 20px;">
+                                <div id="divEnd" class="input-group date form_datetime col-md-5"  data-link-field="dtp_input1"
+                                    style="width: 160px;">
+                                    <input id="inputEnd" class="form-control" size="16" type="text" value="">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                                <input type="hidden" id="divEnd" value="请选择" /><br/>
+                            </div>
+                        </td>
+                        <td align="center">
+                            选择类型
+                        </td>
+                        <td>
+                            <select id="selLine" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="100px">
+                                <option value="0">维修</option>
+                                <option value="1">保养</option>
+                            </select>    
+                        </td>
+                        <td align="left" style="width: 120px;">
+                            <button type="button" id="btnSearch" class="btn btn-primary btn-lg"  style="color: white;width: 100px;background:#3790e2;line-height: 5px;">查询</button>
+                        </td>
+                        <td align="left" style="width: 120px;">
+                            <button type="button" id="btnExport" class="btn btn-primary btn-lg"  style="color: white;width: 100px;background:#3790e2;line-height: 5px;">导出</button>
+                        </td>
+                         <td align="left" style="width: 120px;">
+                            <button type="button" id="btnPrint" class="btn btn-primary btn-lg"  style="color: white;width: 100px;background:#3790e2;line-height: 5px;">打印</button>
+                        </td>
+                        </tr>
+                    </table>
+                    <div style="margin-top:30px;padding-top:20px;border-top:1px solid #ddd;">
+                        <h4 style="text-align:center">管线设备/设施保养维修记录</h4>
+                        <div>
+                            <table border="0" class="tab-filter">
+                                <colgroup span="1" style="width: 60px;"></colgroup>
+                                <colgroup span="1" style="width: 150px;"></colgroup>
+                                <colgroup span="1" style="width: 80px;"></colgroup>
+                                <colgroup span="1" style="width: 120px;"></colgroup>
+                                <tr style="height: 40px;">
+                                    <td align="center">
+                                        部门
+                                    </td>
+                                    <td>
+                                        <div class="form-group" style="height: 20px;">
+                                            <input type="text" id="depart" class="form-control" style="width:150px"/>
+                                        </div>
+                                    </td>
+                                    <td align="center">
+                                        监督人
+                                    </td>
+                                    <td>
+                                        <div class="form-group" style="height: 20px;">
+                                            <input type="text" id="depart" class="form-control" style="width:120px"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <table id="maintainTable" class="table table-bordered table-striped table-hover" width="100%">
+                    </table>     		
+                </div>
+            </div>
+        </form>
+    </center>
+</body>
+</html>

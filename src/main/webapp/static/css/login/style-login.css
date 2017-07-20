@@ -1,0 +1,132 @@
+@charset "utf-8";
+/* CSS Document */
+
+.code
+    {
+            font-family:Arial;
+            font-style:italic;
+             color:blue;
+             font-size:20px;
+             border:0;
+             padding:2px 3px;
+             letter-spacing:3px;
+             font-weight:bolder;             
+             float:left;            
+             cursor:pointer;
+             width:90px;
+             height:30px;
+             line-height:27px;
+             text-align:center;
+             vertical-align:middle;
+
+    }
+    a
+    {
+        text-decoration:none;
+        font-size:14px;
+        color:#288bc4;
+        }
+    a:hover
+    {
+       text-decoration:underline;
+        }
+		
+.form-group {
+	margin-top:15px;
+	margin-bottom:15px;
+}
+
+.btn-primary {
+	color: #fff;
+	background-color: #007cca;
+	border-color: #357ebd
+}
+
+.btn-group-lg>.btn,.btn-lg {
+	padding: 10px 16px;
+	font-size: 18px;
+	line-height: 1.33;
+	border-radius: 0
+}
+
+.container {
+	 position: relative;
+	 float:right;
+	 background-color:#F6F6F6;
+	 width:330px;height:340px;
+	 box-shadow: 0px 0px 15px #535353;
+	 padding:0px 20px;
+	 z-index:2;
+	 margin-top:140px;
+	 margin-right:210px;
+}
+
+.form-signin-heading{
+	color:#969696;
+	font-size:22px;
+	font-family:STXihei;
+	margin-top:20px;
+	margin-bottom:10px;
+}
+
+.form-control {
+	display:block;
+	width:100%;
+	height:43px;
+	padding:10px 12px;
+	font-size:18px;
+	line-height:1.42857143;
+	color:#555;
+	background-color:#fff;
+	background-image:none;
+	border:1px solid #ccc;
+	border-radius:4px;
+	-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.form-control-yzm {
+	display:block;
+	width:100px;
+	height:30px;
+	padding:1px 2px;
+	font-size:16px;
+	line-height:1.42857143;
+	color:#555;
+	background-color:#fff;
+	background-image:none;
+	border:1px solid #ccc;
+	border-radius:4px;
+	-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.form-control-yzm:-ms-input-placeholder {
+	color: #999
+}
+
+.logincheckbox {
+	display: none
+}
+
+.logincheckbox + label span {
+    display:inline-block;
+    width:18px;
+    height:20px;
+    margin:-1px 4px 0 0;
+    vertical-align:middle;
+    background:url(../../images/login/checkbox-sheet.png) left top no-repeat;
+    cursor:pointer;
+}
+.logincheckbox:checked + label span {
+    background:url(../../images/login/checkbox-sheet.png) -18px top no-repeat;
+}
+#message{
+	margin:5px 5px 5px 25px;
+}

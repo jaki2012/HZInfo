@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>机组信息</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="../static/bootstrap-validator/css/bootstrapValidator.min.css" type="text/css" media="screen" title="no title" charset="utf-8" />	
+	<link href="../static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+	
+	<script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+	<script src="../static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+	
+	<script type="text/javascript">
+		
+		$(function(){
+			$("#btnCancel").click(function(event){
+				window.history.back(-1);
+	    	});
+
+			var buildDate = document.getElementById("installdateDiv");
+			buildDate.setAttribute("data-date-format","yyyy-mm-dd");	
+			$('.form_datetime').datetimepicker({
+				language: 'zh-CN',
+				weekStart: 0,
+				todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 4,
+				minView: 4,
+				forceParse: 1
+			});
+		});
+	</script>
+    
+</head>
+<body style="padding-left: 23px;padding-left: 23px">
+   <center>
+	<div style="width:90%;text-align: left;" class="container">
+	    <form id="attributeForm" method="post" class="form-horizontal"
+	    data-bv-message="该值无效"
+	    data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+	    data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+	    data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+	    <div class="row">
+	    	<div class="col-md-12 col-lg-12 ">
+			    <h3>
+		            <font face="微软雅黑" id="pageTitle">管道信息</font>
+		        </h3>
+				<br/>
+			</div>
+		</div>
+		
+		<div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">泵　　站</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<select id="stationId" name="stationId" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="160px">
+			            	<option value="0">泵站1</option>
+			            	<option value="1">泵站2</option>
+			            	<option value="2">泵站3</option>
+						</select>
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">机　　组</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <select id="unitId" name="unitId" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="160px">
+			            	<option value="0">机组1</option>
+			            	<option value="1">机组2</option>
+			            	<option value="2">机组3</option>
+						</select>
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">管道型号</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<select id="type" name="type" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="160px">
+			            	<option value="0">进水管</option>
+			            	<option value="1">出水管</option>
+			            	<option value="2">汇总管</option>
+			            	<option value="3">排水管</option>
+						</select>
+			        </div>
+		        </div>
+		    </div>
+		    
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">直　　径</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="100"  name="diameter" id="diameter" 
+							 />
+			        </div>			       
+		        </div>
+		    </div>		
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">长　　度</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="20" name="length" id="length" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">材　　料</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="100"  name="material" id="material" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">安装日期</label>
+			        <div class="col-lg-9" style="text-align: left">
+			           <div id="installdateDiv" class="input-group date form_datetime "  data-link-field="dtp_input1" 
+								style="width: 160px;vertical-align: middle;">
+								<input id="installdate" name="installdate" class="form-control" size="16" type="text" value="" >
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-12 col-lg-12" style="text-align: left;float:left;width:100%">
+		    	<div class = "row">
+		        <label class="col-lg-9 control-label" style="text-align: left"></label>
+		        <div class="col-lg-3" style="text-align: left">
+		    		<button type="submit" id="btnEnter" class="btn btn-primary"　disabled="disabled" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;"　>确定</button>
+					&nbsp;&nbsp;&nbsp;
+		    		<button type="button" id="btnCancel" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">取消</button>
+		        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    </form>
+    </div>
+	</center>
+</body>
+</html>

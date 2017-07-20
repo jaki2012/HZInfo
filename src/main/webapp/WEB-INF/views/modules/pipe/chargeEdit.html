@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>收费信息录入</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="../static/bootstrap-validator/css/bootstrapValidator.min.css" type="text/css" media="screen" title="no title" charset="utf-8" />	
+    <link href="../static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+</head>
+<body style="padding-left: 23px;padding-left: 23px">
+   <center>
+	<div style="width:90%;text-align: left;" class="container">
+	    <form id="attributeForm" method="post" class="form-horizontal"
+	    data-bv-message="该值无效"
+	    data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+	    data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+	    data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+            <div class="row">
+                <div class="col-md-12 col-lg-12 ">
+                    <h3>
+                        <font face="微软雅黑" id="pageTitle">水费收费信息录入</font>
+                    </h3>
+                    <br/>
+                </div>
+            </div>
+
+            <div class = "row">
+                <div class="form-group col-md-10 col-lg-10" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-2 control-label" style="text-align: right">用水单位</label>
+                        <div class="col-lg-8" style="text-align: left">
+                            <select id="selUnit" name="selUnit" class="selectpicker show-tick form-control" data-none-selected-text="无数据">
+                                <option value="0">单位一</option>
+                                <option value="1">单位二</option>
+                            </select>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <div class="row">
+                 <div class="form-group col-md-10 col-lg-10" style="text-align: left;">
+                    <div class ="row">
+                        <label class="col-lg-2 control-label" style="text-align: right">收费时间</label>
+                        <div class="col-lg-8" style="text-align: left">
+                           <div id="datepickerDiv" class="input-group date form_datetime " data-link-field="buy_input" 
+                                style="vertical-align: middle;">
+                                <input id="datepicker" name="datepicker" class="form-control" readonly data-date-format="yyyy-mm-dd" size="16" type="text" value="" >
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="form-group col-md-10 col-lg-10" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-2 control-label" style="text-align: right">收费金额</label>
+                        <div class="col-lg-8" style="text-align: left;">
+                            <input  type="text" class="form-control" name="receivableAmount" id="receivableAmount"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class = "row">
+                <div class="form-group col-md-12 col-lg-12" style="text-align: left;float:left;width:100%">
+                    <div class = "row">
+                    <label class="col-lg-9 control-label" style="text-align: left"></label>
+                    <div class="col-lg-3" style="text-align: left">
+                        <button type="submit" id="btnEnter" class="btn btn-primary"　disabled="disabled" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;"　>确定</button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button type="button" id="btnCancel" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">取消</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+       </div>
+    </center>
+    <script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+	<script src="../static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+    <script>
+        function Appendzero(obj)  
+	    {  
+	        if(obj<10) return "0" +""+ obj;  
+	        else return obj;  
+	    }  
+        function timeInit(){
+            var d = new Date();
+			var date;
+            var inputDate = document.getElementById("datepickerDiv");
+            date = "" + Appendzero(d.getFullYear()) + "-" + Appendzero(d.getMonth() + 1)+"-"+Appendzero(d.getDate());
+            $("#datepicker").val(date);
+            inputDate.setAttribute("data-date-format","yyyy-mm-dd");
+            $('.form_datetime').datetimepicker({
+				language: 'zh-CN',
+                format:"yyyy-mm-dd",
+				weekStart: 0,
+				todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 1
+			});
+        }
+        $(function(){
+            //取消
+            $("#btnCancel").click(function(event){
+				window.history.back(-1);                
+	    	});
+            timeInit();                
+        })
+    </script>
+</body>
+</html>

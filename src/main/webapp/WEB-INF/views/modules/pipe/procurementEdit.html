@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>设备材料或备品备件采购计划管理</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+    <link href="../static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+	
+    <script src="../static/jquery/jquery-1.11.3.min.js" type="text/javascript"></script>
+	<script src="../static/bootstrap/3.3.0/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../static/echarts/js/echarts.min.js" type="text/javascript"></script>
+	<script src="../static/echarts/js/theme_hnac.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script src="../static/bootstrap-select/js/bootstrap-select-lim50.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+    <style type="text/css">
+        .tab-filter .form-control{border-radius: 0; border:0; border-bottom: 1px solid #ddd; box-shadow: none;}
+    </style>
+    <style type="text/css">
+        .fl{float:left;}
+        .row{margin-top:5px;}
+    </style>
+</head>
+<body style="padding-left: 23px;padding-right:23px;">
+   <center>
+        <form id="attributeForm" method="post" class="form-horizontal">
+           <div style="width:90% ;text-align: left;">
+                <h3>
+                    <font face="微软雅黑" id="pageTitle">设备材料/备品备件采购计划</font>
+                </h3><br/>
+                <div class="form-group col-md-12 col-lg-12">
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <label class="col-lg-4 control-label" style="text-align: right">项目名称</label>
+                            <div class="col-lg-8" style="text-align: left">
+                               <input type="text" class="form-control" id="projectName" name="projectName"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <label class="col-lg-4 control-label" style="text-align: right">申购部门</label>
+                            <div class="col-lg-8" style="text-align: left">
+                            	<input type="text" class="form-control" id="selDepart" name="selDepart"/>                              
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-lg-2" style="float:right">
+                            <button type="button" id="btnSave" class="btn btn-primary btn-lg"  style="color: white;width: 80px;background:#3790e2;line-height: 5px;">保存</button>
+                        </div>  
+                   </div>
+                    <div style="margin:30px 0; padding-top:20px; border-top:1px solid #ddd">
+                     <h4 style="text-align:center">材料/备品备件采购计划录入</h4>
+                   </div>
+                   <div class="detail" style="border:1px solid #ddd; border-radius:5px; padding:5px;overflow:hidden;">
+                        <div class="row">                       
+                            <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">材料名称</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <input type="text" class="form-control" id="materialName" name="materialName"/>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">规格</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <input type="text" class="form-control" id="standard" name="standard"/>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">型号</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <input type="text" class="form-control" id="modal" name="modal"/>
+                                </div>
+                            </div>                                                
+                       </div>
+                       <div class="row">
+                           <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">材质</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <input type="text" class="form-control" id="material" name="material"/>
+                                </div>
+                            </div>  
+                           <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">计量单位</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <input type="text" class="form-control" id="unit" name="unit"/>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">计量需求数</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <input type="text" class="form-control" id="number" name="number"/>
+                                </div>
+                            </div>                                                                        
+                       </div>   
+                       <div class="row">
+                           <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">到场时间</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <div id="dateDiv2" class="input-group date form_datetime"  data-link-field="dtp_input1" 
+                                        style="vertical-align: middle;">
+                                        <input id="inputDate2" class="form-control" size="16" type="text" value="">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>  
+                           <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">用途</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <input type="text" class="form-control" id="useable" name="useable"/>
+                                </div>
+                            </div> 
+                            <div class="col-md-4 col-lg-4">
+                                <label class="col-lg-4 control-label" style="text-align: right">备注</label>
+                                <div class="col-lg-8" style="text-align: left">
+                                   <input type="text" class="form-control" id="remark" name="remark"/>
+                                </div>
+                            </div>   
+                        </div>
+                       <div class="row" style="float:right;margin:20px;">
+                            <button type="button" id="btnAdd" class="btn btn-primary btn-lg"  style="color: white;width: 80px;background:#3790e2;line-height: 5px;">添加</button>
+                           <button type="button" id="btnEmpty" class="btn btn-primary btn-lg"  style="color: white;width: 80px;background:#3790e2;line-height: 5px;">清空</button>
+                       </div>
+                    </div>
+               </div> 
+               <div class="panel-default">
+                    <table id="procurementTable" class="table table-bordered table-striped table-hover" width="100%" style="margin-top:20px">
+                        <tr>
+                            <th>序号</th>
+                            <th>材料名称</th>
+                            <th>规格/型号/材质</th>
+                            <th>计量单位</th>
+                            <th>计划需求数量</th>
+                            <th>计划到场时间</th>
+                            <th>用途</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </table> 
+                </div>                
+            </div>            
+        </form>
+    </center>
+        <script>
+        function Appendzero(obj)  
+	    {  
+	        if(obj<10) return "0" +""+ obj;  
+	        else return obj;  
+	    }  
+        function timeInit(){
+            var d = new Date();
+            var date;
+            var dateDiv = document.getElementById("dateDiv2");
+            date = "" + Appendzero(d.getFullYear()) + "-" + Appendzero(d.getMonth() + 1) + "-" + Appendzero(d.getDate());
+            $("#inputDate2").val(date);
+            dateDiv.setAttribute("data-date-format","yyyy-mm-dd");
+            
+            $('.form_datetime').datetimepicker({
+                language: 'zh-CN',
+                format:'yyyy-mm-dd',
+                weekStart: 0,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 1
+            });
+            
+        }
+        $(function(){
+            timeInit();   
+            //添加
+            $('#btnAdd').click(function(){
+                insert();                
+            });
+            //删除
+            $('#procurementTable').on('click','.btn-del',function(){
+                $(this).parents('tr').remove();
+                reloadSort();      
+            })
+        });
+        
+        function reloadSort(){
+            $('#procurementTable tr').each(function(){
+                var index = $(this).index();
+                $(this).find('.sort').html(index);
+            });               
+        }
+        
+        $('#btnEmpty').click(function(){
+            $('.detail').find('input.form-control').val('');
+            
+        })
+           
+        //添加详情
+        function insert(){
+            var materialName = $.trim($('#materialName').val()),
+            standard = $.trim($('#standard').val()),
+            modal = $.trim($('#modal').val()),
+            material = $.trim($('#material').val()),
+            unit = $.trim($('#unit').val()),
+            number = $.trim($('#number').val()),
+            arriveTime = $.trim($('#inputDate2').val()),
+            useable = $.trim($('#useable').val()),
+            remark = $.trim($('#remark').val()),
+            modalTotal="",i=0;
+            if(standard!=""&&modal!=""&&material!=""){
+                modalTotal = standard+'/'+modal+'/'+material;
+            }            
+            i++;
+            
+             console.log(materialName);
+            var tr ='<tr>';
+                tr+= '<td class="sort">'+i+'</td>';
+                tr+='<td class="materialName">'+materialName+'</td>';
+                tr+='<td class="material">'+modalTotal+'</td>';
+                tr+='<td class="unit">'+unit+'</td>';
+                tr+='<td class="number">'+number+'</td>';
+                tr+='<td class="arrivedate">'+arriveTime+'</td>';
+                tr+='<td class="useable">'+useable+'</td>';
+                tr+='<td class="remark">'+remark+'</td>';
+                tr+='<td class="opt"><button class="btn btn-primary btn-sm btn-del">删除</button></td>';
+                tr+='</tr>';
+            
+            console.log(tr);
+            $('#procurementTable tbody').append(tr);       
+            reloadSort();
+        }
+    </script>
+</body>
+</html>

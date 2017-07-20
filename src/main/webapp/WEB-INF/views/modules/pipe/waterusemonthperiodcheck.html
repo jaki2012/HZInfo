@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="../static/bootstrap-validator/css/bootstrapValidator.min.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+	<script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+	<script type="text/javascript">
+		function loadUserTable(data){
+			$('#usertable').DataTable( {
+				"sDom":"t",
+				"data": data,
+				"oLanguage": {
+	                	"sProcessing":   "处理中...",
+	                	"sLoadingRecords": "载入中...",
+				    	"sLengthMenu": "每页显示 _MENU_ 条记录",
+				    	"sZeroRecords": "抱歉， 没有找到",
+				    	"sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+				    	"sInfoEmpty": "没有数据",
+				    	"sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+				    	"oPaginate": {
+				    	"sFirst": "首页",
+				    	"sEmptyTable":     "表中数据为空",
+				    	"sPrevious": "前一页",
+				    	"sNext": "后一页",
+				    	"sLast": "尾页"
+				    	},
+				    	"sSearch": "查找",
+				    	"sZeroRecords": "没有检索到数据"
+			    	},
+			   	ordering: false
+			} );
+		}
+		function randomdata(){
+			var data = [];
+			data[0] = [];
+			data[1] = [];
+			data[0][0] = "1";
+			data[1][0] = "2";
+			data[0][1] = "华自科技";
+			data[1][1] = "九芝堂";
+			data[0][2] = "生活用水";
+			data[1][2] = "工业用水";
+			for (var i = 3; i < 7; i++){
+				data[0][i] = 200;
+				data[1][i] = 200;
+				if (i > 3){
+					data[0][i] = '200';
+					data[1][i] = '200';
+				}
+			}
+			return data;
+		}
+		$(function(){
+			var data = randomdata();
+			loadUserTable(data);
+			
+			$("#btnCancel").click(function(event){
+				window.history.back(-1);
+	    	});
+			
+			$('#attributeForm').bootstrapValidator({
+				fields: {
+					inputAccount: {
+	                    message: '用户名验证失败',
+	                    validators: {
+	                        regexp: {
+	                            regexp: /^[a-zA-Z0-9_]+$/,
+	                            message: '用户名只能包含大写、小写、数字和下划线'
+	                        }
+	                    }
+	                }
+				},
+				submitHandler: function(validator, form, submitButton) {
+					setUserDetail();
+				}
+			});
+		});
+	</script>
+    
+</head>
+<body style="padding-left: 23px;padding-left: 23px">
+   <center>
+	<div style="width:90%;text-align: left;">
+	    <form id="attributeForm" method="post" class="form-horizontal"
+	    data-bv-message="该值无效"
+	    data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+	    data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+	    data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+	    <h3>
+            <font face="微软雅黑" id="pageTitle">旬用水调度计划审核</font>
+        </h3>
+		<br/>
+		<table id="usertable" class="display table table-bordered table-striped table-hover" width="100%">
+			<thead>
+				<tr>
+		            <th rowspan="2" align="center"><div style="width:32px">序号</div></th>
+		            <th rowspan="2" align="center"><div style="width:65px">用水单位</div></th>
+		            <th rowspan="2" align="center"><div style="width:80px">主用水性质</div></th>
+		            <th rowspan="2" align="center">4月下旬计划值</th>
+		            <th colspan="3" align="center">4月下旬调度值</th>
+		        </tr>
+		        <tr>
+		            <th align="center">调度计划值</th>
+		            <th align="center">供水顺序</th>
+		            <th align="center">可能引入水量</th>
+		        </tr>
+			</thead>
+			<tfoot>
+            <tr>
+                <th colspan="7" >根据水库供水调度图分析， 4月下旬水库水位将处于II区间</th>
+            </tr>
+        </tfoot>
+		</table>
+		<div class="form-group" style="text-align: left">
+	        <label class="col-lg-3 control-label" style="text-align: left"></label>
+	        <div class="col-lg-9" style="text-align: right">
+	    		<button type="submit" id="btnEnter" class="btn btn-primary"　disabled="disabled" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;"　>通过审核</button>
+				
+	    		&nbsp;&nbsp;&nbsp;
+	    		<button type="button" id="btnCancel" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">取消</button>
+	        </div>
+	    </div>
+	    </form>
+    </div>
+	</center>
+</body>
+</html>

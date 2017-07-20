@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>监测点配置</title>
+	<link href="../static/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+	<link href="../static/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">   
+	<link href="../static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet"> 
+    <link href="../static/datatables/extensions/Buttons/css/buttons.dataTables.min.css" rel="stylesheet">  
+	<link href="../static/datatables/extensions/Buttons/css/buttons.bootstrap.min.css" rel="stylesheet"> 
+	<link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+	<link rel="stylesheet" href="../static/hnac-ui/fancytree/skin-lion/ui.fancytree.min.css"> 
+	 
+    <script src="../static/jquery/jquery-1.11.3.min.js" type="text/javascript"></script>
+	<script src="../static/bootstrap/3.3.0/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../static/echarts/js/echarts.min.js" type="text/javascript"></script>
+	<script src="../static/echarts/js/theme_hnac.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-select/js/bootstrap-select-lim50.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+	<script type="text/javascript" src="../static/js/modules/pumpStation/dataBind.js"></script>
+    
+</head>
+<style type="text/css">
+	ul.fancytree-container {
+		height: 100%;
+		width: 100%;
+	}
+</style>
+<body style="padding-left: 23px;padding-right: 23px">
+<center>
+    <form id="form1">
+    <div style="width:90%;text-align: left;">
+	    	<h3 style="text-align: left;" >
+				<font face="微软雅黑">数据点绑定</font>
+			</h3>
+			<br/>
+        <div style="height: 7%;">
+        	<table border="0" style = "width:1140px;">
+        		<tr>
+			  	 	 <td style="width: 340px;background-color:whitesmoke"><h4><font face="微软雅黑">&nbsp;&nbsp;&nbsp;泵站、机组信息</font></h4></td>
+			  	 	 <td style="width: 30px;"></td>	
+			  	 	 <td style="width: 770px;background-color:whitesmoke"><h4><font face="微软雅黑">&nbsp;&nbsp;&nbsp;数据点</font></h4></td>			  	 	 
+				</tr>
+			</table>
+        	<div style="height: 20px;">
+		</div>
+		<div style="width:1140px;height:510px"  id="listDiv">
+        	<div id="infoList" style="width: 340px; height:100%;float:left;"  class="fancytree-checkbox">
+			</div>
+			<div id="dataListDiv" style="width: 770px; height:100%;float:left;margin-left:30px;">
+				<table id="dataList" class="table table-bordered table-striped table-hover" width="100% ">
+		    	</table>
+			</div>
+		</div>
+        </div>
+    </div>
+    </form>
+</center></body>
+</html>

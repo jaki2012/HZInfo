@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>用水单位信息</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="../static/bootstrap-validator/css/bootstrapValidator.min.css" type="text/css" media="screen" title="no title" charset="utf-8" />	
+</head>
+<body style="padding-left: 23px;padding-left: 23px">
+   <center>
+	<div style="width:90%;text-align: left;" class="container">
+	    <form id="attributeForm" method="post" class="form-horizontal"
+	    data-bv-message="该值无效"
+	    data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+	    data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+	    data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+            <div class="row">
+                <div class="col-md-12 col-lg-12 ">
+                    <h3>
+                        <font face="微软雅黑" id="pageTitle">用水单位基本信息</font>
+                    </h3>
+                    <br/>
+                </div>
+            </div>
+
+            <div class = "row">
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">用水单位名称</label>
+                        <div class="col-lg-9 col-md-9" style="text-align: left">
+                            <input type="text" class="form-control"  maxlength="100"  name="name" id="name" 
+                                data-bv-notempty="true"
+                                data-bv-notempty-message="用水单位不能为空" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right">所属路线</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <select id="line" name="line" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="160px">
+                                <option value="0">南线</option>
+                                <option value="1">北线</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class = "row">
+                <!--用水性质-->
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right">用水类别</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <select id="type" name="type" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="160px">
+                                <option value="0">工业</option>
+                                <option value="1">生活</option>
+                                <option value="2">灌溉</option>
+                                <option value="3">生态</option>
+                                <option value="4">其他</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!--单位地址-->
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right">单位地址</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <input  type="text" class="form-control" name="address" id="address"
+                                data-bv-notempty="true"
+                                data-bv-notempty-message="单位地址不能为空"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!--行政区域-->
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right">行政区域</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <select id="selArea" name="selArea" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="160px">
+                                <option value="0">岳麓区</option>
+                                <option value="1">天心区</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right">单位性质</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <select id="companQquality" name="companQquality" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="160px">
+                                <option value="0">民营</option>
+                                <option value="1">国企</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!--负责人-->
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right">负责人</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <input  type="text" class="form-control" name="principal" id="principal"/>
+                        </div>
+                    </div>
+                </div>
+                <!--联系人-->
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                    	 <label class="col-lg-3 control-label" style="text-align: right">负责人电话</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <input  type="text" class="form-control" name="contactphone" id="contactphone"
+                                data-bv-notempty="true"
+                                data-bv-notempty-message="联系电话不能为空"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!--联系电话-->
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right">联系人</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <input  type="text" class="form-control" name="contactor" id="contactor"
+                                data-bv-notempty="true"
+                                data-bv-notempty-message="联系人不能为空"/>
+                        </div>                       
+                    </div>
+                </div>                
+                <!--办公电话-->
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right">联系人电话</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <input  type="text" class="form-control" name="phone" id="phone"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                 <!--备注-->
+                <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+                    <div class = "row">
+                        <label class="col-lg-3 control-label" style="text-align: right;">备注</label>
+                        <div class="col-lg-9" style="text-align: left">
+                            <textarea class="form-control" name="remark" id="remark" rows="5" style="width:180%;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="form-group col-md-12 col-lg-12" style="text-align: left;float:left;width:100%">
+                    <div class = "row">
+                    <label class="col-lg-9 control-label" style="text-align: left"></label>
+                    <div class="col-lg-3" style="text-align: left">
+                        <button type="submit" id="btnEnter" class="btn btn-primary"　disabled="disabled" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;"　>确定</button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button type="button" id="btnCancel" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">取消</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+       </div>
+    </center>
+    <script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+    <script>
+        $(function(){
+            //取消
+            $("#btnCancel").click(function(event){
+				window.history.back(-1);
+	    	});
+        })
+    </script>
+</body>
+</html>

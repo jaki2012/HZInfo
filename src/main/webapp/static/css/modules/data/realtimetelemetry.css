@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+
+.maintable {
+	margin: 5px;
+}
+.titlebar{
+	float:left; 
+	width:100%;
+	padding:5px;
+}
+.datacontent{
+	padding: 5px;
+}
+.label-block{
+	display:inline-block;
+}

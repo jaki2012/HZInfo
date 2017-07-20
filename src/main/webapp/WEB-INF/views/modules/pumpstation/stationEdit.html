@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="../static/bootstrap-validator/css/bootstrapValidator.min.css" type="text/css" media="screen" title="no title" charset="utf-8" />	
+	<link href="../static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+	
+	<script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+	<script src="../static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+	<script src="../static/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+	
+	<script type="text/javascript">
+		
+		$(function(){
+			$("#btnCancel").click(function(event){
+				window.history.back(-1);
+	    	});
+
+			var buildDate = document.getElementById("buildDateDiv");
+			buildDate.setAttribute("data-date-format","yyyy-mm");
+			var rebuildDate = document.getElementById("rebuildDateDiv");
+			rebuildDate.setAttribute("data-date-format","yyyy-mm");			
+			$('.form_datetime').datetimepicker({
+				language: 'zh-CN',
+				weekStart: 0,
+				todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 3,
+				minView: 3,
+				forceParse: 1
+			});
+		});
+	</script>
+    
+</head>
+<body style="padding-left: 23px;padding-left: 23px">
+   <center>
+	<div style="width:90%;text-align: left;" class="container">
+	    <form id="attributeForm" method="post" class="form-horizontal"
+	    data-bv-message="该值无效"
+	    data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+	    data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+	    data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+	    <div class="row">
+	    	<div class="col-md-12 col-lg-12 ">
+			    <h3>
+		            <font face="微软雅黑" id="pageTitle">泵站基本信息</font>
+		        </h3>
+				<br/>
+			</div>
+		</div>
+		
+		<div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">编　　码</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="100"  name="code" id="code" 
+							data-bv-notempty="true"
+			                data-bv-notempty-message="编号不能为空" />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">名　　称</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="200" name="name" id="name" 
+			                data-bv-message="名称无效"
+							data-bv-notempty="true"
+			                data-bv-notempty-message="名称不能为空"/>
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">装机功率</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="20"  name="installedPower" id="installedPower" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">装机台数</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="10" name="totalUnit" id="totalUnit" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">总&nbsp;&nbsp;扬&nbsp;&nbsp;程</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="20"  name="totalHead" id="totalHead" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">净&nbsp;&nbsp;扬&nbsp;&nbsp;程</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="20" name="netHead" id="netHead" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	
+	 <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">设计提水量</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="20"  name="designedDelivery" id="designedDelivery" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">实际提水量</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="20" name="realDelivery" id="realDelivery" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">地　　址</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="100"  name="position" id="position" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">主厂房面积</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="20" name="mainHouse" id="mainHouse" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">副厂房面积</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="20"  name="auxiliaryHouse" id="auxiliaryHouse" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">管理房面积</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="20" name="manageHouse" id="manageHouse" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">建成时间</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<div id="buildDateDiv" class="input-group date form_datetime "  data-link-field="dtp_input1" 
+								style="width: 160px;vertical-align: middle;">
+								<input id="buildDate" class="form-control" size="16" type="text" value="" >
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">改建时间</label>
+			        <div class="col-lg-9" style="text-align: left">
+			           <div id="rebuildDateDiv" class="input-group date form_datetime "  data-link-field="dtp_input1" 
+								style="width: 160px;vertical-align: middle;">
+								<input id="rebuildDate" class="form-control" size="16" type="text" value="" >
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">进水池形状</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="100"  name="inPoolShape" id="inPoolShape" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">出水池形状</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="100" name="outPoolShape" id="outPoolShape" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">进水池尺寸</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="100"  name="inPoolSize" id="inPoolSize" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">出水池尺寸</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="100" name="outPoolSize" id="outPoolSize" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    <div class = "row">
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 col-md-3 control-label" style="text-align: right">进水池容量</label>
+			        <div class="col-lg-9 col-md-9" style="text-align: left">
+						<input type="text" class="form-control"  maxlength="20"  name="inPoolVolume" id="inPoolVolume" 
+							 />
+			        </div>
+		        </div>
+		    </div>
+		
+		    <div class="form-group col-md-6 col-lg-6" style="text-align: left;">
+		    	<div class = "row">
+			        <label class="col-lg-3 control-label" style="text-align: right">出水池容量</label>
+			        <div class="col-lg-9" style="text-align: left">
+			            <input  type="text" class="form-control" maxlength="20" name="outPoolVolume" id="outPoolVolume" 
+			                />
+			        </div>
+		        </div>
+		    </div>
+	    </div>
+		
+	    <div class = "row">
+		    <div class="form-group col-md-12 col-lg-12" style="text-align: left;float:left;width:100%">
+		    	<div class = "row">
+		        <label class="col-lg-9 control-label" style="text-align: left"></label>
+		        <div class="col-lg-3" style="text-align: left">
+		    		<button type="submit" id="btnEnter" class="btn btn-primary"　disabled="disabled" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;"　>确定</button>
+					&nbsp;&nbsp;&nbsp;
+		    		<button type="button" id="btnCancel" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">取消</button>
+		        </div>
+		        </div>
+		    </div>
+	    </div>
+	    
+	    </form>
+    </div>
+	</center>
+</body>
+</html>

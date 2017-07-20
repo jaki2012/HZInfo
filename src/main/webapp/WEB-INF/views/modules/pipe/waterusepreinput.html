@@ -1,0 +1,278 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="../static/bootstrap-validator/css/bootstrapValidator.min.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+	<script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+	<script type="text/javascript">
+		var isNew = 1;
+
+		function initLoadUser(account){
+			$.ajax({
+	         	   url:"../sys/user/getUserDetail.do",
+	         	   type:"POST",
+	         	   data:{"account":account},
+	         	   dataType:"json",
+	         	   success:function(data){
+	         		    if ("id" in data){
+	         		    	//找到了
+	         				$('#inputAccount').val(data.id); 
+	         				initLoadRole(account);
+	         		    }
+	         		    if ("name" in data){
+	         		    	$('#inputName').val(data.name);
+	         		    }
+	         			if ("email" in data){
+	         		    	$('#inputEmail').val(data.email);
+	         		    }
+	         			if ("phone" in data){
+	         		    	$('#inputTele').val(data.phone);
+	         		    }
+	         	   }
+	        });
+		}
+		function idInRoles(id, data){
+			var i = 0;
+			for (i = 0; i < data.total; i++){
+				if (data.rows[i].RoleID == id){
+					return 1;
+				}
+			}
+			return 0;
+		}
+		function fillRole(account, dataall){
+   		  $.ajax({
+	         	  	url:"../sys/user/getRoleList.do",
+	         	  	type:"POST",
+	         	  	data:{"accountfilter":account},
+	         	  	dataType:"json",
+	         	  	success:function(data){
+	         			var i = 0;
+	         			for (i = 0; i < dataall.total; i++){
+	         				if (idInRoles(dataall.rows[i].RoleID, data) > 0){
+	         		  			$("#selRole").append("<option selected value='"+dataall.rows[i].RoleID+"'>"+dataall.rows[i].RoleName+"</option>");
+	         				}
+	         				else {
+	         					$("#selRole").append("<option value='"+dataall.rows[i].RoleID+"'>"+dataall.rows[i].RoleName+"</option>");
+	         				}
+	         			}
+	         			$("#selRole").selectpicker('refresh');
+	         	  	}
+	        	  });
+		}
+		function initLoadRole(account){
+			$.ajax({
+	         	   url:"../sys/user/getRoleList.do",
+	         	   type:"POST",
+	         	   data:{"accountfilter":""},
+	         	   dataType:"json",
+	         	   success:function(data){
+	         		   if (account == ""){
+	         			    var i = 0;
+	         		   		for (i = 0; i < data.total; i++){
+	         		  			$("#selRole").append("<option value='"+data.rows[i].RoleID+"'>"+data.rows[i].RoleName+"</option>");
+	         		   		}
+	         		   		$("#selRole").selectpicker('refresh');
+	         		   }
+	         		   else{
+	         			  fillRole(account, data);
+	         		   }
+	         	   }
+	        });
+		}
+		function setUserRole(account){
+			var roleobj = $("#selRole").val();
+			var roles = "";
+			if (roleobj != null)
+				roles = roleobj.join("|");
+			$.ajax({
+	         	   url:"../sys/user/setUserRole.do",
+	         	   type:"POST",
+	         	   data:{"account":account,"roles":roles},
+	         	   dataType:"json",
+	         	   success:function(data){
+	         		   if (data == true){
+	         			  //hzcommon.showMsg('success',"用户'" + account + "'的角色分配成功");
+						  window.history.back(-1); 
+	         		   }
+	         		   else{
+	         			  hzcommon.showMsg('danger',"用户'" + account + "'的角色分配失败");
+	         		   }
+	         	   }
+	        });
+		}
+		function setUserDetail(){
+			var stracc = $('#inputAccount').val();
+			var strname = $('#inputName').val();
+			var strphone = $('#inputTele').val();
+			var stremail = $('#inputEmail').val();
+			var strpwd = $('#password').val();
+			var url = "../sys/user/addNewUser.do";
+			if (isNew == 0){
+				url = "../sys/user/setUserDetail.do";
+			}
+			$.ajax({
+	         	   url:url,
+	         	   type:"POST",
+	         	   data:{"id":stracc,"name":strname,"password":strpwd,"phone":strphone,"email":stremail},
+	         	   dataType:"json",
+	         	   success:function(data){
+	         		   if (isNew == 1){
+	         			  if (data == "1"){
+								hzcommon.showMsg('success', "账号'" + stracc + "'新建成功");
+								setUserRole(stracc);
+							}
+							else if(data == "-1"){
+								hzcommon.showMsg('danger', "账号'" + stracc + "'已存在");
+							}
+							else
+								hzcommon.showMsg('danger', "账号'" + stracc + "'新建失败");
+	         		   }
+	         		   else{
+							if (data == "1"){
+								hzcommon.showMsg('success', "账号'" + stracc + "'保存成功");
+								setUserRole(stracc);
+							}
+							else if (data == "-1"){
+								hzcommon.showMsg('danger', "账号'" + stracc + "不存在");
+							}
+							else
+								hzcommon.showMsg('danger', "账号'" + stracc + "'保存失败");
+	         		   }
+	         	   }
+	        });
+		}
+		$(function(){
+			$("#btnCancel").click(function(event){
+				window.history.back(-1);
+	    	});
+			
+			$('#attributeForm').bootstrapValidator({
+				fields: {
+					inputAccount: {
+	                    message: '用户名验证失败',
+	                    validators: {
+	                        regexp: {
+	                            regexp: /^[a-zA-Z0-9_]+$/,
+	                            message: '用户名只能包含大写、小写、数字和下划线'
+	                        }
+	                    }
+	                }
+				},
+				submitHandler: function(validator, form, submitButton) {
+					setUserDetail();
+				}
+			});
+		});
+	</script>
+    
+</head>
+<body style="padding-left: 23px;padding-left: 23px">
+   <center>
+	<div style="width:90%;text-align: left;">
+	    <form id="attributeForm" method="post" class="form-horizontal"
+	    data-bv-message="该值无效"
+	    data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+	    data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+	    data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+	    <h3>
+            <font face="微软雅黑" id="pageTitle">额定用水录入</font>
+        </h3>
+		<br/>
+		<div class="form-group" style="text-align: left">
+	        <label class="col-lg-1 control-label" style="text-align: left">用水年份</label>
+	        <div class="col-lg-4" style="text-align: left">
+				<select class="selectpicker show-tick form-control" data-none-selected-text="请选择" id="selFac">
+					<option value="1">2018</option>
+					<option value="1">2019</option>
+					<option value="1">2020</option>
+					<option value="1">2021</option>
+					<option value="1">2022</option>
+				</select>
+	        </div>
+	    </div>
+	    
+	    <div class="form-group" style="text-align: left">
+	        <label class="col-lg-1 control-label" style="text-align: left">用水单位</label>
+	        <div class="col-lg-4" style="text-align: left">
+				<select class="selectpicker show-tick form-control" data-none-selected-text="请选择" id="selFac">
+					<option value="1">华自科技</option>
+					<option value="2">九芝堂</option>
+				</select>
+	        </div>
+	    </div>
+	    
+	    <div class="form-group" style="text-align: left">
+	        <label class="col-lg-1 control-label" style="text-align: left">工业用水</label>
+	        <div class="col-lg-4" style="text-align: left">
+				<input type="text" class="form-control"  maxlength="20" placeholder="" name="inputm8_1" id="inputm8_1" 
+					data-bv-notempty="true"
+	                data-bv-notempty-message="数据不能为空" />
+	        </div>
+	    </div>
+	
+		<div class="form-group" style="text-align: left">
+	        <label class="col-lg-1 control-label" style="text-align: left">生活用水</label>
+	        <div class="col-lg-4" style="text-align: left">
+				<input type="text" class="form-control"  maxlength="20" placeholder="" name="inputm9_1" id="inputm9_1" 
+					data-bv-notempty="true"
+	                data-bv-notempty-message="数据不能为空" />
+	        </div>
+	    </div>
+		
+	    <div class="form-group" style="text-align: left">
+	        <label class="col-lg-1 control-label" style="text-align: left">灌溉用水</label>
+	        <div class="col-lg-4" style="text-align: left">
+				<input type="text" class="form-control"  maxlength="20" placeholder="" name="inputm10_1" id="inputm10_1" 
+					data-bv-notempty="true"
+	                data-bv-notempty-message="数据不能为空" />
+	        </div>
+	    </div>
+	    
+	    <div class="form-group" style="text-align: left">
+	        <label class="col-lg-1 control-label" style="text-align: left">生态用水</label>
+	        <div class="col-lg-4" style="text-align: left">
+				<input type="text" class="form-control"  maxlength="20" placeholder="" name="inputm11_1" id="inputm11_1" 
+					data-bv-notempty="true"
+	                data-bv-notempty-message="数据不能为空" />
+	        </div>
+	    </div>
+	
+	    <div class="form-group" style="text-align: left">
+	        <label class="col-lg-1 control-label" style="text-align: left">计提漏损</label>
+	        <div class="col-lg-4" style="text-align: left">
+				<input type="text" class="form-control"  maxlength="20" placeholder="" name="inputm12_1" id="inputm12_1" 
+					data-bv-notempty="true"
+	                data-bv-notempty-message="数据不能为空" />
+	        </div>
+	    </div>
+	    
+	    <div class="form-group" style="text-align: left">
+	        <label class="col-lg-1 control-label" style="text-align: left"></label>
+	        <div class="col-lg-4" style="text-align: right">
+	    		<button type="submit" id="btnEnter" class="btn btn-primary"　disabled="disabled" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;"　>确定</button>
+				&nbsp;&nbsp;&nbsp;
+	    		<button type="button" id="btnCancel" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">取消</button>
+	        </div>
+	    </div>
+	    </form>
+    </div>
+	</center>
+</body>
+</html>

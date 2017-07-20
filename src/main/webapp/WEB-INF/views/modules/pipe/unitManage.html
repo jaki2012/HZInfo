@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	
+    <script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+    <script>
+        function loadUnitTable(){
+			$('#unitTable').DataTable( {
+				"ajax": {
+					    "url": "../pumpStation/getUnitByStationId.do",
+					    "type":"POST",
+					    "dataSrc": "rows"
+				    },
+				"oLanguage": {
+	                	"sProcessing":   "处理中...",
+	                	"sLoadingRecords": "载入中...",
+				    	"sLengthMenu": "每页显示 _MENU_ 条记录",
+				    	"sZeroRecords": "抱歉， 没有找到",
+				    	"sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+				    	"sInfoEmpty": "没有数据",
+				    	"sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+				    	"oPaginate": {
+				    	"sFirst": "首页",
+				    	"sEmptyTable":     "表中数据为空",
+				    	"sPrevious": "前一页",
+				    	"sNext": "后一页",
+				    	"sLast": "尾页"
+				    	},
+				    	"sSearch": "查找",
+				    	"sZeroRecords": "没有检索到数据"
+			    	},
+				columns: [
+                          { title:"序号" , data : 'code'},
+                          { title:"用水单位名称" , data : 'motorManufacturer',orderable:false},
+				          { title:"行政区域" , data : 'motorModel',orderable:false},
+				          { title:"所属路线" , data : 'motorManufacturer',orderable:false},
+                          { title:"负责人" , data: 'pumpModel',orderable:false },
+				          { title:'负责人电话' , data: 'code',orderable:false},
+				          { title:"联系人" , data: 'pumpModel',orderable:false },
+                          { title:'联系人电话' , data: 'code',orderable:false},
+                          { title:'单位地址' , data: 'pumpManufacturer',orderable:false},
+                          { title:'单位性质' , data: 'pumpManufacturer',orderable:false},
+                          { title:'用水类别' , data: 'pumpManufacturer',orderable:false},
+                          { title:'用水性质' , data: 'pumpManufacturer',orderable:false},
+				          { title:'<div style="width:110px">操作</div>',orderable:false}
+					],
+				"columnDefs" : [
+					{
+						// 定义操作列
+						"targets" :12,//操作按钮目标列
+						"data" : null,
+						"render" : function(data, type,row) {
+							var id = '"' + row.id + '"';
+							var html = "<div><input type='button' class='btn btn-primary' onclick='dataGridbtnEdit("+ id + ")' style='margin:0px;height:25px;line-height:5px;' value='编辑'/>&nbsp;"
+							html += "<input type='button' class='btn btn-primary' onclick='dataGridbtnDel("+ id + ")' style='margin:0px;height:25px;line-height:5px;' value='删除'/>"
+							html += "</div>";
+							return html;
+						}
+					}]
+			} );
+		};
+        //编辑
+		function dataGridbtnEdit(id){
+			//hzcommon.setKey("hzinfoskipparam", id);
+			window.location.href="../pipe/unitEdit"; 
+		}
+        //删除 
+        function dataGridbtnDel(id){
+            
+        }
+        
+        $(function(){
+            loadUnitTable();      
+            $("#btnAdd").click(function(event){
+				//hzcommon.setKey("hzinfoskipparam", "");
+				window.location.href="../pipe/unitEdit";
+	    	});
+        })
+    </script>
+</head>
+<body style="padding-left: 23px;padding-right:23px;">
+   <center>
+    <form id="form1">
+   <div style="width:90% ;text-align: left;">
+        <h3>
+            <font face="微软雅黑" id="pageTitle">用水单位管理</font>
+        </h3><br/>
+        <div >
+        	<table id="unitTable" class="table table-bordered table-striped table-hover" width="100%">
+
+			</table>
+        	<button type="button" id="btnAdd" class="btn btn-primary" style="background: #3790e2;height: 28px;width: 100px;line-height: 3px;">新增用水单位</button>        		
+		</div>
+    </div>
+    </form>
+    </center>
+</body>
+</html>

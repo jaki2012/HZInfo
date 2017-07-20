@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>管道巡检计划</title>
+    <link rel="stylesheet" href="../static/jquery-ui/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="../static/bootstrap-select/css/bootstrap-select.min.css" >
+	<link rel="stylesheet" href="../static/fancytree/skin-lion/ui.fancytree.min.css">   
+	<link rel="stylesheet" href="../static/bootstrap-notify/animate.css">   	
+	<link rel="stylesheet" href="../static/datatables/media/css/dataTables.bootstrap.css">
+	
+    <script type="text/javascript" src="../static/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../static/jquery-ui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="../static/bootstrap-select/js/bootstrap-select.min.js"></script>	
+	<script type="text/javascript" src="../static/fancytree/jquery.fancytree-all.min.js"></script>
+	<script type="text/javascript" src="../static/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../static/datatables/media/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="../static/js/hzcommon.js"></script>
+    <style type="text/css">
+        .tab-filter .form-control{border-radius: 0; border:0; border-bottom: 1px solid #ddd; box-shadow: none;}
+    </style>
+    <script>
+        function loadUnitTable(){
+			$('#pollingTable').DataTable( {
+				"ajax": {
+					    "url": "../pumpStation/getUnitByStationId.do",
+					    "type":"POST",
+					    "dataSrc": "rows"
+				    },
+                "bFilter":false,
+                "bPaginate":false,
+				"oLanguage": {
+	                	"sProcessing":   "处理中...",
+	                	"sLoadingRecords": "载入中...",
+				    	"sLengthMenu": "每页显示 _MENU_ 条记录",
+				    	"sZeroRecords": "抱歉， 没有找到",
+				    	"sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+				    	"sInfoEmpty": "没有数据",
+				    	"sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+				    	"oPaginate": {
+				    	"sFirst": "首页",
+				    	"sEmptyTable":     "表中数据为空",
+				    	"sPrevious": "前一页",
+				    	"sNext": "后一页",
+				    	"sLast": "尾页"
+				    	},
+				    	"sSearch": "查找",
+				    	"sZeroRecords": "没有检索到数据"
+			    	},
+				columns: [
+                          { title:"序号" , data : 'code'},
+                          { title:"所属区段" , data : 'flowRate',orderable:false},
+                          { title:"管线管段" , data : 'flowRate',orderable:false},
+                          { title:"桩号" , data : 'flowRate',orderable:false},
+                          { title:"检查项目" , data : 'pumpManufactureDate'},
+				          { title:"检查人" , data : 'flowRate',orderable:false},
+                          { title:"检查开始时间" , data: 'pumpManufactureDate'}, 
+                          { title:"检查结束时间" , data: 'pumpManufactureDate'}, 
+				          { title:"到达方式" , data : 'pumpManufactureDate',orderable:false},
+                          { title:"备注" , data: 'pumpManufactureDate',orderable:false}
+					],
+				"columnDefs" : [
+                    {
+						// 定义操作列 检查时间
+						"targets" : 6,
+						orderable:false,
+						"data" : null,
+						"render" : function(data, type,row) {
+                            return hzcommon.timeStampToString(data).substring(0,13);
+                        }
+					},
+                    {
+						// 定义操作列 检查时间
+						"targets" : 7,
+						orderable:false,
+						"data" : null,
+						"render" : function(data, type,row) {
+                            return hzcommon.timeStampToString(data).substring(0,13);
+                        }
+					}
+                ]
+			} );
+		};
+        $(function(){
+            loadUnitTable();      
+            $('.dataTables_length').css('float','right').parent().removeClass('col-sm-6').addClass('col-sm-12'); //分页类型条位置更好到右边
+        })
+    </script>
+</head>
+<body style="padding-left: 23px;padding-right:23px;">
+   <center>
+        <form id="form1">
+           <div style="width:90% ;text-align: left;">
+                <h3>
+                    <font face="微软雅黑" id="pageTitle">管道巡检计划</font>
+                </h3><br/>
+                <div >
+                    <table border="0">
+                        <tr>
+                            <colgroup span="1" style="width: 80px;"></colgroup>
+                            <colgroup span="1" style="width: 130px;"></colgroup>
+                            <colgroup span="1" style="width: 80px;"></colgroup>
+                            <colgroup span="1" style="width: 130px;"></colgroup>
+                            <colgroup span="1" style="width: 120px;"></colgroup>
+                            <colgroup span="1" style="width: 120px;"></colgroup>
+                            <colgroup span="1" style="width: 120px;"></colgroup>
+                            <td align="center">
+                                所属区段
+                            </td>
+                            <td>
+                                <div class="form-group" style="height: 20px;">
+                                    <select id="selArea" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="120px">
+                                        <option value="0">全部</option>
+                                        <option value="1">南线</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td align="center">
+                                所在管段
+                            </td>
+                            <td>
+                                <div class="form-group" style="height: 20px;">
+                                    <select id="selPlace" class="selectpicker show-tick form-control" data-none-selected-text="无数据" data-width="120px">
+                                        <option value="0">全部</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td align="left" style="width: 80px;">
+                                <button type="button" id="btnSearch" class="btn btn-primary btn-lg"  style="color: white;width: 80px;background:#3790e2;line-height: 5px;">查询</button>
+                            </td>
+                            <td align="left" style="width: 80px;">
+                                <button type="button" id="btnExport" class="btn btn-primary btn-lg"  style="color: white;width: 80px;background:#3790e2;line-height: 5px;">导出</button>
+                            </td>
+                             <td align="left" style="width: 80px;">
+                                <button type="button" id="btnPrint" class="btn btn-primary btn-lg"  style="color: white;width: 80px;background:#3790e2;line-height: 5px;">打印</button>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="margin:30px 0; border-top:1px solid #ddd; padding-top:20px">
+                        <h4 style="text-align:center">巡检计划表</h4>
+                        <table border="0" class="tab-filter">
+                        <tr>
+                            <colgroup span="1" style="width: 60px;"></colgroup>
+                            <colgroup span="1" style="width: 100px;"></colgroup>
+                            <colgroup span="1" style="width: 60px;"></colgroup>
+                            <colgroup span="1" style="width: 100px;"></colgroup>
+                            <colgroup span="1" style="width: 60px;"></colgroup>
+                            <colgroup span="1" style="width: 100px;"></colgroup>
+                            <td align="center">
+                                班组长
+                            </td>
+                            <td>
+                                <div class="form-group" style="height: 20px;">
+                                    <input type="text" id="teamLeader" class="form-control" style="width:120px;"/>
+                                </div>
+                            </td>
+                            <td align="center">
+                                部门主管
+                            </td>
+                            <td>
+                                <div class="form-group" style="height: 20px;">
+                                    <input type="text" id="departManager" class="form-control" style="width:120px;"/>
+                                </div>
+                            </td>
+                            <td align="center">
+                                审批者
+                            </td>
+                            <td>
+                                <div class="form-group" style="height: 20px;">
+                                    <input type="text" id="approver" class="form-control" style="width:120px;"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    </div>
+                    <table id="pollingTable" class="table table-bordered table-striped table-hover" width="100%">
+
+                    </table>
+                </div>
+            </div>
+        </form>
+    </center>
+</body>
+</html>
