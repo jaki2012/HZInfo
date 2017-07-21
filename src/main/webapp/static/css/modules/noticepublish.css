@@ -1,0 +1,84 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+    /* 抗锯齿 使字体变得更加平滑*/
+    -webkit-font-smoothing: antialiased;
+    font-family: "Hiragino Sans GB","Helvetica Neue", "Arial", "sans-serif", "微软雅黑";
+}
+
+fieldset {
+    margin: 0 auto;
+    width: 60%;
+}
+
+fieldset legend {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 20px 0 20px 0;
+}
+
+fieldset label {
+    font-size: 14px;
+    font-weight: 700;
+    float: left;
+}
+
+.control-group {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.control-group span {
+    margin: 8px 6px 0 0;
+    float: left;
+}
+
+.control-group .controls {
+    display: inline-block;
+    margin-left: 20px;
+    /* 可以换成响应式设计 60%*/
+    width: 400px;
+}
+
+textarea.form-control {
+    height: 200px;
+}
+
+.buttons-group {
+    text-align: center;
+    margin: 0 auto;
+    width: 550px;
+}
+
+.buttons-group input[type=button] {
+    margin-left: 60px;
+}
+
+#photoCover.form-control {
+    display: inline-block;
+    width: 300px;
+}
+
+.btn-success {
+    display: inline-block;
+    width: 90px;
+}
+
+.bottom {
+    background-color: rgb(68, 68, 68);
+    height: 30px;
+    width: 1280px;
+    bottom: 0px;
+    z-index: 3;
+}
+
+.bottom div{
+    font-family: 黑体;
+    font-size: 11px;
+    color: #C1C1C1;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+}

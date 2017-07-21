@@ -35,8 +35,8 @@ public class NoticeRecordController {
     }
 
     @RequestMapping(value="/uploadAnnex", method = RequestMethod.POST)
-    public int uploadAnnex(@RequestParam("file") MultipartFile file){
+    public int uploadAnnex(@RequestParam("noticeIndex") int noticeIndex, @RequestParam("file") MultipartFile file){
         String filePath = "/Users/lijiechu/Documents/HZInfoTemp";
-        return noticeRecordService.uploadAnnex(null,file, filePath,"0");
+        return noticeRecordService.uploadAnnex(null, file, filePath,"0");
     }
 }

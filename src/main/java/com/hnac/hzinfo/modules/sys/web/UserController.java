@@ -43,6 +43,11 @@ public class UserController extends BaseController {
 		return "modules/sys/menumanage";
 	}
 
+	@RequestMapping(value = "/noticePublish")
+	public String noticePublish(HttpServletRequest request, HttpServletResponse response) {
+		return "modules/sys/noticepublish";
+	}
+
 	@RequestMapping(value = "/userManage")
 	public String userManage(HttpServletRequest request, HttpServletResponse response) {
 		return "modules/sys/usermanage";

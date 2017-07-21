@@ -1,8 +1,9 @@
 # HZInfo
 
-Before using, add webapp/WEB-INF/lib/* into JAR libraries
+Before using, you should add webapp/WEB-INF/lib/* into JAR libraries
 
-t_notice_record sql
+t_notice_record and t_notice_record_file related sql
+----
 
 ```
 CREATE TABLE `t_notice_record` (
@@ -17,9 +18,9 @@ CREATE TABLE `t_notice_record` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `t_notice_record_file` (
-  `FileID` int(4) NOT NULL,
-  `noticeIndex` int(4) NOT NULL,
-  `path` varchar(255) NOT NULL,
+  `fileID` int(4) NOT NULL AUTO_INCREMENT,
+  `savePath` varchar(255) NOT NULL DEFAULT '',
+  `fileMd5` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```

@@ -2,6 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hnac.hzinfo.modules.sys.dao.NoticeRecordDao">
     <insert id="insert" parameterType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
+        <selectKey keyProperty="index" resultType="int" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
         INSERT INTO t_notice_record(
           `sender`,
           `title`,
@@ -18,5 +21,9 @@
           #{contentFileIndex,jdbcType=VARCHAR}
         )
     </insert>
+
+    <select id="findByIndex">
+        SELECT * FROM t_notice_record WHERE index = #{index}
+    </select>
 
 </mapper>

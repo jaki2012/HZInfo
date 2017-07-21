@@ -2,7 +2,7 @@ package com.hnac.hzinfo.modules.sys.dao;
 
 import com.hnac.hzinfo.common.persistence.CrudDao;
 import com.hnac.hzinfo.common.persistence.annotation.MyBatisDao;
-import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
+import com.hnac.hzinfo.modules.sys.entity.Annex;
 
 /**
  * @author lijiechu
@@ -10,6 +10,5 @@ import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
  * @description
  */
 @MyBatisDao
-public interface NoticeRecordDao extends CrudDao<NoticeRecord> {
-    NoticeRecord findByIndex(int index);
+public interface AnnexDao extends CrudDao<Annex> {
 }
