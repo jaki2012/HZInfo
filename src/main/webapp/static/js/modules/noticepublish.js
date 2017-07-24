@@ -15,14 +15,14 @@ $(function(){
             data: JSON.stringify({
                 title: $("#notice-title").val(),
                 content: $("#notice-content").val(),
-                sender: "薛之谦"
+                sender: "胡晓"
             }),
             beforeSend: function(xhr){
               xhr.setRequestHeader('Content-Type','application/json');
             },
             dataType: "json",
             success: function(data){
-                console.log(data)
+                alert("发布成功!");
             }
         })
     })

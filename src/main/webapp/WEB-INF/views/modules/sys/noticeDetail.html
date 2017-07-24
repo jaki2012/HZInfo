@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>公告详情页</title>
+    <link rel="stylesheet" href="../../../static/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../static/css/modules/noticedetail.css">
+    <!-- 多一个..因为多了一层/路径 -->
+    <script type="text/javascript" src="../../../static/jquery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script>
+        // 获取路径的最后一个参数
+        function getNoticeID() {
+            var sURLVariables, i, sPageURL = window.location.pathname.substring(1);
+            if (sPageURL) {
+                sURLVariables = sPageURL.split("/");
+                return sURLVariables[sURLVariables.length - 1];
+            }
+        }
+        $(document).ready(function () {
+
+            $.ajax({
+                "url": "/sys/notice/notice/" + getNoticeID(),
+                "type": "get",
+                "success": function (data) {
+                    $("#title").text(data.title);
+                    $("#sender").text("发布者: " + data.sender);
+                    $("#sendTime").text("发布时间: " + data.sendTime);
+                    $("#content").text(data.content);
+
+                }
+            })
+        });
+    </script>
+</head>
+
+<body>
+    <div class="top noprint" style="padding: 0px; margin: 0px; -moz-user-select:none;" onselectstart="return false">
+        <div class="topone ">
+            <div style="background-image: url(../../../static/images/login/index_back_2.png); height: 68px; width: 40%; background-attachment: fixed; float: left; z-index: 0;"></div>
+            <div style="background-image: url(../../..//static/images/login/index_back_3.png); height: 68px; width: 60%; background-attachment: fixed; float: right; z-index: 0;"></div>
+            <img src="../../../static/images/login/index-logo.png" style="width: 366px; height: 64px; position: absolute; left: 5px; top: 0px; z-index: 2;">
+            <div class="pull-right " style="margin-top: -60px; margin-right: 15px; margin-left: 15px; margin-bottom: 0px; z-index: 3; position: relative;">
+                <input type="button" class="btn btn-default " onclick="editUser()" data-toggle="tooltip" data-placement="left" title="修改用户信息"
+                    style="width: 24px; height: 24px; border: 0; background: url(../../../static/images/login/index-admin.png) no-repeat left top;">
+                <span id="userName" name="userName" onclick="editUser()" onmouseover="this.style.cursor='pointer'" style="cursor: pointer;">&nbsp;胡晓&nbsp;</span>
+                <input type="button" class="btn btn-default " onclick="callLogout()" data-toggle="tooltip" data-placement="left" title="退出登录"
+                    style="width: 24px; height: 24px; border: 0; background: url(../../../static/images/login/index-IO.png) no-repeat left top;">
+                <label onclick="callLogout()" onmouseover="this.style.cursor='pointer'">退出 </label>
+            </div>
+        </div>
+    </div>
+    <div class="page-header">
+        <h1>
+            <span id="title">页面标题实例</span>
+            <small id="sender">子标题1</small>
+            <small id="sendTime">子标题2</small>
+        </h1>
+        <h5 id="contentIndication">正文内容:</h5>
+    </div>
+    <p id="content">这是一个示例文本。这是一个示例文本。这是一个示例文本。这是一个示例文本。这是一个示例文本。</p>
+    <div class="bottom noprint">
+        <div>
+            ——————●  版权所有：华自科技股份有限公司  地址:中国长沙高新区麓谷工业园麓松路609号  免费服务热线：4000586 896  ●——————
+        </div>
+    </div>
+</body>
+
+</html>

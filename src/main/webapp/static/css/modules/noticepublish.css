@@ -2,7 +2,7 @@
 /* CSS Document */
 
 body {
-    /* 抗锯齿 使字体变得更加平滑*/
+    /* 抗锯齿 使字体变得更加平滑 */
     -webkit-font-smoothing: antialiased;
     font-family: "Hiragino Sans GB","Helvetica Neue", "Arial", "sans-serif", "微软雅黑";
 }

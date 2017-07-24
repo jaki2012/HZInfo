@@ -22,8 +22,12 @@
         )
     </insert>
 
-    <select id="findByIndex">
-        SELECT * FROM t_notice_record WHERE index = #{index}
+    <select id="findByIndex" resultType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
+        SELECT * FROM t_notice_record a WHERE a.index = #{index}
+    </select>
+
+    <select id="findAll" resultType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
+        SELECT CONCAT('《', a.title, '》') as title, a.sender, DATE_FORMAT(a.sendTime,'%Y-%m-%d %T') as sendTime, a.index FROM t_notice_record a
     </select>
 
 </mapper>

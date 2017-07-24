@@ -1,6 +1,8 @@
 package com.hnac.hzinfo.modules.sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hnac.hzinfo.common.persistence.BaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -9,7 +11,7 @@ import java.util.Date;
  * @create on 17/7/20
  * @description
  */
-public class NoticeRecord extends BaseEntity<NoticeRecord>{
+public class NoticeRecord {
     // 公告的唯一索引
     private int index;
     // 公告发布人ID
@@ -19,6 +21,7 @@ public class NoticeRecord extends BaseEntity<NoticeRecord>{
     // 公告内容
     private String content;
     // 发布时间
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date sendTime;
     // 内容索引
     private String annexFileIndex;
@@ -58,10 +61,12 @@ public class NoticeRecord extends BaseEntity<NoticeRecord>{
         this.content = content;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     public Date getSendTime() {
         return sendTime;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
     }
@@ -82,13 +87,4 @@ public class NoticeRecord extends BaseEntity<NoticeRecord>{
         this.contentFileIndex = contentFileIndex;
     }
 
-    @Override
-    public void preInsert() {
-
-    }
-
-    @Override
-    public void preUpdate() {
-
-    }
 }

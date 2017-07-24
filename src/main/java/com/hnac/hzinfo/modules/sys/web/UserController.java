@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,6 +47,17 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/noticePublish")
 	public String noticePublish(HttpServletRequest request, HttpServletResponse response) {
 		return "modules/sys/noticepublish";
+	}
+
+	@RequestMapping(value = "/noticesList")
+	public String noticesList(HttpServletRequest request, HttpServletResponse response) {
+		return "modules/sys/noticeslist";
+	}
+
+	@RequestMapping(value = "/noticeDetail/{noticeID}")
+	public String noticeDetail(@PathVariable("noticeID") int noticeID, HttpServletRequest request, HttpServletResponse response) {
+		request.setAttribute("noticeID", noticeID);
+		return "modules/sys/noticeDetail";
 	}
 
 	@RequestMapping(value = "/userManage")

@@ -36,7 +36,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         noticeRecord.setContentFileIndex("B");
         // 返回的是更新的条数,或者说是受影响的条数
         noticeRecordDao.insert(noticeRecord);
-        System.out.println("echo: == " + noticeRecord.getIndex() );
+        // System.out.println("echo: == " + noticeRecord.getIndex() );
         return 0;
     }
 
@@ -63,5 +63,15 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
             }
         }
         return 0;
+    }
+
+    @Override
+    public List<NoticeRecord> getAllNotices() {
+        return noticeRecordDao.findAll();
+    }
+
+    @Override
+    public NoticeRecord findNoticeByIndex(int noticeID) {
+        return noticeRecordDao.findByIndex(noticeID);
     }
 }
