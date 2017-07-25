@@ -3,19 +3,12 @@ package com.hnac.hzinfo.modules.sys.web;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
-import org.codehaus.jackson.map.JsonDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Date;
 
 /**
  * @author lijiechu
@@ -60,10 +53,6 @@ public class NoticeRecordController {
         //return (JSONObject) JSONObject.toJSON(noticeRecordService.findNoticeByIndex(noticeID));
     }
 
-    @RequestMapping(value="/add1", method = RequestMethod.POST)
-    public int add1(@RequestParam("haha") int i){
-        return i;
-    }
 
     @RequestMapping(value="/uploadAnnex", method = RequestMethod.POST)
     public int uploadAnnex(@RequestParam("noticeIndex") int noticeIndex, @RequestParam("file") MultipartFile file){
