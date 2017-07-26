@@ -10,11 +10,46 @@
     <link rel="stylesheet" href="../../static/css/modules/noticeslist.css">
     <!-- Bootstrp css替换原有的Datatables样式 -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" src="../../static/jquery/jquery-1.11.3.min.js"></script>
     <!-- DataTables -->
     <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript">
+        var deleteType = 0;
+        var globalTable = null;
+
+        function deleteNotices() {
+            console.log("i am executed!")
+            if(1 === deleteType) {
+                deleteSpecificNotice();
+            } else {
+                deleteSelectedNotices();
+            }
+        }
+
+        function deleteSpecificNotice() {
+            var singleArr = [];
+            singleArr.push(parseInt($("#deletingNoticeIndex").text()));
+            $.ajax({
+                url: "/sys/notice/notice",
+                dataType: "json",
+                type: "delete",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "noticesIndexes": singleArr
+                }),
+                success: function () {
+                    alert("删除成功！");
+                    $('#deleteConfirm').modal('hide');
+                    // 重新加载数据
+                    globalTable.ajax.reload();
+                }
+            })
+        }
+
         function deleteSelectedNotices(){
             var selectedNotices = $(".checkchild:checked");
            
@@ -41,15 +76,70 @@
                 }),
                 "success": function(){ 
                     alert("删除成功！")
+                    $('#deleteConfirm').modal('hide');
+                    // 重新加载数据
+                    // 通过console.log可以发现此时table未定义 需要全局变量来调控
+                    // 注释掉 因为js遇错就会停止执行
+                    // console.log(table)
+                    globalTable.ajax.reload();
                 }
             })
+        }
+
+        function initBeforeDelete(index, title){
+            deleteType = 1;
+            var html = "您将删除以下公告："
+            html += "<p><span class='deletingNoticesTitle'>" + title + "</span></p>"
+            html += "<p><span id='deletingNoticeIndex' class='deletingNoticesIndex'>" + index + "</span><p>"
+            html += "删除公告后数据将不可恢复，请确认无误后再继续操作"
+            $(".modal-body").html(html);
+        }
+
+        function initBeforeDeleteBatch(){
+            deleteType = 0;
+            var html = "您将删除以下公告："
+            var selectedNotices = $(".checkchild:checked");
+            if( 0 >= selectedNotices.length) {
+                alert("您未选中任何数据！");
+                return;
+            }
+
+            var noticesIndexes = [];
+            selectedNotices.each(function(){
+                var rowNum = $(this).get(0).parentNode.parentNode.rowIndex;
+                var colNum = $(this).get(0).parentNode.colIndex;
+                var selectorStr = "#noticesList tr:eq(" + rowNum + ")";
+                var title = $(selectorStr).get(0).cells[2].innerText;
+                noticesIndexes.push(parseInt($(this).val()));
+                html += "<p><span class='deletingNoticesTitle'>" + title + "</span><p>";
+            })
+
+            html += "删除公告后数据将不可恢复，请确认无误后再继续操作";
+            $(".modal-body").html(html);
+            $('#deleteConfirm').modal('show'); 
         }
 
         $(document).ready(function () {
             var table = $('#noticesList').DataTable({
                 "ajax": "/sys/notice/allNotices",
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        text: '重新加载数据',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload();
+                        }
+                    },
+                    {
+                        text: '删除选中数据',
+                        action:function (e, dt, node, config) {
+                            //deleteSelectedNotices();
+                            initBeforeDeleteBatch();
+                        }
+                    }
+                ],
                 // 设置默认按时间降序排列
-                "order": [[3, "desc"]],
+                "order": [[4, "desc"]],
                 // 语言国际化 可以设置language.url 返回对应条目的翻译
                 "language": {
                     "sProcessing": "处理中...",
@@ -76,41 +166,50 @@
                     }
                 },
                 "aoColumnDefs": [
+                    { 
+                        "aTargets": [0], "mData": "index", "bSortable": false
+                    },
                     {
-                        "aTargets": [0], "mData": "index", "bSortable": false, "mRender": function (data) {
+                        "aTargets": [1], "mData": "index", "bSortable": false, "mRender": function (data) {
                             return '<input type="checkbox"  class="checkchild"  value="' + data + '" />';
                         }
                     },
-                    { "aTargets": [1], "mData": "title" },
-                    { "aTargets": [2], "mData": "sender" },
-                    { "aTargets": [3], "mData": "sendTime" },
+                    { "aTargets": [2], "mData": "title" },
+                    { "aTargets": [3], "mData": "sender" },
+                    { "aTargets": [4], "mData": "sendTime" },
                     {
-                        "aTargets": [4], "mData": "index", "mRender": function (data) {
-                            var noticeIndex = data;
+                        "aTargets": [5], "mData": "index", "mRender": function (data, type, row) {
                             var html = "<a href='/sys/user/noticeDetail/" + data + "'  class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 查看</a>";
-                            html += "<a href='javascript:void(0);' onclick='deleteSelectedNotices()' class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 删除</a>";
+                            html += "<a onclick=initBeforeDelete('" + row.index + "','" + row.title + "') data-toggle='modal' data-target='#deleteConfirm' class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 删除</a>";
                             return html;
                         }
                     }
                 ],
                 "createdRow": function(row, data, index) {
-                    console.log($(row))
                     // 设置第一列表格内容居中
-                    $(row).children('td').eq(0).attr('style', 'text-align:center;')
+                    $(row).children('td').eq(1).attr('style', 'text-align:center;')
                 }
             });
 
+            globalTable = table;
+            table.on('order.dt search.dt', function () {
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            })
+
             var lastIdx = null;
-            var lastRowIdx = null;
-            
+            // 悬停列高亮
             $('#noticesList tbody')
                     .on('mouseover', 'td', function () {
                             var colIdx = table.cell(this).index().column;
                             var rowIdx = table.cell(this).index().row;
-                            if (colIdx !== lastIdx || rowIdx !== lastRowIdx) {
+                            if (colIdx !== lastIdx) {
                                     $(table.cells().nodes()).removeClass('highlight');
-                                    $(table.column(colIdx).nodes()).addClass('highlight');
-                                    $(table.row(colIdx).nodes()).addClass('highlight');
+                                    $(table.column(colIdx).nodes()).addClass('highlight');                             
                             }
                     })
                     .on('mouseleave', function () {
@@ -120,34 +219,50 @@
             // 使用prop实现全选
             $(".checkall").on("click", function(){
                 var check = $(this).prop("checked");
-                $(".checkchild").prop("checked", check)
+                $(".checkchild").prop("checked", check);
             })
+
+            $("#noticesList").on("init.dt", function() {
+                // 当取消勾选一个子checkbox则把全选的钩子去了
+                $(".checkchild").on("click", function(){
+                    var check = $(this).prop("checked");
+                    if(!check) {
+                        $(".checkall").prop("checked",check);
+                    }
+                })
+            });
+            // 绑定删除事件
+            $("#delete").on("click", deleteNotices);
         });
     </script>
 </head>
 
 <body>
     <div class="top noprint" style="padding: 0px; margin: 0px; -moz-user-select:none;" onselectstart="return false">
-    <div class="topone ">
-        <div style="background-image: url(../../static/images/login/index_back_2.png); height: 68px; width: 40%; background-attachment: fixed; float: left; z-index: 0;"></div>
-        <div style="background-image: url(../..//static/images/login/index_back_3.png); height: 68px; width: 60%; background-attachment: fixed; float: right; z-index: 0;"></div>
-        <img src="../../static/images/login/index-logo.png" style="width: 366px; height: 64px; position: absolute; left: 5px; top: 0px; z-index: 2;">
-        <div class="pull-right " style="margin-top: -60px; margin-right: 15px; margin-left: 15px; margin-bottom: 0px; z-index: 3; position: relative;">
-            <input type="button" class="btn btn-default " onclick="editUser()" data-toggle="tooltip" data-placement="left" title="修改用户信息" style="width: 24px; height: 24px; border: 0; background: url(../../static/images/login/index-admin.png) no-repeat left top;">
-            <span id="userName" name="userName" onclick="editUser()" onmouseover="this.style.cursor='pointer'" style="cursor: pointer;">&nbsp;胡晓&nbsp;</span>
-            <input type="button" class="btn btn-default " onclick="callLogout()" data-toggle="tooltip" data-placement="left" title="退出登录" style="width: 24px; height: 24px; border: 0; background: url(../../static/images/login/index-IO.png) no-repeat left top;">
-            <label onclick="callLogout()" onmouseover="this.style.cursor='pointer'">退出 </label>
+        <div class="topone ">
+            <div style="background-image: url(../../static/images/login/index_back_2.png); height: 68px; width: 40%; background-attachment: fixed; float: left; z-index: 0;"></div>
+            <div style="background-image: url(../..//static/images/login/index_back_3.png); height: 68px; width: 60%; background-attachment: fixed; float: right; z-index: 0;"></div>
+            <img src="../../static/images/login/index-logo.png" style="width: 366px; height: 64px; position: absolute; left: 5px; top: 0px; z-index: 2;">
+            <div class="pull-right " style="margin-top: -60px; margin-right: 15px; margin-left: 15px; margin-bottom: 0px; z-index: 3; position: relative;">
+                <input type="button" class="btn btn-default " onclick="editUser()" data-toggle="tooltip" data-placement="left" title="修改用户信息"
+                    style="width: 24px; height: 24px; border: 0; background: url(../../static/images/login/index-admin.png) no-repeat left top;">
+                <span id="userName" name="userName" onclick="editUser()" onmouseover="this.style.cursor='pointer'" style="cursor: pointer;">&nbsp;胡晓&nbsp;</span>
+                <input type="button" class="btn btn-default " onclick="callLogout()" data-toggle="tooltip" data-placement="left" title="退出登录"
+                    style="width: 24px; height: 24px; border: 0; background: url(../../static/images/login/index-IO.png) no-repeat left top;">
+                <label onclick="callLogout()" onmouseover="this.style.cursor='pointer'">退出 </label>
+            </div>
         </div>
     </div>
-</div>
+    <div id="clearFloat"></div>
     <table id="noticesList" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
             <tr>
+                <th width="5%">序号</th>
                 <th width="5%" style="text-align:center">
                   <input type="checkbox" class="checkall" />
                 </th>
                 <th width="35%">公告标题</th>
-                <th width="20%">发布者</th>
+                <th width="15%">发布者</th>
                 <th width="25%">发布时间</th>
                 <th width="15%">操作</th>
             </tr>
@@ -158,6 +273,29 @@
         <div>
             ——————●  版权所有：华自科技股份有限公司  地址:中国长沙高新区麓谷工业园麓松路609号  免费服务热线：4000586 896  ●——————
         </div>
+    </div>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">删除公告确认</h4>
+                </div>
+                <div class="modal-body">您将删除以下公告：
+                    <p><span id="deletingNoticeTitle"></span></p>
+                    <p><span id="deletingNoticeIndex" style="display:none"></span></p>
+                    删除公告后数据将不可恢复，请确认无误后再继续操作
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="delete" type="button" class="btn btn-primary">继续删除</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
     </div>
 </body>
 

@@ -5,3 +5,45 @@ td.highlight {
 tr.highlight {
     background-color: whitesmoke !important;
 }
+
+/* 模态框的宽度 */
+.modal-content {
+    width: 500px;
+}
+
+.modal-body p {
+    margin: 1em 0;
+}
+
+/* 调整datatables布局 */
+#noticesList_length {
+    margin-right: 20px;
+    margin-bottom: 5px;
+    float: left;
+}
+
+#noticesList_filter {
+    float: right;
+}
+
+/* 模态框删除确认信息*/
+.deletingNoticesIndex {
+    display: none;
+}
+
+.deletingNoticesTitle {
+    color: blue;
+}
+
+#top {
+    overflow: hidden;
+}
+
+#noticesList_wrapper {
+    width: 90%;
+    margin: 50px auto;
+}
+
+#clearFloat {
+    clear: both;
+}

@@ -19,3 +19,4 @@ public interface NoticeRecordDao extends CrudDao<NoticeRecord> {
 
     int deleteByIndexes(List<Integer> indexes);
 }
+
