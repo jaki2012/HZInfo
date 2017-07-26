@@ -74,4 +74,9 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     public NoticeRecord findNoticeByIndex(int noticeID) {
         return noticeRecordDao.findByIndex(noticeID);
     }
+
+    @Override
+    public int deleteNoticesByIndexes(List<Integer> indexes) {
+        return noticeRecordDao.deleteByIndexes(indexes);
+    }
 }

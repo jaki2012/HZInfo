@@ -42,4 +42,11 @@ public interface NoticeRecordService {
      * @return 若成功查找到则返回相应的公告,否则返回Null
      */
     NoticeRecord findNoticeByIndex(int noticeID);
+
+    /**
+     * 删除<list>中包含的索引对应的公告
+     * @param indexes 要删除的公告列表
+     * @return 受影响的行数
+     */
+    int deleteNoticesByIndexes(List<Integer> indexes);
 }

@@ -5,10 +5,18 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
+import com.hnac.hzinfo.modules.sys.entity.NoticesIndexesWrapper;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.sound.midi.SysexMessage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lijiechu
@@ -47,16 +55,30 @@ public class NoticeRecordController {
 
     @RequestMapping(value = "/notice/{noticeID}", method = RequestMethod.GET)
     public JSONObject getNotice(@PathVariable("noticeID") int noticeID){
-        // ParserConfig mapping = new ParserConfig();
+        // 为了日期格式化
         String noticeJsonStr = JSONObject.toJSONString(noticeRecordService.findNoticeByIndex(noticeID), SerializerFeature.WriteDateUseDateFormat);
         return JSON.parseObject(noticeJsonStr);
         //return (JSONObject) JSONObject.toJSON(noticeRecordService.findNoticeByIndex(noticeID));
     }
 
+    @RequestMapping(value = "/notice", method = RequestMethod.DELETE)
+    public int deleteNoticesByIndexes(@RequestBody NoticesIndexesWrapper noticesIndexesWrapper){
+        System.out.println("indexes" + noticesIndexesWrapper.getNoticesIndexes().size());
+        return noticeRecordService.deleteNoticesByIndexes(noticesIndexesWrapper.getNoticesIndexes());
+    }
 
     @RequestMapping(value="/uploadAnnex", method = RequestMethod.POST)
     public int uploadAnnex(@RequestParam("noticeIndex") int noticeIndex, @RequestParam("file") MultipartFile file){
         String filePath = "/Users/lijiechu/Documents/HZInfoTemp";
         return noticeRecordService.uploadAnnex(null, file, filePath,"0");
     }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public void  messageNotReadable(HttpMessageNotReadableException exception, HttpServletResponse response){
+        //LOGGER.error("请求参数不匹配。", exception);
+         System.out.println(exception.getMessage());
+    }
+
 }

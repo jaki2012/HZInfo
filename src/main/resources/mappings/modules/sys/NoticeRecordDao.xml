@@ -30,4 +30,11 @@
         SELECT CONCAT('《', a.title, '》') as title, a.sender, DATE_FORMAT(a.sendTime,'%Y-%m-%d %T') as sendTime, a.index FROM t_notice_record a
     </select>
 
+    <delete id="deleteByIndexes" parameterType="java.util.List">
+        DELETE a FROM t_notice_record a WHERE a.index IN
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
 </mapper>

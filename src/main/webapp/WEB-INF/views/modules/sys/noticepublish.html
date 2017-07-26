@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../../static/jquery-ui/css/jquery-ui.min.css">
-    <link rel="stylesheet" href="../../static/bootstrap/3.3.0/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="../../static/bootstrap/3.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/css/modules/noticepublish.css">
     <script type="text/javascript" src="../../static/jquery/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="../../static/js/modules/noticepublish.js"></script>
@@ -12,100 +13,120 @@
     <script type="text/javascript" src="../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap-select/js/bootstrap-select.min.js"></script>
 </head>
-<body>
-<div class="top noprint" style="padding: 0px; margin: 0px; -moz-user-select:none;" onselectstart="return false">
-    <div class="topone ">
-        <div style="background-image: url(../../static/images/login/index_back_2.png); height: 68px; width: 40%; background-attachment: fixed; float: left; z-index: 0;"></div>
-        <div style="background-image: url(../..//static/images/login/index_back_3.png); height: 68px; width: 60%; background-attachment: fixed; float: right; z-index: 0;"></div>
-        <img src="../../static/images/login/index-logo.png" style="width: 366px; height: 64px; position: absolute; left: 5px; top: 0px; z-index: 2;">
-        <div class="pull-right " style="margin-top: -60px; margin-right: 15px; margin-left: 15px; margin-bottom: 0px; z-index: 3; position: relative;">
-            <input type="button" class="btn btn-default " onclick="editUser()" data-toggle="tooltip" data-placement="left" title="修改用户信息" style="width: 24px; height: 24px; border: 0; background: url(../../static/images/login/index-admin.png) no-repeat left top;">
-            <span id="userName" name="userName" onclick="editUser()" onmouseover="this.style.cursor='pointer'" style="cursor: pointer;">&nbsp;胡晓&nbsp;</span>
-            <input type="button" class="btn btn-default " onclick="callLogout()" data-toggle="tooltip" data-placement="left" title="退出登录" style="width: 24px; height: 24px; border: 0; background: url(../../static/images/login/index-IO.png) no-repeat left top;">
-            <label onclick="callLogout()" onmouseover="this.style.cursor='pointer'">退出 </label>
-        </div>
-    </div>
-</div>
-<form class="form-horizontal">
-    <fieldset>
-        <div id="legend" class="">
-            <legend class="">发布公告</legend>
-            <br>
-        </div>
-        <div class="control-group">
 
-            <!-- Text input-->
-            <span class="glyphicon glyphicon-file"></span>
-            <label class="control-label">公告标题</label>
-            <div class="controls">
-                <input id="notice-title" type="text" placeholder="请在这里输入公告的标题" class="form-control">
-                <p class="help-block">(* 必填项)</p>
+<body>
+    <div class="top noprint" style="padding: 0px; margin: 0px; -moz-user-select:none;" onselectstart="return false">
+        <div class="topone ">
+            <div style="background-image: url(../../static/images/login/index_back_2.png); height: 68px; width: 40%; background-attachment: fixed; float: left; z-index: 0;"></div>
+            <div style="background-image: url(../..//static/images/login/index_back_3.png); height: 68px; width: 60%; background-attachment: fixed; float: right; z-index: 0;"></div>
+            <img src="../../static/images/login/index-logo.png" style="width: 366px; height: 64px; position: absolute; left: 5px; top: 0px; z-index: 2;">
+            <div class="pull-right " style="margin-top: -60px; margin-right: 15px; margin-left: 15px; margin-bottom: 0px; z-index: 3; position: relative;">
+                <input type="button" class="btn btn-default " onclick="editUser()" data-toggle="tooltip" data-placement="left" title="修改用户信息"
+                    style="width: 24px; height: 24px; border: 0; background: url(../../static/images/login/index-admin.png) no-repeat left top;">
+                <span id="userName" name="userName" onclick="editUser()" onmouseover="this.style.cursor='pointer'" style="cursor: pointer;">&nbsp;胡晓&nbsp;</span>
+                <input type="button" class="btn btn-default " onclick="callLogout()" data-toggle="tooltip" data-placement="left" title="退出登录"
+                    style="width: 24px; height: 24px; border: 0; background: url(../../static/images/login/index-IO.png) no-repeat left top;">
+                <label onclick="callLogout()" onmouseover="this.style.cursor='pointer'">退出 </label>
             </div>
         </div>
+    </div>
+    <form class="form-horizontal">
+        <fieldset>
+            <div id="legend" class="">
+                <legend class="">发布公告</legend>
+                <br>
+            </div>
+            <div class="control-group">
 
-        <div class="control-group">
+                <!-- Text input-->
+                <span class="glyphicon glyphicon-file"></span>
+                <label class="control-label">公告标题</label>
+                <div class="controls">
+                    <input id="notice-title" type="text" placeholder="请在这里输入公告的标题" class="form-control">
+                    <p class="help-block">(* 必填项)</p>
+                </div>
+            </div>
 
-            <!-- Select Multiple -->
-            <span class="glyphicon glyphicon-tags"></span>
-            <label class="control-label">可见部门</label>
-            <div class="controls">
-                <select class="form-control" multiple="multiple">
+            <div class="control-group">
+
+                <!-- Select Multiple -->
+                <span class="glyphicon glyphicon-tags"></span>
+                <label class="control-label">可见部门</label>
+                <div class="controls">
+                    <select class="form-control" multiple="multiple">
                     <option>软件研发部</option>
                     <option>系统研发部</option>
                     <option>硬件研发部</option>
                     <option>销售部</option>
                     <option>人力资源部</option>
                     <option>市场部</option></select>
-            </div>
-        </div>
-
-        <div class="control-group">
-
-            <!-- Textarea -->
-            <span class="glyphicon glyphicon-edit"></span>
-            <label class="control-label">公告正文</label>
-            <div class="controls">
-                <div class="textarea">
-                    <textarea id="notice-content" type="" class="form-control"> </textarea>
-                    <p class="help-block">(* 必填项)</p>
                 </div>
             </div>
-        </div>
 
-        <div class="control-group">
-            <span class="glyphicon glyphicon-folder-open"></span>
-            <label class="control-label">添加附件</label>
+            <div class="control-group">
 
-            <!-- File Upload -->
-            <div class="controls">
-                <input id="lefile" type="file" style="display:none">
-                <div class="input-append">
-                    <input id="photoCover" class="form-control" type="text" style="height:30px;">
-                    <a class="btn-success form-control" onclick="$('input[id=lefile]').click();">点此上传</a>
+                <!-- Textarea -->
+                <span class="glyphicon glyphicon-edit"></span>
+                <label class="control-label">公告正文</label>
+                <div class="controls">
+                    <div class="textarea">
+                        <textarea id="notice-content" type="" class="form-control"> </textarea>
+                        <p class="help-block">(* 必填项)</p>
+                    </div>
                 </div>
-                <!-- 原生bootstrap按钮界面太丑 后期功能复杂需使用bootstrap-fileinput插件-->
-                <!--<input class="input-file" id="fileInput" type="file">-->
             </div>
-        </div>
 
-        <div class="control-group">
-            <label class="control-label"></label>
+            <div class="control-group">
+                <span class="glyphicon glyphicon-folder-open"></span>
+                <label class="control-label">添加附件</label>
 
-            <!-- Button -->
-            <div class="controls buttons-group">
-                <!-- <button id="publish" class="btn btn-info">发布公告</button> -->
-                <input id="publish" class="btn btn-info" value="发布公告" type="button">
-                <input id="resetcontent" class="btn btn-info" value="重置内容" type="button">
+                <!-- File Upload -->
+                <div class="controls">
+                    <input id="lefile" type="file" style="display:none">
+                    <div class="input-append">
+                        <input id="photoCover" class="form-control" type="text" style="height:30px;">
+                        <a class="btn-success form-control" onclick="$('input[id=lefile]').click();">点此上传</a>
+                    </div>
+                    <!-- 原生bootstrap按钮界面太丑 后期功能复杂需使用bootstrap-fileinput插件-->
+                    <!--<input class="input-file" id="fileInput" type="file">-->
+                </div>
             </div>
-        </div>
 
-    </fieldset>
+            <div class="control-group">
+                <label class="control-label"></label>
+
+                <!-- Button -->
+                <div class="controls buttons-group">
+                    <!-- <button id="publish" class="btn btn-info">发布公告</button> -->
+                    <input class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="发布公告" type="button">
+                    <input id="resetcontent" class="btn btn-info" value="重置内容" type="button">
+                </div>
+            </div>
+
+        </fieldset>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="publishConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">发布公告确认</h4>
+                    </div>
+                    <div class="modal-body">请问是否马上发布这份公告？</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">再修改一下</button>
+                        <button id="publish" type="button" class="btn btn-primary">是的，发布</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal -->
+        </div>
+    </form>
     <div class="bottom noprint">
         <div>
-            ——————●  版权所有：华自科技股份有限公司  地址:中国长沙高新区麓谷工业园麓松路609号  免费服务热线：4000586 896  ●——————
+            ——————● 版权所有：华自科技股份有限公司 地址:中国长沙高新区麓谷工业园麓松路609号 免费服务热线：4000586 896 ●——————
         </div>
     </div>
-</form>
-
 </body>
 </html>
