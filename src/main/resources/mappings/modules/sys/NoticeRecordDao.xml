@@ -47,5 +47,10 @@
             contentFileIndex = #{contentFileIndex}
         WHERE `index` = #{index}
     </update>
+    
+    <select id="findAllByPage" resultType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
+        SELECT  * FROM t_notice_record
+        LIMIT #{0}, #{1}
+    </select>
 
 </mapper>

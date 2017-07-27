@@ -18,5 +18,7 @@ public interface NoticeRecordDao extends CrudDao<NoticeRecord> {
     List<NoticeRecord> findAll();
 
     int deleteByIndexes(List<Integer> indexes);
+
+    List<NoticeRecord> findAllByPage(int start, int length, int page);
 }
 

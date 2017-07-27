@@ -1,5 +1,9 @@
 package com.hnac.hzinfo.modules.sys.service.Impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.hnac.hzinfo.modules.sys.dao.AnnexDao;
 import com.hnac.hzinfo.modules.sys.dao.NoticeRecordDao;
 import com.hnac.hzinfo.modules.sys.entity.Annex;
@@ -75,6 +79,19 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     @Override
     public List<NoticeRecord> getAllNotices() {
         return noticeRecordDao.findAll();
+    }
+
+    @Override
+    public JSONObject getAllNoticesByPage(int start, int length, int page) {
+        JSONObject result = new JSONObject();
+        int totalNotices = this.getAllNotices().size();
+        result.put("recordsTotal", totalNotices);
+        List<NoticeRecord> filteredNotices = noticeRecordDao.findAllByPage(start, length, page);
+        String allNoticesStr = JSON.toJSONString(filteredNotices, SerializerFeature.WriteDateUseDateFormat);
+        JSONArray noticesJsonArray = JSONArray.parseArray(allNoticesStr);
+        result.put("data", noticesJsonArray);
+        return result;
+
     }
 
     @Override

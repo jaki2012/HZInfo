@@ -58,6 +58,11 @@ public class NoticeRecordController {
         return resultJSON;
     }
 
+    @RequestMapping(value = "/allNoticesWithPage", method = RequestMethod.GET)
+    public JSONObject getAllNoticesByPage(@RequestParam int start, @RequestParam int length, @RequestParam int page){
+        return noticeRecordService.getAllNoticesByPage(start, length, page);
+    }
+
     @RequestMapping(value = "/notice/{noticeID}", method = RequestMethod.GET)
     public JSONObject getNotice(@PathVariable("noticeID") int noticeID){
         // 为了日期格式化

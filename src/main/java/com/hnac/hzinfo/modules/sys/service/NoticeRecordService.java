@@ -1,6 +1,7 @@
 package com.hnac.hzinfo.modules.sys.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +43,15 @@ public interface NoticeRecordService {
      * @return
      */
     List<NoticeRecord> getAllNotices();
+
+    /**
+     * 带分页的查询
+     * @param start 起始索引
+     * @param length 每页的长度
+     * @param page 第几页
+     * @return
+     */
+    JSONObject getAllNoticesByPage(int start, int length, int page);
 
     /**
      * 根据index索引查找对应的公告
