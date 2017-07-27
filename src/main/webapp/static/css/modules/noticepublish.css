@@ -45,6 +45,14 @@ textarea.form-control {
     height: 200px;
 }
 
+#editBtn {
+    display: none;
+}
+
+#edit {
+    display: none;
+}
+
 .buttons-group {
     text-align: center;
     margin: 0 auto;

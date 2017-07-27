@@ -1,5 +1,9 @@
 #title {
-    display: block;
+    display: inline-block;
+}
+
+.page-header h1 small {
+
 }
 
 #content {

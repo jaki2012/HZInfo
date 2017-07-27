@@ -8,6 +8,7 @@ import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.entity.NoticesIndexesWrapper;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +38,12 @@ public class NoticeRecordController {
 
     @RequestMapping(value="/add", method = RequestMethod.POST)
     public int add(@RequestBody NoticeRecord noticeRecord){
-        System.out.println("iamin");
         return noticeRecordService.add(noticeRecord);
+    }
+
+    @RequestMapping(value= "/update", method = RequestMethod.PUT)
+    public int update(@RequestBody NoticeRecord noticeRecord){
+        return noticeRecordService.update(noticeRecord);
     }
 
     @RequestMapping(value = "/allNotices", method = RequestMethod.GET)
@@ -79,6 +84,14 @@ public class NoticeRecordController {
     public void  messageNotReadable(HttpMessageNotReadableException exception, HttpServletResponse response){
         //LOGGER.error("请求参数不匹配。", exception);
          System.out.println(exception.getMessage());
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(DataAccessException.class)
+    public void  messageNotReadable2(DataAccessException exception, HttpServletResponse response){
+        //LOGGER.error("请求参数不匹配。", exception);
+        System.out.println(exception.getMessage());
     }
 
 }

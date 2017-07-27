@@ -11,10 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.hnac.hzinfo.common.utils.DataGridModel;
 import com.hnac.hzinfo.common.web.BaseController;
@@ -45,7 +42,8 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "/noticePublish")
-	public String noticePublish(HttpServletRequest request, HttpServletResponse response) {
+	public String noticePublish(@RequestParam(value = "noticeIndex", required = false, defaultValue = "-1") int noticeIndex, HttpServletRequest request, HttpServletResponse response) {
+		response.setHeader("noticeIndex", String.valueOf(noticeIndex));
 		return "modules/sys/noticepublish";
 	}
 

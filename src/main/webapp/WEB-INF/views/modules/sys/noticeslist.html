@@ -21,6 +21,17 @@
         var deleteType = 0;
         var globalTable = null;
 
+        function editIndex(noticeIndex){
+            $.ajax({
+                url: "/sys/user/noticePublish",
+                type: "get",
+                dataType: "json",
+                data: {
+                    noticeIndex:noticeIndex
+                }
+            })
+        }
+
         function deleteNotices() {
             console.log("i am executed!")
             if(1 === deleteType) {
@@ -166,7 +177,7 @@
                     }
                 },
                 "aoColumnDefs": [
-                    { 
+                    {
                         "aTargets": [0], "mData": "index", "bSortable": false
                     },
                     {
@@ -174,12 +185,22 @@
                             return '<input type="checkbox"  class="checkchild"  value="' + data + '" />';
                         }
                     },
-                    { "aTargets": [2], "mData": "title" },
-                    { "aTargets": [3], "mData": "sender" },
-                    { "aTargets": [4], "mData": "sendTime" },
+                    {
+                        "aTargets": [2], "mData": "title", "mRender": function (data, type, row) {
+                            return "<a href='/sys/user/noticeDetail/" + row.index + "'>" + data + "</a>"
+                        }
+                    },
+                    { 
+                        "aTargets": [3], "mData": "sender" 
+                    },
+                    { 
+                        "aTargets": [4], "mData": "sendTime" 
+                    },
                     {
                         "aTargets": [5], "mData": "index", "mRender": function (data, type, row) {
                             var html = "<a href='/sys/user/noticeDetail/" + data + "'  class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 查看</a>";
+                            //   /sys 和 sys开头差别很大  绝对路径与相对路径
+                            html += "<a class='delete btn btn-default btn-xs' target='_blank' href='/sys/user/noticePublish?noticeIndex=" + row.index +"'> <i class='fa fa-times'></i> 修改</a>"
                             html += "<a onclick=initBeforeDelete('" + row.index + "','" + row.title + "') data-toggle='modal' data-target='#deleteConfirm' class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 删除</a>";
                             return html;
                         }

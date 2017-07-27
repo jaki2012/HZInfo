@@ -1,8 +1,6 @@
 package com.hnac.hzinfo.modules.sys.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hnac.hzinfo.common.persistence.BaseEntity;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 

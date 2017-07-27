@@ -21,6 +21,13 @@ public interface NoticeRecordService {
     int add(NoticeRecord noticeRecord);
 
     /**
+     * 更新公告接口
+     * @param noticeRecord
+     * @return 受影响的行数, 1代表新增成功, 0代表插入失败
+     */
+    int update(NoticeRecord noticeRecord);
+
+    /**
      * 上传附件
      * @param fields 附件索引列表
      * @param filePath 文件的上传路径

@@ -37,4 +37,15 @@
         </foreach>
     </delete>
 
+    <update id="update" parameterType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
+        UPDATE t_notice_record
+        SET sender = #{sender},
+            title = #{title},
+            content = #{content},
+            sendTime = #{sendTime},
+            annexFileIndex = #{annexFileIndex},
+            contentFileIndex = #{contentFileIndex}
+        WHERE `index` = #{index}
+    </update>
+
 </mapper>

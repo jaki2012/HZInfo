@@ -41,6 +41,13 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
+    public int update(NoticeRecord noticeRecord) {
+        //更新时间
+        noticeRecord.setSendTime(new Date());
+        return noticeRecordDao.update(noticeRecord);
+    }
+
+    @Override
     public int uploadAnnex(List<String> fields, MultipartFile file, String filePath, String fileMd5) {
         // 判断公告是否已存在
         // 判断文件是否非空
