@@ -15,6 +15,23 @@ tr.highlight {
     margin: 1em 0;
 }
 
+.modal-body dl {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.modal-body .dl-horizontal dt {
+    width: auto;
+    line-height: 2em;
+    color: blue;
+}
+
+.modal-body .dl-horizontal dd{
+    margin-left: 0;
+    line-height: 2em;
+    color: blue;
+}
+
 /* 调整datatables布局 */
 #noticesList_length {
     margin-right: 20px;

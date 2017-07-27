@@ -1,9 +1,11 @@
 #title {
     display: inline-block;
 }
-
-.page-header h1 small {
-
+/*
+修改bootstrap滚动条的默认最大340px高度
+*/
+.pre-scrollable {
+    max-height: 200px;
 }
 
 #content {

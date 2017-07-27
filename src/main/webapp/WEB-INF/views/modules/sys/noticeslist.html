@@ -115,15 +115,60 @@
                 return;
             }
 
-            var noticesIndexes = [];
-            selectedNotices.each(function(){
-                var rowNum = $(this).get(0).parentNode.parentNode.rowIndex;
-                var colNum = $(this).get(0).parentNode.colIndex;
-                var selectorStr = "#noticesList tr:eq(" + rowNum + ")";
-                var title = $(selectorStr).get(0).cells[2].innerText;
-                noticesIndexes.push(parseInt($(this).val()));
-                html += "<p><span class='deletingNoticesTitle'>" + title + "</span><p>";
-            })
+            var collapseThreshold = 5;
+            var indexesCount = selectedNotices.length;
+            if( collapseThreshold >= selectedNotices.length) {
+                selectedNotices.each(function(){
+                    var rowNum = $(this).get(0).parentNode.parentNode.rowIndex;
+                    var colNum = $(this).get(0).parentNode.colIndex;
+                    var selectorStr = "#noticesList tr:eq(" + rowNum + ")";
+                    var title = $(selectorStr).get(0).cells[2].innerText;
+                    html += "<p><span class='deletingNoticesTitle'>" + title + "</span><p>";
+                })
+            } else {
+                var count = 0;
+                html += '<dl class="dl-horizontal">'
+                selectedNotices.each(function(){
+                    if(count >= 2){
+                        // 在jquery each函数里面 return false相当于break
+                        return false;
+                    }
+                    var rowNum = $(this).get(0).parentNode.parentNode.rowIndex;
+                    var colNum = $(this).get(0).parentNode.colIndex;
+                    var selectorStr = "#noticesList tr:eq(" + rowNum + ")";
+                    var title = $(selectorStr).get(0).cells[2].innerText;
+                    html += '<dt>公告' + (count+1) + '：</dt>';
+                    html += '<dd>' + title + '</dd>';
+                    //html += "<p><span class='deletingNoticesTitle'>" + title + "</span><p>";
+                    count ++;
+                })
+                html += '</dl>';
+                html += '<div><a href="#demo" class="btn" data-toggle="collapse" data-target="#notices-collapse"><span class="glyphicon glyphicon-chevron-down"></span>点击查看/隐藏其余' + (indexesCount - 2) + '条数据</a></div>'
+                html += '<div class="pre-scrollable collapse" id="notices-collapse">';
+                count = 0;
+                html += '<dl class="dl-horizontal">'
+                selectedNotices.each(function(){
+                    if(count <2)  {
+                        count ++;
+                        // 在jquery each函数里面 return true相当于continue
+                        return true;
+                    } 
+                          
+                    var rowNum = $(this).get(0).parentNode.parentNode.rowIndex;
+                    var colNum = $(this).get(0).parentNode.colIndex;
+                    var selectorStr = "#noticesList tr:eq(" + rowNum + ")";
+                    var title = $(selectorStr).get(0).cells[2].innerText;
+                    html += '<dt>公告' + (count+1) + '：</dt>';
+                    html += '<dd>' + title + '</dd>';
+                    //html += "<p><span class='deletingNoticesTitle'>" + title + "</span><p>";
+                    count ++; 
+                })
+                html += '</dl>';
+                html += '</div>';
+            }
+            
+
+
 
             html += "删除公告后数据将不可恢复，请确认无误后再继续操作";
             $(".modal-body").html(html);
@@ -144,7 +189,6 @@
                     {
                         text: '删除选中数据',
                         action:function (e, dt, node, config) {
-                            //deleteSelectedNotices();
                             initBeforeDeleteBatch();
                         }
                     }
