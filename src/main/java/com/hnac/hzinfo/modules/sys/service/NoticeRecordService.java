@@ -51,7 +51,7 @@ public interface NoticeRecordService {
      * @param page 第几页
      * @return
      */
-    JSONObject getAllNoticesByPage(int start, int length, int page);
+    JSONObject getAllNoticesByPage(int start, int length, int page, int column, String dir);
 
     /**
      * 根据index索引查找对应的公告

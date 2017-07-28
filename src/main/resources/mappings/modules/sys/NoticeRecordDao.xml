@@ -50,6 +50,7 @@
     
     <select id="findAllByPage" resultType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
         SELECT  * FROM t_notice_record
+        ORDER BY ${column} ${dir}
         LIMIT #{0}, #{1}
     </select>
 

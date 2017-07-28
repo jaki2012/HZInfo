@@ -59,8 +59,9 @@ public class NoticeRecordController {
     }
 
     @RequestMapping(value = "/allNoticesWithPage", method = RequestMethod.GET)
-    public JSONObject getAllNoticesByPage(@RequestParam int start, @RequestParam int length, @RequestParam int page){
-        return noticeRecordService.getAllNoticesByPage(start, length, page);
+    public JSONObject getAllNoticesByPage(@RequestParam int start, @RequestParam int length, @RequestParam int page,
+    @RequestParam("orderColumn") int column, @RequestParam("orderType") String dir){
+        return noticeRecordService.getAllNoticesByPage(start, length, page, column, dir);
     }
 
     @RequestMapping(value = "/notice/{noticeID}", method = RequestMethod.GET)

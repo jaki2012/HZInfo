@@ -82,11 +82,30 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
-    public JSONObject getAllNoticesByPage(int start, int length, int page) {
+    public JSONObject getAllNoticesByPage(int start, int length, int page, int column, String dir) {
         JSONObject result = new JSONObject();
         int totalNotices = this.getAllNotices().size();
         result.put("recordsTotal", totalNotices);
-        List<NoticeRecord> filteredNotices = noticeRecordDao.findAllByPage(start, length, page);
+        String columnName = "";
+        switch(column) {
+            case 2 : {
+                columnName = "title";
+                break;
+            }
+            case 3 : {
+                columnName = "sender";
+                break;
+            }
+            case 4 : {
+                columnName = "sendTime";
+                break;
+            }
+            default: {
+                columnName = "sendTime";
+                break;
+            }
+        }
+        List<NoticeRecord> filteredNotices = noticeRecordDao.findAllByPage(start, length, page, columnName, dir);
         String allNoticesStr = JSON.toJSONString(filteredNotices, SerializerFeature.WriteDateUseDateFormat);
         JSONArray noticesJsonArray = JSONArray.parseArray(allNoticesStr);
         result.put("data", noticesJsonArray);

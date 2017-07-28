@@ -183,8 +183,12 @@
                 "processing": true, 
                 // ajax配置为function,手动调用异步查询
                 ajax: function (data, callback, settings) {
+                    console.log(data)
                     // 只取自己所需要的参数
                     var param = {}
+                    // 添加排序参数
+                    param.orderColumn = data.order[0].column;
+                    param.orderType = data.order[0].dir;
                     param.length = data.length;
                     param.start = data.start;
                     param.page = (data.start / data.length) + 1;
@@ -195,7 +199,6 @@
                         //data: data, //传入已封装的参数
                         data: param,
                         dataType: "json",
-                        timeout : 3000,
                         success: function (res) {
                             //封装返回数据，这里仅演示了修改属性名
                             var returnData = {};
@@ -205,7 +208,10 @@
                             // returnData.data = res.data.data;
                             returnData.draw = data.draw;
                             returnData.recordsTotal = res.recordsTotal;
-                            returnData.recordsFiltered = res.recordsFiltered;
+                            // 目前不作任何过滤和模糊查询 因此我们设置total = filtered
+                            // returnData.recordsFiltered = res.recordsFiltered;
+                            // 调试源码分析得出
+                            returnData.recordsFiltered = res.recordsTotal;
                             returnData.data = res.data;
                             //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
                             //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
@@ -215,7 +221,7 @@
                             XMLHttpRequest,
                             textStatus,
                             errorThrown) {
-                            $.alert("查询失败");      
+                            alert("查询失败");      
                         }
                     });
                 },
@@ -223,6 +229,7 @@
                 buttons: [
                     {
                         text: '重新加载数据',
+                        // 重新加载数据会按照当前的排序方式、页码重新发一次ajax请求
                         action: function (e, dt, node, config) {
                             dt.ajax.reload();
                         }
@@ -246,6 +253,7 @@
                     "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
                     "sInfoPostFix": "",
                     "sSearch": "搜索:",
+                    "pagingType": "simple_numbers",
                     "sUrl": "",
                     "sEmptyTable": "表中数据为空",
                     "sLoadingRecords": "载入中...",
@@ -298,12 +306,12 @@
             });
 
             globalTable = table;
-            table.on('order.dt search.dt', function () {
+            // 光是page.dt不行 因为page.dt后会再触发draw.dt 此时前面page.dt的效果就被覆盖了
+            table.on('order.dt search.dt draw.dt', function () {
                 table.column(0, {
                     search: 'applied',
                     order: 'applied'
                 }).nodes().each(function (cell, i) {
-                    console.log(i);
                     cell.innerHTML = i + 1;
                 });
             })
