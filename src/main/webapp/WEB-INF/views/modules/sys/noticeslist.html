@@ -157,7 +157,7 @@
             html += "<p><span class='deletingNoticesTitle'>" + title + "</span></p>"
             html += "<p><span id='deletingNoticeIndex' class='deletingNoticesIndex'>" + index + "</span><p>"
             html += "删除公告后数据将不可恢复，请确认无误后再继续操作"
-            $("#.modal-body").html(html);
+            $("#deleteConfirm .modal-body").html(html);
         }
 
         function initBeforeDeleteBatch(){
@@ -223,7 +223,7 @@
 
 
             html += "删除公告后数据将不可恢复，请确认无误后再继续操作";
-            $(".modal-body").html(html);
+            $("#deleteConfirm .modal-body").html(html);
             $('#deleteConfirm').modal('show'); 
         }
 
@@ -305,8 +305,6 @@
                         init: function(dt, node, config) {
                             // 绑定模态框属性
                             node.attr("id", "searchBtn");
-                            node.attr("data-toggle","modal");
-                            node.attr("data-target","#advancedSearch");
                             node.on("focus", function(){
                                 console.log("iam focused!")
                             })
@@ -421,6 +419,11 @@
             });
             // 绑定删除事件
             $("#delete").on("click", deleteNotices);
+
+            // 绑定打开模态框条件
+            $("#searchBtn").on("click", function() {
+                $('#advancedSearch').modal('show'); 
+            })
         });
     </script>
 </head>
