@@ -47,9 +47,47 @@
             contentFileIndex = #{contentFileIndex}
         WHERE `index` = #{index}
     </update>
+
+    <select id="findAllFiltered" resultType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
+        SELECT  * FROM t_notice_record
+        <where>
+            <if test="titleCondition != null and titleCondition != ''">
+                title LIKE CONCAT('%',#{titleCondition},'%')
+            </if>
+            <if test="contentCondition != null and contentCondition !='' ">
+                AND content LIKE CONCAT('%', #{contentCondition}, '%')
+            </if>
+            <if test="senderCondition != null and senderCondition !=''">
+                AND sender = #{senderCondition}
+            </if>
+            <if test="minSendTimeCondition != null">
+                AND sendTime &gt;= #{minSendTimeCondition}
+            </if>
+            <if test="maxSendTimeCondition != null">
+                AND sendTime &lt;= #{maxSendTimeCondition}
+            </if>
+        </where>
+    </select>
     
     <select id="findAllByPage" resultType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
         SELECT  * FROM t_notice_record
+        <where>
+            <if test="titleCondition != null and titleCondition != ''">
+                title LIKE CONCAT('%',#{titleCondition},'%')
+            </if>
+            <if test="contentCondition != null and contentCondition !='' ">
+                AND content LIKE CONCAT('%', #{contentCondition}, '%')
+            </if>
+            <if test="senderCondition != null and senderCondition !=''">
+                AND sender = #{senderCondition}
+            </if>
+            <if test="minSendTimeCondition != null">
+                AND sendTime &gt;= #{minSendTimeCondition}
+            </if>
+            <if test="maxSendTimeCondition != null">
+                AND sendTime &lt;= #{maxSendTimeCondition}
+            </if>
+        </where>
         ORDER BY ${column} ${dir}
         LIMIT #{0}, #{1}
     </select>

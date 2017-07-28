@@ -20,6 +20,14 @@
     <script type="text/javascript">
         var deleteType = 0;
         var globalTable = null;
+        var searchConditions = {};
+
+        // 自写扩展对象的方法
+        function extend(destination, source) {
+            for (var property in source)
+                destination[property] = source[property];
+            return destination;
+        }  
 
         function editIndex(noticeIndex){
             $.ajax({
@@ -90,11 +98,57 @@
                     $('#deleteConfirm').modal('hide');
                     // 重新加载数据
                     // 通过console.log可以发现此时table未定义 需要全局变量来调控
-                    // 注释掉 因为js遇错就会停止执行
+                    // 因此需要注释下面的这一语句 因为js遇错就会停止执行
                     // console.log(table)
                     globalTable.ajax.reload();
                 }
             })
+        }
+        function advancedSearch(){
+            var titleCondition = $("#notice-title").val();
+            var senderCondition = $("#notice-sender").val();
+            var contentCondition = $("#notice-content").val();
+            var minSendTimeCondition = $("#notice-minSendTime").val();
+            var maxSendTimeCondition = $("#notice-maxSendTime").val();
+            // 不要再拼错字母！
+            searchConditions.titleCondition = titleCondition;
+            // searchConditions.titleCondtion = titleCondition;
+            searchConditions.senderCondition = senderCondition;
+            searchConditions.contentCondition = contentCondition;
+            // 目前的时间
+            var now = new Date();
+            // 时间处理逻辑
+            if (minSendTimeCondition != "") {
+                var tempMinSendTimeCondition = minSendTimeCondition + " 00:00:00";
+                var minSendTime = new Date(tempMinSendTimeCondition);
+                if (minSendTime > now) {
+                    alert("选择的发布日期不能晚于今天！")
+                    return
+                }
+                if(maxSendTimeCondition != "") {
+                    var tempMaxSendTimeCondition = maxSendTimeCondition + " 23:59:59";
+                    var maxSendTime = new Date(tempMaxSendTimeCondition);
+                    // 以下逻辑可以暂时省略
+                    // if(maxSendTime > now ) {
+                    //     alert("选择的发布日期不能晚于今天！")
+                    //     return
+                    // }
+                    if(maxSendTime < minSendTime) {
+                        alert("最晚发布时间不能早于最早发布时间！")
+                        return
+                    }
+                }
+            }
+            searchConditions.minSendTimeCondition 
+                = minSendTimeCondition + (minSendTimeCondition!= "" ? " 00:00:00" : "") ;
+            searchConditions.maxSendTimeCondition 
+                = maxSendTimeCondition + (maxSendTimeCondition!= "" ? " 23:59:59" : "");
+            // console.log(searchConditions)
+            globalTable.draw();
+            alert("查询成功！")
+            $('#advancedSearch').modal('hide');
+            alert($("#searchBtn").is(":focus") ? "focus" : "blur")
+            $("div.searchResultHint b").html("当前为您展示条件筛选后的结果，若想查看全部结果，请点击<a class='delete btn btn-default btn-xs'><i class='fa fa-times'></i> 重新加载数据</a>按钮。");
         }
 
         function initBeforeDelete(index, title){
@@ -103,7 +157,7 @@
             html += "<p><span class='deletingNoticesTitle'>" + title + "</span></p>"
             html += "<p><span id='deletingNoticeIndex' class='deletingNoticesIndex'>" + index + "</span><p>"
             html += "删除公告后数据将不可恢复，请确认无误后再继续操作"
-            $(".modal-body").html(html);
+            $("#.modal-body").html(html);
         }
 
         function initBeforeDeleteBatch(){
@@ -137,7 +191,7 @@
                     var colNum = $(this).get(0).parentNode.colIndex;
                     var selectorStr = "#noticesList tr:eq(" + rowNum + ")";
                     var title = $(selectorStr).get(0).cells[2].innerText;
-                    html += '<dt>公告' + (count+1) + '：</dt>';
+                    html += '<dt>公告 ' + (count+1) + '：</dt>';
                     html += '<dd>' + title + '</dd>';
                     //html += "<p><span class='deletingNoticesTitle'>" + title + "</span><p>";
                     count ++;
@@ -158,7 +212,7 @@
                     var colNum = $(this).get(0).parentNode.colIndex;
                     var selectorStr = "#noticesList tr:eq(" + rowNum + ")";
                     var title = $(selectorStr).get(0).cells[2].innerText;
-                    html += '<dt>公告' + (count+1) + '：</dt>';
+                    html += '<dt>公告 ' + (count+1) + '：</dt>';
                     html += '<dd>' + title + '</dd>';
                     //html += "<p><span class='deletingNoticesTitle'>" + title + "</span><p>";
                     count ++; 
@@ -166,8 +220,6 @@
                 html += '</dl>';
                 html += '</div>';
             }
-            
-
 
 
             html += "删除公告后数据将不可恢复，请确认无误后再继续操作";
@@ -183,10 +235,11 @@
                 "processing": true, 
                 // ajax配置为function,手动调用异步查询
                 ajax: function (data, callback, settings) {
-                    console.log(data)
+                    // console.log($.fn.dataTable.ext.search);
                     // 只取自己所需要的参数
                     var param = {}
                     // 添加排序参数
+                    extend(param, searchConditions);
                     param.orderColumn = data.order[0].column;
                     param.orderType = data.order[0].dir;
                     param.length = data.length;
@@ -208,10 +261,8 @@
                             // returnData.data = res.data.data;
                             returnData.draw = data.draw;
                             returnData.recordsTotal = res.recordsTotal;
-                            // 目前不作任何过滤和模糊查询 因此我们设置total = filtered
-                            // returnData.recordsFiltered = res.recordsFiltered;
                             // 调试源码分析得出
-                            returnData.recordsFiltered = res.recordsTotal;
+                            returnData.recordsFiltered = res.recordsFiltered;
                             returnData.data = res.data;
                             //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
                             //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
@@ -225,12 +276,16 @@
                         }
                     });
                 },
-                dom: 'lBfrtip',
+                // 去掉默认的f 搜索框
+                dom: 'lB<"searchResultHint">rtip',
                 buttons: [
                     {
                         text: '重新加载数据',
                         // 重新加载数据会按照当前的排序方式、页码重新发一次ajax请求
                         action: function (e, dt, node, config) {
+                            // 将搜索条件置空
+                            searchConditions = {};
+                            $("div.searchResultHint b").html("");
                             dt.ajax.reload();
                         }
                     },
@@ -238,6 +293,23 @@
                         text: '删除选中数据',
                         action:function (e, dt, node, config) {
                             initBeforeDeleteBatch();
+                        }
+                    },
+                    {
+                        text: '条件组合筛选',
+                        action:function (e, dt, node, config) {
+                            // node代表这个button
+                            // e代表点击或触发事件
+                            node.blur();
+                        },
+                        init: function(dt, node, config) {
+                            // 绑定模态框属性
+                            node.attr("id", "searchBtn");
+                            node.attr("data-toggle","modal");
+                            node.attr("data-target","#advancedSearch");
+                            node.on("focus", function(){
+                                console.log("iam focused!")
+                            })
                         }
                     }
                 ],
@@ -316,6 +388,7 @@
                 });
             })
 
+            $("div.searchResultHint").html('<b></b>');
             var lastIdx = null;
             // 悬停列高亮
             $('#noticesList tbody')
@@ -390,7 +463,7 @@
         </div>
     </div>
 
-    <!-- 模态框（Modal） -->
+    <!-- 删除确认模态框（Modal） -->
     <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -406,6 +479,56 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button id="delete" type="button" class="btn btn-primary">继续删除</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
+    <!-- 高级搜索模态框（Modal） -->
+    <div class="modal fade" id="advancedSearch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">请输入查找条件（可缺省）</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="control-group">
+                        <label class="control-label">公告标题</label>
+                        <div class="controls">
+                            <input id="notice-title" type="text" placeholder="请输入要查找公告的标题" class="form-control">
+                            <p class="help-block">(模糊搜索)</p>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">发布者</label>
+                        <div class="controls">
+                            <input id="notice-sender" type="text" placeholder="请输入要查找公告的发布者" class="form-control">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">公告内容</label>
+                        <div class="controls">
+                            <input id="notice-content" type="text" placeholder="请输入要查找公告包含的内容关键字" class="form-control">
+                            <p class="help-block">(模糊搜索)</p>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label timeSelectorLabels">发布时间范围</label>
+                        <div class="controls timeSelectorControls">
+                            <input id="notice-minSendTime" type="date" class="form-control">
+                        </div>
+                         &nbsp; - &nbsp;
+                        <div class="controls timeSelectorControls">
+                            <input id="notice-maxSendTime" type="date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="delete" onclick="advancedSearch()" type="button" class="btn btn-primary">筛选结果</button>
                 </div>
             </div>
             <!-- /.modal-content -->

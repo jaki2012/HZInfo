@@ -9,6 +9,7 @@ import com.hnac.hzinfo.modules.sys.entity.NoticesIndexesWrapper;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,8 +62,10 @@ public class NoticeRecordController {
 
     @RequestMapping(value = "/allNoticesWithPage", method = RequestMethod.GET)
     public JSONObject getAllNoticesByPage(@RequestParam int start, @RequestParam int length, @RequestParam int page,
-    @RequestParam("orderColumn") int column, @RequestParam("orderType") String dir){
-        return noticeRecordService.getAllNoticesByPage(start, length, page, column, dir);
+                                          @RequestParam("orderColumn") int column, @RequestParam("orderType") String dir, @RequestParam(required = false) String titleCondition,
+                                          @RequestParam(required = false) String contentCondition, @RequestParam(required = false) String senderCondition,
+                                          @RequestParam(required = false)  @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date minSendTimeCondition, @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date maxSendTimeCondition){
+        return noticeRecordService.getAllNoticesByPage(start, length, page, column, dir,titleCondition, contentCondition, senderCondition, minSendTimeCondition, maxSendTimeCondition);
     }
 
     @RequestMapping(value = "/notice/{noticeID}", method = RequestMethod.GET)

@@ -82,10 +82,13 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
-    public JSONObject getAllNoticesByPage(int start, int length, int page, int column, String dir) {
+    public JSONObject getAllNoticesByPage(int start, int length, int page, int column, String dir, String titleCondition, String contentCondition
+            ,String senderCondition, Date minSendTimeCondition, Date maxSendTimeCondition) {
         JSONObject result = new JSONObject();
-        int totalNotices = this.getAllNotices().size();
-        result.put("recordsTotal", totalNotices);
+        int totalNoticesSize = this.getAllNotices().size();
+        int filteredNoticesSize = noticeRecordDao.findAllFiltered(titleCondition, contentCondition, senderCondition, minSendTimeCondition, maxSendTimeCondition).size();
+        result.put("recordsTotal", totalNoticesSize);
+        result.put("recordsFiltered", filteredNoticesSize);
         String columnName = "";
         switch(column) {
             case 2 : {
@@ -105,7 +108,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 break;
             }
         }
-        List<NoticeRecord> filteredNotices = noticeRecordDao.findAllByPage(start, length, page, columnName, dir);
+        List<NoticeRecord> filteredNotices = noticeRecordDao.findAllByPage(start, length, page, columnName, dir, titleCondition, contentCondition, senderCondition, minSendTimeCondition, maxSendTimeCondition);
         String allNoticesStr = JSON.toJSONString(filteredNotices, SerializerFeature.WriteDateUseDateFormat);
         JSONArray noticesJsonArray = JSONArray.parseArray(allNoticesStr);
         result.put("data", noticesJsonArray);

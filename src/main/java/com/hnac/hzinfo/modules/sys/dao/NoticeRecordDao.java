@@ -5,6 +5,7 @@ import com.hnac.hzinfo.common.persistence.annotation.MyBatisDao;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +21,9 @@ public interface NoticeRecordDao extends CrudDao<NoticeRecord> {
 
     int deleteByIndexes(List<Integer> indexes);
 
-    List<NoticeRecord> findAllByPage(int start, int length, int page, @Param("column") String column, @Param("dir") String dir);
+    List<NoticeRecord> findAllByPage(int start, int length, int page, @Param("column") String column, @Param("dir") String dir,
+                                     @Param("titleCondition")String titleCondition, @Param("contentCondition")String contentCondition, @Param("senderCondition")String senderCondition, @Param("minSendTimeCondition")Date minSendTimeCondition, @Param("maxSendTimeCondition")Date maxSendTimeCondition);
+
+    List<NoticeRecord> findAllFiltered(@Param("titleCondition")String titleCondition, @Param("contentCondition")String contentCondition, @Param("senderCondition")String senderCondition, @Param("minSendTimeCondition")Date minSendTimeCondition, @Param("maxSendTimeCondition")Date maxSendTimeCondition);
 }
 

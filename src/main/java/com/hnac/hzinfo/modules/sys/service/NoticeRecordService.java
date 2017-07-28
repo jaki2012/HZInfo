@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,7 +52,8 @@ public interface NoticeRecordService {
      * @param page 第几页
      * @return
      */
-    JSONObject getAllNoticesByPage(int start, int length, int page, int column, String dir);
+    JSONObject getAllNoticesByPage(int start, int length, int page, int column, String dir, String titleCondition, String contentCondition
+                                   ,String senderCondition, Date minSendTimeCondition, Date maxSendTimeCondition);
 
     /**
      * 根据index索引查找对应的公告

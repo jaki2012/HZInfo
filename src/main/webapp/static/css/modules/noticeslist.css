@@ -33,6 +33,14 @@ tr.highlight {
 }
 
 /* 调整datatables布局 */
+.searchResultHint {
+    color: blue;
+}
+
+.searchResultHint b {
+    vertical-align: -webkit-baseline-middle;
+}
+
 #noticesList_length {
     margin-right: 20px;
     margin-bottom: 5px;
@@ -63,4 +71,13 @@ tr.highlight {
 
 #clearFloat {
     clear: both;
+}
+
+.timeSelectorControls {
+    display: inline-block;
+    width: 45%;
+}
+
+.timeSelectorLabels {
+    display: block;
 }
