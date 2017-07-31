@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.sound.midi.SysexMessage;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author lijiechu
@@ -92,15 +89,13 @@ public class NoticeRecordController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public void  messageNotReadable(HttpMessageNotReadableException exception, HttpServletResponse response){
-        //LOGGER.error("请求参数不匹配。", exception);
          System.out.println(exception.getMessage());
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(DataAccessException.class)
-    public void  messageNotReadable2(DataAccessException exception, HttpServletResponse response){
-        //LOGGER.error("请求参数不匹配。", exception);
+    public void  requestNotFound(DataAccessException exception, HttpServletResponse response){
         System.out.println(exception.getMessage());
     }
 

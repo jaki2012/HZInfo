@@ -12,6 +12,15 @@
     <script type="text/javascript" src="../../static/jquery-ui/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <!-- 百度UEDITOR JS相关 -->
+    <!-- 配置文件 -->
+    <script type="text/javascript" src="../../static/ueditor/ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="../../static/ueditor/ueditor.all.js"></script>
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript">
+        var ue = UE.getEditor('ueditorContainer');
+    </script>
 </head>
 
 <body>
@@ -70,7 +79,11 @@
                 <label class="control-label">公告正文</label>
                 <div class="controls">
                     <div class="textarea">
-                        <textarea id="notice-content" type="" class="form-control"> </textarea>
+                        <!-- 加载编辑器的容器 -->
+                        <script id="ueditorContainer" name="content" type="text/plain">
+                            这里写你的初始化内容
+                        </script>
+                        <!-- <textarea id="notice-content" type="" class="form-control"> </textarea> -->
                         <p class="help-block">(* 必填项)</p>
                     </div>
                 </div>

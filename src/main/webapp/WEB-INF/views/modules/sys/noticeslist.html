@@ -79,7 +79,6 @@
 
             var noticesIndexes = [];
             selectedNotices.each(function(){
-                console.log(this.value)
                 noticesIndexes.push(parseInt($(this).val()));
             })
 
@@ -145,9 +144,10 @@
                 = maxSendTimeCondition + (maxSendTimeCondition!= "" ? " 23:59:59" : "");
             // console.log(searchConditions)
             globalTable.draw();
-            alert("查询成功！")
-            $('#advancedSearch').modal('hide');
-            alert($("#searchBtn").is(":focus") ? "focus" : "blur")
+            alert("查询成功！");
+            $(".searchBar input").val("");
+            // $('#advancedSearch').modal('hide');
+            // alert($("#searchBtn").is(":focus") ? "focus" : "blur")
             $("div.searchResultHint b").html("当前为您展示条件筛选后的结果，若想查看全部结果，请点击<a class='delete btn btn-default btn-xs'><i class='fa fa-times'></i> 重新加载数据</a>按钮。");
         }
 
@@ -277,7 +277,7 @@
                     });
                 },
                 // 去掉默认的f 搜索框
-                dom: 'lB<"searchResultHint">rtip',
+                dom: 'lB<"searchResultHint">r<"searchBar">tip',
                 buttons: [
                     {
                         text: '重新加载数据',
@@ -296,18 +296,14 @@
                         }
                     },
                     {
-                        text: '条件组合筛选',
+                        text: '根据条件查询',
                         action:function (e, dt, node, config) {
                             // node代表这个button
                             // e代表点击或触发事件
-                            node.blur();
                         },
                         init: function(dt, node, config) {
                             // 绑定模态框属性
-                            node.attr("id", "searchBtn");
-                            node.on("focus", function(){
-                                console.log("iam focused!")
-                            })
+                            node.attr("id", "showSearchBarBtn");
                         }
                     }
                 ],
@@ -366,7 +362,7 @@
                             html += "<a class='delete btn btn-default btn-xs' target='_blank' href='/sys/user/noticePublish?noticeIndex=" + row.index +"'> <i class='fa fa-times'></i> 修改</a>"
                             html += "<a onclick=initBeforeDelete('" + row.index + "','" + row.title + "') data-toggle='modal' data-target='#deleteConfirm' class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 删除</a>";
                             return html;
-                        }
+                        }, "bSortable": false
                     }
                 ],
                 "createdRow": function(row, data, index) {
@@ -385,12 +381,23 @@
                     cell.innerHTML = i + 1;
                 });
             })
-
+            // 搜索工具栏
+            // 附加点击button
+            var btn = '<div class="control-group searchBtn"><div class="controls"><button type="button" onclick="advancedSearch()" class="btn btn-default">开始查找</button></div></div>';
+            $("div.searchBar").html($("#advancedSearch .modal-body").html());
+            $("div.searchBar").addClass("collapse");
+            $("div.searchBar").append(btn);
+            // 搜索结果提示
             $("div.searchResultHint").html('<b></b>');
             var lastIdx = null;
             // 悬停列高亮
             $('#noticesList tbody')
                     .on('mouseover', 'td', function () {
+                            // 判断没有匹配结果时的操作
+                            var col = table.cell(this).index();
+                            if(typeof(col)=="undefined") {
+                                return
+                            }
                             var colIdx = table.cell(this).index().column;
                             var rowIdx = table.cell(this).index().row;
                             if (colIdx !== lastIdx) {
@@ -421,9 +428,11 @@
             $("#delete").on("click", deleteNotices);
 
             // 绑定打开模态框条件
-            $("#searchBtn").on("click", function() {
-                $('#advancedSearch').modal('show'); 
-            })
+            // $("#searchBtn").on("click", function() {
+            //     $('#advancedSearch').modal('show'); 
+            // })
+            $("#showSearchBarBtn").attr("data-toggle","collapse");
+            $("#showSearchBarBtn").attr("data-target",".searchBar")
         });
     </script>
 </head>

@@ -6,6 +6,10 @@ tr.highlight {
     background-color: whitesmoke !important;
 }
 
+tbody tr td:nth-child(6) a {
+    margin-right: 6px;
+}
+
 /* 模态框的宽度 */
 .modal-content {
     width: 500px;
@@ -80,4 +84,47 @@ tr.highlight {
 
 .timeSelectorLabels {
     display: block;
+}
+
+.searchResultHint a {
+    vertical-align: bottom;
+}
+
+.searchBar {
+    clear: both;
+}
+
+.searchBar .control-group {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+}
+
+.searchBar .control-group input {
+    font-size: 13px;
+}
+
+.searchBar .control-group:nth-child(1) input[type=text]{
+    min-width: 180px;
+}
+
+.searchBar .control-group:nth-child(2) input[type=text]{
+    min-width: 200px;
+}
+
+.searchBar .control-group:nth-child(3) input[type=text]{
+    min-width: 250px;
+}
+
+.searchBar .control-group:nth-child(4) input[type=date]{
+    max-width: 150px;
+}
+
+.searchBtn {
+    margin-right: 0!important;
+    padding: 18px 0 0 0;
+}
+
+p.help-block {
+    display: inline-block;
 }
