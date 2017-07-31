@@ -69,7 +69,7 @@ $(function(){
             type: "POST",
             data: JSON.stringify({
                 title: $("#notice-title").val(),
-                content: $("#notice-content").val(),
+                content: UE.getEditor('ueditorContainer').getContent(),
                 sender: "胡晓"
             }),
             beforeSend: function(xhr){

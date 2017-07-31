@@ -7,15 +7,19 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.entity.NoticesIndexesWrapper;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
+import org.restlet.engine.adapter.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.Date;
 
 /**
@@ -83,6 +87,31 @@ public class NoticeRecordController {
     public int uploadAnnex(@RequestParam("noticeIndex") int noticeIndex, @RequestParam("file") MultipartFile file){
         String filePath = "/Users/lijiechu/Documents/HZInfoTemp";
         return noticeRecordService.uploadAnnex(null, file, filePath,"0");
+    }
+
+    @RequestMapping(value = "/ueditorbackend")
+    public void handleUeditorConfig(HttpServletRequest request, HttpServletResponse response) {
+        String configPath = "static/ueditor/jsp/config.json";
+        try {
+            response.setContentType("application/json");
+            request.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Type", "text/html");
+            String rootPath = request.getSession().getServletContext().getRealPath("/");
+            File file = new File(rootPath + configPath);
+            BufferedReader bufferedReader=new BufferedReader(new FileReader(file));
+            String line;
+            StringBuilder stringBuilder=new StringBuilder();
+            while ((line=bufferedReader.readLine())!=null){
+                stringBuilder.append(line);
+            }
+            bufferedReader.close();
+            PrintWriter printWriter = response.getWriter();
+            printWriter.write(stringBuilder.toString());
+            printWriter.flush();
+            printWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @ResponseBody

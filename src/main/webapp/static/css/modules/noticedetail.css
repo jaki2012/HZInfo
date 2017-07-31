@@ -9,13 +9,33 @@
 }
 
 #content {
+    margin: 0 auto;
+    border-bottom: #eee 1px solid;
     min-height: 400px;
     width:70%;
 }
+.buttonsGroup {
+    margin-top: 1%;
+}
+
+.buttonsGroup a {
+    margin: 0 auto;
+    display: block;
+    width: 9%;
+}
+
+.buttonsGroup a span {
+    vertical-align: text-top;
+}
 
 .page-header {
+    margin: 0 auto;
     clear: both;
     width:70%;
+}
+
+.page-header small {
+    font-size: 40%;
 }
 
 #contentIndication {

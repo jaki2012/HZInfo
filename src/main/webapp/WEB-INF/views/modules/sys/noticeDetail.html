@@ -27,7 +27,8 @@
                     $("#title").text(data.title);
                     $("#sender").text("发布者: " + data.sender);
                     $("#sendTime").text("发布时间: " + data.sendTime);
-                    $("#content").text(data.content);
+                    // 富文本内容为html方法
+                    $("#content").html(data.content);
 
                 }
             })
@@ -54,17 +55,23 @@
     <div class="page-header">
         <h1>
             <span id="title">页面标题实例</span>
-            <a href="/sys/user/noticesList" class="btn btn-primary"> <span class="glyphicon glyphicon-chevron-left"></span>返回公告列表</a>
             <br/>
             <small id="sender">子标题1</small>
             <small id="sendTime">子标题2</small>
         </h1>
         <h5 id="contentIndication">正文内容:</h5>
     </div>
-    <p id="content">这是一个示例文本。这是一个示例文本。这是一个示例文本。这是一个示例文本。这是一个示例文本。</p>
+    <div id="content">
+        <!-- 公告的正文内容  -->
+    </div>
+    <div class="buttonsGroup">
+        <a href="/sys/user/noticesList" class="btn btn-primary"> 
+            <span class="glyphicon glyphicon-chevron-left"></span>返回公告列表
+        </a>
+    </div>
     <div class="bottom noprint">
         <div>
-            ——————●  版权所有：华自科技股份有限公司  地址:中国长沙高新区麓谷工业园麓松路609号  免费服务热线：4000586 896  ●——————
+            ——————● 版权所有：华自科技股份有限公司 地址:中国长沙高新区麓谷工业园麓松路609号 免费服务热线：4000586 896 ●——————
         </div>
     </div>
 </body>

@@ -9,12 +9,14 @@ body {
 
 fieldset {
     margin: 0 auto;
-    width: 60%;
+    padding: 0 10%;
+    width: 80%;
 }
 
 fieldset legend {
     font-size: 24px;
     font-weight: 700;
+    width: 90%;
     margin: 20px 0 20px 0;
 }
 
@@ -36,13 +38,17 @@ fieldset label {
 
 .control-group .controls {
     display: inline-block;
+    width: 80%;
     margin-left: 20px;
-    /* 可以换成响应式设计 60%*/
-    width: 400px;
 }
 
 textarea.form-control {
     height: 200px;
+}
+
+/*百度编辑器ueditor*/
+#edui1 {
+    width: 100%;
 }
 
 #editBtn {
