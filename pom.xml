@@ -515,6 +515,14 @@
             <version>20160212</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/cn.songxinqiang/com.baidu.ueditor -->
+        <dependency>
+            <groupId>cn.songxinqiang</groupId>
+            <artifactId>com.baidu.ueditor</artifactId>
+            <version>1.1.2-offical</version>
+        </dependency>
+
+
         <!-- google java lib -->
         <dependency>
             <groupId>com.google.guava</groupId>

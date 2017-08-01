@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lijiechu
@@ -68,4 +69,13 @@ public interface NoticeRecordService {
      * @return 受影响的行数
      */
     int deleteNoticesByIndexes(List<Integer> indexes);
+
+    /**
+     * 把ueditor富文本编辑器的图片上传服务器中,可根据需求存数据库表
+     * @param image
+     * @return ueditor要求返回的格式
+     */
+    Map<String, Object> handleUeditorImageUpload(MultipartFile image);
+
+    byte[] getUeditorImage(int imageID);
 }

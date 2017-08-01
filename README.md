@@ -21,7 +21,11 @@ CREATE TABLE `t_notice_record_file` (
   `fileID` int(4) NOT NULL AUTO_INCREMENT,
   `savePath` varchar(255) NOT NULL DEFAULT '',
   `fileMd5` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`FileID`)
+  `fileType` varchar(50) NOT NULL DEFAULT '',
+  `fileName` varchar(200) NOT NULL DEFAULT '',
+  `fileSize` int(11) NOT NULL COMMENT 'KB',
+  `fileUrl` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`fileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 

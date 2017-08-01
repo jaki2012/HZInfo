@@ -7,6 +7,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.entity.NoticesIndexesWrapper;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
+import com.sun.org.apache.regexp.internal.RE;
+import org.apache.commons.io.FileUtils;
 import org.restlet.engine.adapter.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,11 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author lijiechu
@@ -89,29 +94,26 @@ public class NoticeRecordController {
         return noticeRecordService.uploadAnnex(null, file, filePath,"0");
     }
 
-    @RequestMapping(value = "/ueditorbackend")
-    public void handleUeditorConfig(HttpServletRequest request, HttpServletResponse response) {
-        String configPath = "static/ueditor/jsp/config.json";
+    // 百度Ueditor上传图片
+    @RequestMapping(value = "/ueditorimage", method = RequestMethod.POST)
+    public Map<String, Object> handleUeditorImageUpload(@RequestParam(value = "upfile",required = false)MultipartFile upfile, HttpServletRequest request, HttpServletResponse response) {
+        return noticeRecordService.handleUeditorImageUpload(upfile);
+    }
+    // 百度Ueditor获取图片回显
+    @RequestMapping(value = "ueditorimage", method = RequestMethod.GET)
+    public void readUeditorImage(@RequestParam("imageid") int imageid,HttpServletResponse response) {
+        response.setContentType("image/*");
         try {
-            response.setContentType("application/json");
-            request.setCharacterEncoding("utf-8");
-            response.setHeader("Content-Type", "text/html");
-            String rootPath = request.getSession().getServletContext().getRealPath("/");
-            File file = new File(rootPath + configPath);
-            BufferedReader bufferedReader=new BufferedReader(new FileReader(file));
-            String line;
-            StringBuilder stringBuilder=new StringBuilder();
-            while ((line=bufferedReader.readLine())!=null){
-                stringBuilder.append(line);
-            }
-            bufferedReader.close();
-            PrintWriter printWriter = response.getWriter();
-            printWriter.write(stringBuilder.toString());
-            printWriter.flush();
-            printWriter.close();
-        } catch (Exception e) {
+            response.getOutputStream().write(noticeRecordService.getUeditorImage(imageid));
+            //java在使用流时,都会有一个缓冲区,按一种它认为比较高效的方法来发数据:
+            //把要发的数据先放到缓冲区,缓冲区放满以后再一次性发过去,而不是分开一次一次地发.
+            //而flush()表示强制将缓冲区中的数据发送出去,不必等到缓冲区满.
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @ResponseBody

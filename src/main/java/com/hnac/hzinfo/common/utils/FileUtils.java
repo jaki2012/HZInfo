@@ -3,13 +3,14 @@
  */
 package com.hnac.hzinfo.common.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.math.BigInteger;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
+import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.UUID;
 
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
@@ -384,7 +385,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
 	/**
 	 * 写入文件
-	 * @param file 要写入的文件
+	 * @param fileName 要写入的文件
 	 */
 	public static void writeToFile(String fileName, String content, boolean append) {
 		try {
@@ -397,7 +398,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
 	/**
 	 * 写入文件
-	 * @param file 要写入的文件
+	 * @param fileName 要写入的文件
 	 */
 	public static void writeToFile(String fileName, String content, String encoding, boolean append) {
 		try {
@@ -583,7 +584,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
 	/**
 	 * 获取待压缩文件在ZIP文件中entry的名字，即相对于跟目录的相对路径名
-	 * @param dirPat 目录名
+	 * @param dirPath 目录名
 	 * @param file entry文件名
 	 * @return
 	 */
@@ -622,4 +623,78 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		return p;
 	}
 
+	/************************* jaki, tongji intern 2017.08.01 modified. ********************/
+	/**
+	 * 把文件名转换成uuid表示，防止文件名上传重复.
+	 * @param fileName 文件的原始名
+	 * @return
+     */
+	public static String getUUIDFileName(String fileName) {
+		UUID uuid = UUID.randomUUID();
+		StringBuilder sb = new StringBuilder(100);
+		sb.append(uuid.toString()).append(".").append(getExtName(fileName, '.'));
+		return sb.toString();
+	}
+
+	/**
+	 * 获取文件的后缀名
+	 * @param fullName 包含后缀名在内的文件名
+	 * @param split 分隔符,一般为.
+     * @return 文件的后缀名
+     */
+	public static String getExtName(String fullName, char split) {
+		int i = fullName.lastIndexOf(split);
+		int leg = fullName.length();
+		return i > 0 ? (i + 1) == leg ? " " : fullName.substring(i+1, fullName.length()) : " ";
+	}
+
+	/**
+	 * 根据当前的日期计算得出文件的存储目录
+	 * @return
+     */
+	public static String getSavePath() {
+		Calendar calendar = Calendar.getInstance();
+		String year = String.valueOf(calendar.get(Calendar.YEAR));
+		// Calendar.MONTH返回0 - 11的值 此处需要注意
+		String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+		// 对1-9月份添加0前缀
+		month = (month.length() == 1 ? 0 + month : month) ;
+		String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+		// 对1-9号添加0前缀
+		day = (day.length() == 1 ? 0 + day : day);
+		StringBuilder savePath = new StringBuilder(128);
+		savePath.append("/").append(year)
+				.append("/").append(month)
+				.append("/").append(day);
+		return savePath.toString();
+	}
+
+	/**
+	 * 计算文件的md5值
+	 * @param file
+	 * @return
+	 * @throws FileNotFoundException
+     */
+	public static String getMd5ByFile(File file) throws FileNotFoundException {
+		String value = null;
+		FileInputStream in = new FileInputStream(file);
+		try {
+			MappedByteBuffer byteBuffer = in.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+			MessageDigest md5 = MessageDigest.getInstance("MD5");
+			md5.update(byteBuffer);
+			BigInteger bi = new BigInteger(1, md5.digest());
+			value = bi.toString(16);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(null != in) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return value;
+	}
 }

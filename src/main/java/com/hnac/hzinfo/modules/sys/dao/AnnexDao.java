@@ -11,4 +11,5 @@ import com.hnac.hzinfo.modules.sys.entity.Annex;
  */
 @MyBatisDao
 public interface AnnexDao extends CrudDao<Annex> {
+    String getAnnexPathByID(int annexID);
 }

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../static/bootstrap/3.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/css/modules/noticepublish.css">
     <script type="text/javascript" src="../../static/jquery/jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="../../static/js/modules/noticepublish.js"></script>
+    
     <script type="text/javascript" src="../../static/jquery-ui/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap-select/js/bootstrap-select.min.js"></script>
@@ -144,15 +144,47 @@
         var ue = UE.getEditor('ueditorContainer', {
             initialFrameHeight: 400
         });
-        ue.ready(function() {
+        UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;  
+        // 重写百度Ueditor上传图片的逻辑
+        UE.Editor.prototype.getActionUrl = function (action) {
+                if (action == 'uploadimage' || action == 'uploadscrawl' || action == 'uploadvideo') {
+                    return '/sys/notice/ueditorimage';
+                } else {
+                    return this._bkGetActionUrl.call(this, action);
+                }  
+        }
+        ue.ready(function () {
             //设置编辑器的内容
             ue.setContent('hello');
             //获取html内容，返回: <p>hello</p>
             var html = ue.getContent();
             //获取纯文本内容，返回: hello
             var txt = ue.getContentTxt();
+            getNoticeIndex(window.location.href, function (value) {
+                noticeIndex = parseInt(value);
+                if (-1 != noticeIndex) {
+                    $.ajax({
+                        url: "/sys/notice/notice/" + noticeIndex,
+                        type: "get",
+                        dataType: "json",
+                        success: function (data) {
+                            $("#notice-title").val(data.title);
+                            //UE.getEditor('ueditorContainer').setContent(data.content);
+                            // 尽可能使用ready函数 否则ue的body会为空 造成错误
+                            var ue = UE.getEditor('ueditorContainer');
+                            ue.setContent(data.content);
+                            $("#editBtn").show();
+                            $("#publishBtn").hide();
+                            $("#edit").show();
+                            $("#publish").hide();
+                        }
+                    })
+                }
+            });
         })
+
     </script>
+    <script type="text/javascript" src="../../static/js/modules/noticepublish.js"></script>
     <!-- 百度编辑器代码高亮功能相关-->
     <script type="text/javascript" src="../../static/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
     <link rel="stylesheet" type="text/css" href="../../static/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">

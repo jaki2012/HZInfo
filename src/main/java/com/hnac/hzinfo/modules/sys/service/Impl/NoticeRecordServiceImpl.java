@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.hnac.hzinfo.common.utils.FileUtils;
 import com.hnac.hzinfo.modules.sys.dao.AnnexDao;
 import com.hnac.hzinfo.modules.sys.dao.NoticeRecordDao;
 import com.hnac.hzinfo.modules.sys.entity.Annex;
@@ -17,7 +18,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lijiechu
@@ -61,7 +64,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 String savePath = filePath + "/" + file.getOriginalFilename();
                 file.transferTo(new File(savePath));
                 // 数据库更新
-                Annex newAnnex = new Annex(savePath,fileMd5);
+                Annex newAnnex = new Annex();
                 annexDao.insert(newAnnex);
                 // 添加索引
                 fields.add(String.valueOf(newAnnex.getFileID()));
@@ -124,5 +127,59 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     @Override
     public int deleteNoticesByIndexes(List<Integer> indexes) {
         return noticeRecordDao.deleteByIndexes(indexes);
+    }
+
+    @Override
+    public Map<String,Object> handleUeditorImageUpload(MultipartFile image) {
+        Annex annex = new Annex();
+        // 获取文件的名字
+        String imageName = image.getOriginalFilename();
+        // 获取转换后的uuid文件名
+        String uuidFileName = FileUtils.getUUIDFileName(imageName);
+        // 获取文件的最终保存目录
+        String savePath = "/Users/lijiechu/Documents/HZInfoTemp" + FileUtils.getSavePath();
+        annex.setFileName(imageName);
+        annex.setFileSize(image.getSize());
+        annex.setFileType(image.getContentType());
+        annex.setSavePath(savePath + "/"+ uuidFileName);
+
+        try {
+            File targetFile = new File(savePath, uuidFileName);
+            //创建文件夹
+            if(!targetFile.exists()){
+                targetFile.mkdirs();
+            }
+            image.transferTo(targetFile);
+            annex.setFileMd5(FileUtils.getMd5ByFile(targetFile));
+            annexDao.insert(annex);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Map<String, java.lang.Object> m = new HashMap<String, java.lang.Object>();
+        m.put("original",image.getOriginalFilename());
+        m.put("name", image.getOriginalFilename());
+        m.put("url", "/sys/notice/ueditorimage?imageid="+annex.getFileID());
+        m.put("type",image.getContentType());
+        m.put("size",image.getSize());
+        m.put("state","SUCCESS");
+        return m;
+    }
+
+    @Override
+    public byte[] getUeditorImage(int imageID) {
+        String imgPath = annexDao.getAnnexPathByID(imageID);
+        File image = new File(imgPath);
+        //  测试这个文件路径是否存在（也就是这个文件是否存在）
+        if (!image.exists()) {
+            return null;
+        } else {
+            try {
+                // FileUtils.readFileToByteArray(File file)把一个文件转换成字节数组返回
+                return(FileUtils.readFileToByteArray(image));
+            } catch (IOException e){
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 }

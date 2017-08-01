@@ -7,11 +7,23 @@
         </selectKey>
         INSERT INTO t_notice_record_file(
         `savePath`,
-        `fileMd5`
+        `fileMd5`,
+        `fileType`,
+        `fileName`,
+        `fileSize`
         ) VALUES (
         #{savePath},
-        #{fileMd5}
+        #{fileMd5},
+        #{fileType},
+        #{fileName},
+        #{fileSize}
         )
     </insert>
+
+    <select id="getAnnexPathByID"  resultType="String">
+        SELECT f.savePath
+        FROM t_notice_record_file f
+        WHERE f.fileID = #{0}
+    </select>
 
 </mapper>

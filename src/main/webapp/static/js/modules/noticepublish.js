@@ -23,25 +23,6 @@ $(function(){
         $('#photoCover').val($(this).val());
     });
 
-    getNoticeIndex(window.location.href, function (value) {
-        noticeIndex = parseInt(value);
-        if(-1 != noticeIndex) {
-            $.ajax({
-                url: "/sys/notice/notice/" + noticeIndex,
-                type: "get",
-                dataType: "json",
-                success: function(data) {
-                    $("#notice-title").val(data.title),
-                    $("#notice-content").val(data.content)
-                    $("#editBtn").show();
-                    $("#publishBtn").hide();
-                    $("#edit").show();
-                    $("#publish").hide();
-                }
-            })
-        }
-    });
-
     // 更新公告put请求
     $("#edit").on("click", function(){
         $.ajax({
@@ -51,7 +32,7 @@ $(function(){
             data: JSON.stringify({
                 index: parseInt(noticeIndex),
                 title: $("#notice-title").val(),
-                content: $("#notice-content").val(),
+                content: UE.getEditor('ueditorContainer').getContent(),
                 sender: "马海莲"
             }),
             contentType: "application/json",
