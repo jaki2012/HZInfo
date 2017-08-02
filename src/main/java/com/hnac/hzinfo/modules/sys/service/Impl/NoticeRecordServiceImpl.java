@@ -62,7 +62,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         // 无参数时的正则表达式
         // String pattern = "(/ueditor/temp/imageupload/)(\\S)*(\\.)(\\w)*";
         // url带参数时的断言表达式
-        String pattern = "(/ueditor/temp/imageupload/)(\\S)*(\\.)(\\S)*(?=\\\")";
+        String pattern = "/ueditor/temp/imageupload/\\S*(?=\\\")";
         // 创建 Pattern 对象
         Pattern r = Pattern.compile(pattern);
         // 现在创建 matcher 对象
