@@ -280,6 +280,12 @@
                 dom: 'lB<"searchResultHint">r<"searchBar">tip',
                 buttons: [
                     {
+                        text: '发布新的公告',
+                        action: function (e, dt, node, config) {
+                            window.location.href = "/sys/user/noticePublish";
+                        }
+                    },
+                    {
                         text: '重新加载数据',
                         // 重新加载数据会按照当前的排序方式、页码重新发一次ajax请求
                         action: function (e, dt, node, config) {

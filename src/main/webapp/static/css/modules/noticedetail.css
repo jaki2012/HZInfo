@@ -14,6 +14,14 @@
     min-height: 400px;
     width:70%;
 }
+
+#content img {
+    /** 结合ueditor的iframe.css使用 否则单凭iframe.css的max-width无法限制图片真实大小
+    * 其实也可以修改百度ueditor.all.js或image.js源码进行调整 不过略显小题大做
+    */
+    max-width: 100%;
+}
+
 .buttonsGroup {
     margin-top: 1%;
 }

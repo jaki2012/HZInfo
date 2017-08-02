@@ -34,6 +34,10 @@ fieldset label {
 .control-group span {
     margin: 8px 6px 0 0;
     float: left;
+    /*
+    暂时去除不和谐的小图标，使界面更加简洁清爽
+    */
+    display: none;
 }
 
 .control-group .controls {
