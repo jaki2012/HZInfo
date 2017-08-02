@@ -31,21 +31,8 @@ import java.util.regex.Pattern;
 @Service
 public class NoticeRecordServiceImpl implements NoticeRecordService {
 
-    // 临时存储的ueditorImageCache
-    private List<Integer> ueditorImageCache = new ArrayList<>();
-
     @Autowired
     private ServletContext servletContext;
-
-    private int tag = 1;
-
-    public int getTag() {
-        return tag;
-    }
-
-    public void setTag(int tag) {
-        this.tag = tag;
-    }
 
     @Autowired
     NoticeRecordDao noticeRecordDao;
@@ -97,14 +84,65 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
 
         m.appendTail(toReplace);
         noticeRecord.setContent(toReplace.toString());
-        this.update(noticeRecord);
+        // 调用以下逻辑将产生多余及错误的逻辑,应直接dao层操作
+        // this.update(noticeRecord);
+        noticeRecordDao.update(noticeRecord);
         return 0;
     }
 
     @Override
+    @Transactional
     public int update(NoticeRecord noticeRecord) {
         //更新时间
         noticeRecord.setSendTime(new Date());
+        ArrayList<Integer> stillExistedImages = new ArrayList<>();
+        // 匹配已经在数据库存档的图片链接正则表达式
+        String pattern = "/sys/notice/ueditorimage\\?imageid\\=(\\d*)";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(noticeRecord.getContent());
+        while(m.find()){
+            stillExistedImages.add(Integer.parseInt(m.group(1)));
+        }
+
+        // 匹配新增加的图片
+        pattern = "/(ueditor/temp/imageupload/\\S*)\\?fileName=(\\S*)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
+        r = Pattern.compile(pattern);
+        //m不能再复用
+        Matcher m2 = r.matcher(noticeRecord.getContent());
+
+        StringBuffer toReplace = new StringBuffer();
+        // m2.groupCount = 4
+        while(m2.find()) {
+            Annex annex = new Annex();
+            annex.setFileName(m2.group(2));
+            annex.setFileType(m2.group(3));
+            annex.setFileSize(Integer.parseInt(m2.group(4)));
+            annex.setNoticeID(noticeRecord.getIndex());
+            try {
+                File tempFile = new File(servletContext.getRealPath("/") + m2.group(1));
+                annex.setFileMd5(FileUtils.getMd5ByFile(tempFile));
+                String subSavePath = FileUtils.getSubSavePath();
+                String savePath = "/Users/lijiechu/Documents/HZInfoTemp" + subSavePath;
+                FileUtils.moveToOtherFolder(servletContext.getRealPath("/") +m2.group(1),savePath);
+                annex.setSavePath(savePath + File.separator + tempFile.getName());
+                annexDao.insert(annex);
+                // 如下是string的方法 非matcher方法
+                // m2.group(0).replace(".*", "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
+                m2.appendReplacement(toReplace, "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
+                // 这句很关键 避免将新增的图片也删除了
+                stillExistedImages.add(annex.getFileID());
+                System.out.println(m2.group(0));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        m2.appendTail(toReplace);
+        // 不要忘记把正则替换后的内容覆盖进去
+        noticeRecord.setContent(toReplace.toString());
+        CleanUselessImages cleanUselessImages = new CleanUselessImages(noticeRecord.getIndex(), stillExistedImages);
+        Thread cleanThread = new Thread(cleanUselessImages);
+        cleanThread.start();
+
         return noticeRecordDao.update(noticeRecord);
     }
 
@@ -179,7 +217,11 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
+    @Transactional
     public int deleteNoticesByIndexes(List<Integer> indexes) {
+        for(Integer i : indexes) {
+            annexDao.deleteAnnicesByNoticeIndex(i);
+        }
         return noticeRecordDao.deleteByIndexes(indexes);
     }
 
@@ -194,10 +236,6 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         String subSavePath = FileUtils.getSubSavePath();
         String savePath = servletContext.getRealPath("/") + "ueditor/temp/imageupload"+ subSavePath;
 
-//        annex.setFileName(imageName);
-//        annex.setFileSize(image.getSize());
-//        annex.setFileType(image.getContentType());
-//        annex.setSavePath(savePath + "/"+ uuidFileName);
 
         try {
             File targetFile = new File(savePath, uuidFileName);
@@ -206,17 +244,12 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 targetFile.mkdirs();
             }
             image.transferTo(targetFile);
-//            annex.setFileMd5(FileUtils.getMd5ByFile(targetFile));
-//            int fileID = annexDao.insert(annex);
-//            this.ueditorImageCache.add(fileID);
         } catch (IOException e) {
             e.printStackTrace();
         }
         Map<String, java.lang.Object> m = new HashMap<String, java.lang.Object>();
         m.put("original",image.getOriginalFilename());
         m.put("name", image.getOriginalFilename());
-//        m.put("url", "/sys/notice/ueditorimage?imageid="+annex.getFileID());
-        //
         StringBuilder urlParams = new StringBuilder();
         urlParams.append("?fileName=").append(imageName)
                 .append("&fileType=").append(image.getContentType())
@@ -243,6 +276,34 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 e.printStackTrace();
                 return null;
             }
+        }
+    }
+
+    class CleanUselessImages implements Runnable {
+        private int noticeID;
+        private List<Integer> imagesID;
+
+        public CleanUselessImages(int noticeID, List<Integer> imagesID) {
+            this.noticeID = noticeID;
+            this.imagesID = imagesID;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Clean thread starts..");
+            if(imagesID.size() > 0) {
+                List<Annex> annices = annexDao.findUselessImages(noticeID, imagesID);
+                for(Annex annex : annices){
+                    try{
+                        FileUtils.deleteFile(annex.getSavePath());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                annexDao.deleteUselessImages(noticeID, imagesID);
+            }
+            System.out.println("Clean thread ends..");
         }
     }
 }

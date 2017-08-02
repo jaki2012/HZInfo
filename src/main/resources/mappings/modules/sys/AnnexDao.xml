@@ -10,13 +10,15 @@
         `fileMd5`,
         `fileType`,
         `fileName`,
-        `fileSize`
+        `fileSize`,
+        `noticeID`
         ) VALUES (
         #{savePath},
         #{fileMd5},
         #{fileType},
         #{fileName},
-        #{fileSize}
+        #{fileSize},
+        #{noticeID}
         )
     </insert>
 
@@ -25,5 +27,38 @@
         FROM t_notice_record_file f
         WHERE f.fileID = #{0}
     </select>
+
+    <select id="findUselessImages" resultType="com.hnac.hzinfo.modules.sys.entity.Annex">
+        SELECT * from t_notice_record_file a
+        <where>
+            a.noticeID = #{0}
+            <if test="imagesID.size() >0">
+                AND a.fileID NOT IN
+                <foreach collection="imagesID" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteUselessImages">
+         DELETE a FROM t_notice_record_file a
+         <where>
+             a.noticeID = #{0}
+             <if test="imagesID.size() >0">
+                 AND a.fileID NOT IN
+                 <foreach collection="imagesID" index="index" item="item" open="(" close=")" separator=",">
+                     #{item}
+                 </foreach>
+             </if>
+         </where>
+    </delete>
+
+    <delete id="deleteAnnicesByNoticeIndex" >
+        DELETE a FROM t_notice_record_file a
+        <where>
+            a.noticeID = #{0}
+        </where>
+    </delete>
 
 </mapper>
