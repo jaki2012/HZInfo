@@ -116,16 +116,6 @@ public class NoticeRecordController {
         return "";
     }
 
-    @RequestMapping(value = "setTag")
-    public void hahaha(){
-        noticeRecordService.setTag(2);
-    }
-
-    @RequestMapping(value = "getTag")
-    public int xixixi(){
-        return noticeRecordService.getTag();
-    }
-
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)

@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.UUID;
 
+import IceInternal.Ex;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipOutputStream;
@@ -696,5 +697,29 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 			}
 		}
 		return value;
+	}
+
+	/**
+	 * 辅助工具类,帮助ueditor将临时文件移动到最终保存文件移动文件到另一个文件目录
+	 * @param sourcePath 包含文件名在内的文件路径
+	 * @param destinationPath 只有文件夹的文件路径
+     */
+	public static void moveToOtherFolder(String sourcePath, String destinationPath){
+		try {
+			File sourceFile = new File(sourcePath);
+			File destinationFolder = new File(destinationPath);
+			if(!destinationFolder.exists()){
+				destinationFolder.mkdirs();
+			}
+			if (sourceFile.renameTo(new File(destinationPath + File.separator + sourceFile.getName()))) {
+				System.out.println("File is moved successful!");
+				log.info("文件移动成功！文件名：《{}》 目标路径：{}",sourceFile.getName(),destinationPath);
+			} else {
+				System.out.println("File is failed to move!");
+				log.info("文件移动失败！文件名：《{}》 起始路径：{}",sourceFile.getName(),sourcePath);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

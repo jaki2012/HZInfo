@@ -18,6 +18,8 @@ public class Annex {
     private String fileName;
     // 文件的大小 单位为kb
     private long fileSize;
+    // 文件从属的公告id
+    private int noticeID;
 
     public Annex() {
     }
@@ -79,4 +81,11 @@ public class Annex {
         this.fileSize = fileSize;
     }
 
+    public int getNoticeID() {
+        return noticeID;
+    }
+
+    public void setNoticeID(int noticeID) {
+        this.noticeID = noticeID;
+    }
 }

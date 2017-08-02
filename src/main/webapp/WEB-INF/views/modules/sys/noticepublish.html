@@ -33,20 +33,6 @@
             var uuid = s.join("");
             return uuid;
         }
-
-        function setTag(){
-            $.ajax({
-                url:"/sys/notice/setTag",
-                type:"get"
-            })
-        }
-
-        function getTag(){
-            $.ajax({
-                url:"/sys/notice/getTag",
-                type:"get"
-            })
-        }
     </script>
 </head>
 
@@ -141,8 +127,6 @@
                     <input id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="更新公告" type="button">
                     <input id="publishBtn" class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="发布公告" type="button">
                     <input id="resetcontent" class="btn btn-info" value="重置内容" type="button">
-                    <a onclick="setTag()" class="btn">setTag</a>
-                    <a onclick="getTag()" class="btn">getTag</a>
                 </div>
             </div>
 

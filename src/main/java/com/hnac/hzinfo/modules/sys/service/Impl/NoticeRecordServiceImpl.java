@@ -12,6 +12,7 @@ import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
@@ -53,6 +54,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     AnnexDao annexDao;
 
     @Override
+    @Transactional
     public int add(NoticeRecord noticeRecord) {
         noticeRecord.setSendTime(new Date());
         noticeRecord.setAnnexFileIndex("A");
@@ -62,17 +64,40 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         // 无参数时的正则表达式
         // String pattern = "(/ueditor/temp/imageupload/)(\\S)*(\\.)(\\w)*";
         // url带参数时的断言表达式
-        String pattern = "/ueditor/temp/imageupload/\\S*(?=\\\")";
+        String pattern = "/(ueditor/temp/imageupload/\\S*)\\?fileName=(\\S*)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
         // 创建 Pattern 对象
         Pattern r = Pattern.compile(pattern);
         // 现在创建 matcher 对象
         Matcher m = r.matcher(noticeRecord.getContent());
         int count = 0;
-
+        StringBuffer toReplace = new StringBuffer();
+        // m.groupCount = 4
         while(m.find()) {
-            count++;
-            System.out.println(m.group(0));
+            Annex annex = new Annex();
+            annex.setFileName(m.group(2));
+            annex.setFileType(m.group(3));
+            annex.setFileSize(Integer.parseInt(m.group(4)));
+            annex.setNoticeID(noticeRecord.getIndex());
+            try {
+                File tempFile = new File(servletContext.getRealPath("/") + m.group(1));
+                annex.setFileMd5(FileUtils.getMd5ByFile(tempFile));
+                String subSavePath = FileUtils.getSubSavePath();
+                String savePath = "/Users/lijiechu/Documents/HZInfoTemp" + subSavePath;
+                FileUtils.moveToOtherFolder(servletContext.getRealPath("/") +m.group(1),savePath);
+                annex.setSavePath(savePath + File.separator + tempFile.getName());
+                annexDao.insert(annex);
+                // 如下是string的方法 非matcher方法
+                // m.group(0).replace(".*", "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
+                m.appendReplacement(toReplace, "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
+                System.out.println(m.group(0));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+        m.appendTail(toReplace);
+        noticeRecord.setContent(toReplace.toString());
+        this.update(noticeRecord);
         return 0;
     }
 

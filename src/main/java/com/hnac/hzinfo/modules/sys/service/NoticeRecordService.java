@@ -79,8 +79,4 @@ public interface NoticeRecordService {
     Map<String, Object> handleUeditorImageUpload(String uuid, MultipartFile image);
 
     byte[] getUeditorImage(int imageID);
-
-    void setTag(int i);
-
-    int getTag();
 }
