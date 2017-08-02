@@ -12,6 +12,42 @@
     <script type="text/javascript" src="../../static/jquery-ui/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <script>
+        window.onbeforeunload = function(event) { 
+            $.ajax({
+                url: "/sys/notice/test",
+                type:"get"
+            })
+        }
+        // 生成UUID
+        function uuid() {
+            var s = [];
+            var hexDigits = "0123456789abcdef";
+            for (var i = 0; i < 36; i++) {
+                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+            }
+            s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+            s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+            s[8] = s[13] = s[18] = s[23] = "-";
+        
+            var uuid = s.join("");
+            return uuid;
+        }
+
+        function setTag(){
+            $.ajax({
+                url:"/sys/notice/setTag",
+                type:"get"
+            })
+        }
+
+        function getTag(){
+            $.ajax({
+                url:"/sys/notice/getTag",
+                type:"get"
+            })
+        }
+    </script>
 </head>
 
 <body>
@@ -105,6 +141,8 @@
                     <input id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="更新公告" type="button">
                     <input id="publishBtn" class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="发布公告" type="button">
                     <input id="resetcontent" class="btn btn-info" value="重置内容" type="button">
+                    <a onclick="setTag()" class="btn">setTag</a>
+                    <a onclick="getTag()" class="btn">getTag</a>
                 </div>
             </div>
 
@@ -148,7 +186,7 @@
         // 重写百度Ueditor上传图片的逻辑
         UE.Editor.prototype.getActionUrl = function (action) {
                 if (action == 'uploadimage' || action == 'uploadscrawl' || action == 'uploadvideo') {
-                    return '/sys/notice/ueditorimage';
+                    return '/sys/notice/ueditorimage?' + "uuid=" + uuid();
                 } else {
                     return this._bkGetActionUrl.call(this, action);
                 }  

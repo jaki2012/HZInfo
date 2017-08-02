@@ -7,24 +7,18 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.entity.NoticesIndexesWrapper;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
-import com.sun.org.apache.regexp.internal.RE;
-import org.apache.commons.io.FileUtils;
-import org.restlet.engine.adapter.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -96,8 +90,8 @@ public class NoticeRecordController {
 
     // 百度Ueditor上传图片
     @RequestMapping(value = "/ueditorimage", method = RequestMethod.POST)
-    public Map<String, Object> handleUeditorImageUpload(@RequestParam(value = "upfile",required = false)MultipartFile upfile, HttpServletRequest request, HttpServletResponse response) {
-        return noticeRecordService.handleUeditorImageUpload(upfile);
+    public Map<String, Object> handleUeditorImageUpload(@RequestParam(value = "uuid")String uuid, @RequestParam(value = "upfile",required = false)MultipartFile upfile, HttpServletRequest request, HttpServletResponse response) {
+        return noticeRecordService.handleUeditorImageUpload(uuid,upfile);
     }
     // 百度Ueditor获取图片回显
     @RequestMapping(value = "ueditorimage", method = RequestMethod.GET)
@@ -114,6 +108,22 @@ public class NoticeRecordController {
             e.printStackTrace();
         }
 
+    }
+
+    @RequestMapping(value = "test")
+    public String haha(){
+        System.out.println("immmmmmmmmmmmm dora 's husband");
+        return "";
+    }
+
+    @RequestMapping(value = "setTag")
+    public void hahaha(){
+        noticeRecordService.setTag(2);
+    }
+
+    @RequestMapping(value = "getTag")
+    public int xixixi(){
+        return noticeRecordService.getTag();
     }
 
     @ResponseBody

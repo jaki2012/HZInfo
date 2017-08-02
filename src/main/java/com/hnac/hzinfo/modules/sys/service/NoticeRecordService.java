@@ -72,10 +72,15 @@ public interface NoticeRecordService {
 
     /**
      * 把ueditor富文本编辑器的图片上传服务器中,可根据需求存数据库表
+     * @param uuid
      * @param image
      * @return ueditor要求返回的格式
      */
-    Map<String, Object> handleUeditorImageUpload(MultipartFile image);
+    Map<String, Object> handleUeditorImageUpload(String uuid, MultipartFile image);
 
     byte[] getUeditorImage(int imageID);
+
+    void setTag(int i);
+
+    int getTag();
 }

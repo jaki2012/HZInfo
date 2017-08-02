@@ -649,10 +649,10 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 	}
 
 	/**
-	 * 根据当前的日期计算得出文件的存储目录
+	 * 根据当前的日期计算得出文件的子存储目录
 	 * @return
      */
-	public static String getSavePath() {
+	public static String getSubSavePath() {
 		Calendar calendar = Calendar.getInstance();
 		String year = String.valueOf(calendar.get(Calendar.YEAR));
 		// Calendar.MONTH返回0 - 11的值 此处需要注意

@@ -14,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author lijiechu
@@ -29,6 +29,22 @@ import java.util.Map;
  */
 @Service
 public class NoticeRecordServiceImpl implements NoticeRecordService {
+
+    // 临时存储的ueditorImageCache
+    private List<Integer> ueditorImageCache = new ArrayList<>();
+
+    @Autowired
+    private ServletContext servletContext;
+
+    private int tag = 1;
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
+    }
 
     @Autowired
     NoticeRecordDao noticeRecordDao;
@@ -43,7 +59,20 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         noticeRecord.setContentFileIndex("B");
         // 返回的是更新的条数,或者说是受影响的条数
         noticeRecordDao.insert(noticeRecord);
-        // System.out.println("echo: == " + noticeRecord.getIndex() );
+        // 无参数时的正则表达式
+        // String pattern = "(/ueditor/temp/imageupload/)(\\S)*(\\.)(\\w)*";
+        // url带参数时的断言表达式
+        String pattern = "(/ueditor/temp/imageupload/)(\\S)*(\\.)(\\S)*(?=\\\")";
+        // 创建 Pattern 对象
+        Pattern r = Pattern.compile(pattern);
+        // 现在创建 matcher 对象
+        Matcher m = r.matcher(noticeRecord.getContent());
+        int count = 0;
+
+        while(m.find()) {
+            count++;
+            System.out.println(m.group(0));
+        }
         return 0;
     }
 
@@ -130,18 +159,20 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
-    public Map<String,Object> handleUeditorImageUpload(MultipartFile image) {
-        Annex annex = new Annex();
+    public Map<String,Object> handleUeditorImageUpload(String uuid, MultipartFile image) {
+//        Annex annex = new Annex();
         // 获取文件的名字
         String imageName = image.getOriginalFilename();
         // 获取转换后的uuid文件名
         String uuidFileName = FileUtils.getUUIDFileName(imageName);
-        // 获取文件的最终保存目录
-        String savePath = "/Users/lijiechu/Documents/HZInfoTemp" + FileUtils.getSavePath();
-        annex.setFileName(imageName);
-        annex.setFileSize(image.getSize());
-        annex.setFileType(image.getContentType());
-        annex.setSavePath(savePath + "/"+ uuidFileName);
+        // 获取文件的临时保存目录
+        String subSavePath = FileUtils.getSubSavePath();
+        String savePath = servletContext.getRealPath("/") + "ueditor/temp/imageupload"+ subSavePath;
+
+//        annex.setFileName(imageName);
+//        annex.setFileSize(image.getSize());
+//        annex.setFileType(image.getContentType());
+//        annex.setSavePath(savePath + "/"+ uuidFileName);
 
         try {
             File targetFile = new File(savePath, uuidFileName);
@@ -150,15 +181,22 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 targetFile.mkdirs();
             }
             image.transferTo(targetFile);
-            annex.setFileMd5(FileUtils.getMd5ByFile(targetFile));
-            annexDao.insert(annex);
+//            annex.setFileMd5(FileUtils.getMd5ByFile(targetFile));
+//            int fileID = annexDao.insert(annex);
+//            this.ueditorImageCache.add(fileID);
         } catch (IOException e) {
             e.printStackTrace();
         }
         Map<String, java.lang.Object> m = new HashMap<String, java.lang.Object>();
         m.put("original",image.getOriginalFilename());
         m.put("name", image.getOriginalFilename());
-        m.put("url", "/sys/notice/ueditorimage?imageid="+annex.getFileID());
+//        m.put("url", "/sys/notice/ueditorimage?imageid="+annex.getFileID());
+        //
+        StringBuilder urlParams = new StringBuilder();
+        urlParams.append("?fileName=").append(imageName)
+                .append("&fileType=").append(image.getContentType())
+                .append("&fileSize=").append(image.getSize());
+        m.put("url", "/ueditor/temp/imageupload" + subSavePath + "/" + uuidFileName + urlParams);
         m.put("type",image.getContentType());
         m.put("size",image.getSize());
         m.put("state","SUCCESS");
