@@ -370,7 +370,9 @@
                 accept: {
                     title: 'Images',
                     extensions: acceptExtensions,
-                    mimeTypes: 'image/*'
+                    // 修改这行解决卡顿的问题
+                    mimeTypes: 'image/jpg,image/jpeg,image/png,image/gif',
+                    // mimeTypes: 'image/*'
                 },
                 swf: '../../third-party/webuploader/Uploader.swf',
                 server: actionUrl,

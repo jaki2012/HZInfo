@@ -51,7 +51,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         // 无参数时的正则表达式
         // String pattern = "(/ueditor/temp/imageupload/)(\\S)*(\\.)(\\w)*";
         // url带参数时的断言表达式
-        String pattern = "/(ueditor/temp/imageupload/\\S*)\\?fileName=(\\S*)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
+        String pattern = "/(ueditor/temp/imageupload/\\S*)\\?fileName=([\\S\\s]*)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
         // 创建 Pattern 对象
         Pattern r = Pattern.compile(pattern);
         // 现在创建 matcher 对象
@@ -105,7 +105,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         }
 
         // 匹配新增加的图片
-        pattern = "/(ueditor/temp/imageupload/\\S*)\\?fileName=(\\S*)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
+        pattern = "/(ueditor/temp/imageupload/\\S*)\\?fileName=([\\S\\s]*)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
         r = Pattern.compile(pattern);
         //m不能再复用
         Matcher m2 = r.matcher(noticeRecord.getContent());
