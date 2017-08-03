@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,8 +86,6 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
 
         m.appendTail(toReplace);
         noticeRecord.setContent(toReplace.toString());
-        // 调用以下逻辑将产生多余及错误的逻辑,应直接dao层操作
-        // this.update(noticeRecord);
         noticeRecordDao.update(noticeRecord);
         return 0;
     }
@@ -219,9 +219,14 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     @Override
     @Transactional
     public int deleteNoticesByIndexes(List<Integer> indexes) {
+        ExecutorService pool  = Executors.newFixedThreadPool(5);
         for(Integer i : indexes) {
-            annexDao.deleteAnnicesByNoticeIndex(i);
+            // 传一个size为0的空arraylist进入这个方法相当于删除所有的无用图片
+            CleanUselessImages cleanUselessImages = new CleanUselessImages(i, new ArrayList<Integer>());
+            pool.execute(cleanUselessImages);
         }
+        // 关闭一个线程池
+        pool.shutdown();
         return noticeRecordDao.deleteByIndexes(indexes);
     }
 
@@ -291,7 +296,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         @Override
         public void run() {
             System.out.println("Clean thread starts..");
-            if(imagesID.size() > 0) {
+            if(null != imagesID) {
                 List<Annex> annices = annexDao.findUselessImages(noticeID, imagesID);
                 for(Annex annex : annices){
                     try{
