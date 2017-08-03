@@ -17,7 +17,7 @@ fieldset legend {
     font-size: 24px;
     font-weight: 700;
     width: 90%;
-    margin: 20px 0 20px 0;
+    margin: 20px 0 20px 20px;
 }
 
 fieldset label {
@@ -31,13 +31,14 @@ fieldset label {
     margin-bottom: 20px;
 }
 
-.control-group span {
+/* 缩小css的范围减少影响范围 */
+.control-group span.glyphicon {
     margin: 8px 6px 0 0;
     float: left;
     /*
     暂时去除不和谐的小图标，使界面更加简洁清爽
     */
-    display: none;
+     display: none; 
 }
 
 .control-group .controls {

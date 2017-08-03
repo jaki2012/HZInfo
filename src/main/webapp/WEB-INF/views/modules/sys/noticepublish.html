@@ -7,8 +7,13 @@
     <link rel="stylesheet" href="../../static/jquery-ui/css/jquery-ui.min.css">
     <link rel="stylesheet" href="../../static/bootstrap/3.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/css/modules/noticepublish.css">
+    <link href="../../static/bootstrap-fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="../../static/jquery/jquery-1.11.3.min.js"></script>
-    
+    <!-- html预览过滤 防止布局错位和xss跨站攻击  -->
+    <script src="../../static/bootstrap-fileinput/js/plugins/purify.min.js" type="text/javascript"></script>
+    <script src="../../static/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <!-- 语言文件必须在fileinput.js之后  -->
+    <script src="../../static/bootstrap-fileinput/js/locales/zh.js"></script>
     <script type="text/javascript" src="../../static/jquery-ui/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap-select/js/bootstrap-select.min.js"></script>
@@ -108,13 +113,7 @@
 
                 <!-- File Upload -->
                 <div class="controls">
-                    <input id="lefile" type="file" style="display:none">
-                    <div class="input-append">
-                        <input id="photoCover" class="form-control" type="text" style="height:30px;">
-                        <a class="btn-success form-control" onclick="$('input[id=lefile]').click();">点此上传</a>
-                    </div>
-                    <!-- 原生bootstrap按钮界面太丑 后期功能复杂需使用bootstrap-fileinput插件-->
-                    <!--<input class="input-file" id="fileInput" type="file">-->
+                    <input id="notice-annexes" name="upattachment" class="file" type="file" multiple data-show-upload="false">
                 </div>
             </div>
 
@@ -156,6 +155,70 @@
             ——————● 版权所有：华自科技股份有限公司 地址:中国长沙高新区麓谷工业园麓松路609号 免费服务热线：4000586 896 ●——————
         </div>
     </div>
+    <script type="text/javascript">
+        //定义一个全局变量去接受文件名和id
+        var uploadedFiles = new Array();
+        $("#notice-annexes").fileinput({
+            //设置语言
+            language: 'zh', 
+            // 限制文件最大大小为10MB
+            maxFileSize: 10240,
+            // 最多上传的附件数
+            maxFileCount: 10,
+            // 当文件尺寸超过25MB就不设置预览
+            maxFilePreviewSize: 25600,
+            uploadUrl: '/sys/notice/attachment',
+        }).on('filesuccessremove', function (event, data, previewId, index) {
+            if (true) {
+                for(var i=0; i < uploadedFiles.length; i++) {
+                    if(uploadedFiles[i].previewId === data) {
+                        $.ajax({
+                            url: "/sys/notice/attachment?attachmentID=" + uploadedFiles[i].fileID,
+                            type: "delete",
+                            success: function() {
+                                alert("删除成功！")
+                            }
+                        })
+                        uploadedFiles.splice(i,1)
+                        break;
+                    }
+                }
+                console.log('Uploaded thumbnail successfully removed');
+            } else {
+                return false; // abort the thumbnail removal
+            }
+        }).on('fileuploaded', function (event, data, previewId, index) {
+                var fileID = data.response.initialPreviewConfig[0].key
+                console.log('File uploaded triggered');
+                uploadedFiles.push({fileID:fileID, previewId:previewId});
+        }).on('filebatchuploadcomplete', function (event, files, extra) {
+                console.log('File batch upload complete');
+                // 初始化附件索引
+                var annexFileIndex = new Array()
+                for (index in uploadedFiles) {
+                    annexFileIndex.push(uploadedFiles[index].fileID)
+                }
+                $.ajax({
+                    url: "/sys/notice/add",
+                    type: "POST",
+                    data: JSON.stringify({
+                        title: $("#notice-title").val(),
+                        content: UE.getEditor('ueditorContainer').getContent(),
+                        sender: "胡晓",
+                        annexFileIndex: annexFileIndex.join(",")
+                    }),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Content-Type', 'application/json');
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        clickPublish = true;
+                        // 手动隐藏模态框
+                        $('#publishConfirm').modal('hide');
+                    }
+                })
+        });
+    </script>
     <!-- 百度UEDITOR JS相关 -->
     <!-- 配置文件 -->
     <script type="text/javascript" src="../../static/ueditor/ueditor.config.js"></script>

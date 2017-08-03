@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.entity.NoticesIndexesWrapper;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
@@ -18,8 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author lijiechu
@@ -114,6 +114,48 @@ public class NoticeRecordController {
     public String haha(){
         System.out.println("immmmmmmmmmmmm dora 's husband");
         return "";
+    }
+
+    @RequestMapping(value = "attachment", method = RequestMethod.POST)
+    public JSONObject uploadAttachment(MultipartFile upattachment) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("error", "");
+        int attachmentID = noticeRecordService.uploadAttachment(upattachment);
+        JSONObject initialPreviewConfig = new JSONObject();
+        initialPreviewConfig.put("url", "/sys/notice/attachment/delete");
+        initialPreviewConfig.put("key",  attachmentID);
+        JSONObject extraInfo = new JSONObject();
+        extraInfo.put("attachmentID", attachmentID);
+        JSONArray initialPreviewConfigArr = new JSONArray();
+        initialPreviewConfig.put("extra", extraInfo);
+        initialPreviewConfigArr.add(initialPreviewConfig);
+        // 原来字段名写错了 难怪没有触发删除请求
+        jsonObject.put("initialPreviewConfig", initialPreviewConfigArr);
+        jsonObject.put("initialPreview", new JSONArray());
+        return  jsonObject;
+    }
+
+    @RequestMapping(value = "attachments", method = RequestMethod.GET)
+    public JSONArray getAttachmentsByIDs(@RequestParam("annexFileIndex") String annexFileIndex){
+        String[] attachmentStrIDs = annexFileIndex.split(",");
+        List<Integer> attachmentIDs = new ArrayList<>();
+        for(String attachmentStrID: attachmentStrIDs){
+            attachmentIDs.add(Integer.parseInt(attachmentStrID));
+        }
+
+        String allAttachmentsStr = JSON.toJSONString( noticeRecordService.getAttachmentsNameByIDs(attachmentIDs));
+        JSONArray attachmentsJsonArray = JSONArray.parseArray(allAttachmentsStr);
+        return  attachmentsJsonArray;
+    }
+
+    @RequestMapping(value = "attachment", method = RequestMethod.GET)
+    public void downloadAttachmentByID(@RequestParam("attachmentID") int attachmentID, HttpServletRequest request, HttpServletResponse response){
+        noticeRecordService.downloadAttachment(attachmentID,response);
+    }
+
+    @RequestMapping(value = "attachment", method = RequestMethod.DELETE)
+    public int deleteAttachment(int attachmentID) {
+        return noticeRecordService.deleteAttachment(attachmentID);
     }
 
     @ResponseBody

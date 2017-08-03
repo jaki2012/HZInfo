@@ -6,19 +6,24 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.hnac.hzinfo.common.utils.FileUtils;
 import com.hnac.hzinfo.modules.sys.dao.AnnexDao;
+import com.hnac.hzinfo.modules.sys.dao.AttachmentDao;
 import com.hnac.hzinfo.modules.sys.dao.NoticeRecordDao;
 import com.hnac.hzinfo.modules.sys.entity.Annex;
+import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,11 +47,13 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     @Autowired
     AnnexDao annexDao;
 
+    @Autowired
+    AttachmentDao attachmentDao;
+
     @Override
     @Transactional
     public int add(NoticeRecord noticeRecord) {
         noticeRecord.setSendTime(new Date());
-        noticeRecord.setAnnexFileIndex("A");
         noticeRecord.setContentFileIndex("B");
         // 返回的是更新的条数,或者说是受影响的条数
         noticeRecordDao.insert(noticeRecord);
@@ -280,6 +287,74 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
             } catch (IOException e){
                 e.printStackTrace();
                 return null;
+            }
+        }
+    }
+
+    @Override
+    public int uploadAttachment(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String uuidFileName = FileUtils.getUUIDFileName(fileName);
+        // 获取文件的临时保存目录
+        String subSavePath = FileUtils.getSubSavePath();
+        String savePath = "/Users/lijiechu/Documents/HZInfoTemp" + subSavePath;
+
+
+        try {
+            File targetFile = new File(savePath, uuidFileName);
+            //创建文件夹
+            if(!targetFile.exists()){
+                targetFile.mkdirs();
+            }
+            file.transferTo(targetFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Attachment attachment = new Attachment();
+        attachment.setSavePath(savePath + File.separator + uuidFileName);
+        attachmentDao.insert(attachment);
+        return attachment.getAttachmentID();
+    }
+
+    @Override
+    public int deleteAttachment(int attachmentID) {
+        Attachment attachmentToDelete = attachmentDao.getAttachmentByID(attachmentID);
+        FileUtils.deleteFile(attachmentToDelete.getSavePath());
+        return attachmentDao.deleteAttachmentByID(attachmentID);
+    }
+
+    @Override
+    public List<Attachment> getAttachmentsNameByIDs(List<Integer> attachmentIDs) {
+        return attachmentDao.getAttachmentsNameByIDs(attachmentIDs);
+    }
+
+    @Override
+    public void downloadAttachment(int attachmentID, HttpServletResponse response) {
+        Attachment attachment = attachmentDao.getAttachmentByID(attachmentID);
+        if(null == attachment) {
+            return;
+        }
+        File file = new File(attachment.getSavePath());
+        OutputStream out = null;
+        if(null == file || !file.exists()){
+            return;
+        }
+        try {
+            response.reset();
+            response.setContentType("application/octet-stream; charset=utf-8");
+            response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+            out = response.getOutputStream();
+            out.write(FileUtils.readFileToByteArray(file));
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(null != out) {
+                try {
+                    out.close();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -1,9 +1,11 @@
 package com.hnac.hzinfo.modules.sys.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -78,4 +80,12 @@ public interface NoticeRecordService {
     Map<String, Object> handleUeditorImageUpload(String uuid, MultipartFile image);
 
     byte[] getUeditorImage(int imageID);
+
+    int uploadAttachment(MultipartFile file);
+
+    int deleteAttachment(int attachmentID);
+
+    List<Attachment> getAttachmentsNameByIDs(List<Integer> attachmentIDs);
+
+    void downloadAttachment(int attachmentID, HttpServletResponse response);
 }

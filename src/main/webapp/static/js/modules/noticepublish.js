@@ -45,24 +45,10 @@ $(function(){
     })
     // 新增公告post请求
     $("#publish").on("click", function(){
-        $.ajax({
-            url: "/sys/notice/add",
-            type: "POST",
-            data: JSON.stringify({
-                title: $("#notice-title").val(),
-                content: UE.getEditor('ueditorContainer').getContent(),
-                sender: "胡晓"
-            }),
-            beforeSend: function(xhr){
-              xhr.setRequestHeader('Content-Type','application/json');
-            },
-            dataType: "json",
-            success: function(data){
-                clickPublish = true;
-                // 手动隐藏模态框
-                $('#publishConfirm').modal('hide'); 
-            }
-        })
+        // 是fileinput不是fileInput!
+        // 目前需要去解决这个异步问题
+        $("#notice-annexes").fileinput("upload");
+
     })
 
     // 绑定消失事件

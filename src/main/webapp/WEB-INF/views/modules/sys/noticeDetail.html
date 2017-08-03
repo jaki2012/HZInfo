@@ -19,7 +19,6 @@
             }
         }
         $(document).ready(function () {
-
             $.ajax({
                 "url": "/sys/notice/notice/" + getNoticeID(),
                 "type": "get",
@@ -29,7 +28,31 @@
                     $("#sendTime").text("发布时间: " + data.sendTime);
                     // 富文本内容为html方法
                     $("#content").html(data.content);
-
+                    // 判断有没有附件
+                    if(null == data.annexFileIndex || "" === data.annexFileIndex) {
+                        $("#attachmentsIndication").hide();
+                        return
+                    }
+                        
+                    $.ajax({
+                        "url": "/sys/notice/attachments",
+                        "type": "get",
+                        "data": {
+                            annexFileIndex: data.annexFileIndex,
+                        },
+                        "success": function (data2) {
+                            var html = '<dl class="dl-horizontal">';
+                            for (index in data2) {
+                                // 不是parseInt(inedex+1)
+                                var count = parseInt(index) + 1
+                                html += '<dt>附件 ' + count + '：</dt>';
+                                html += '<dd><a href="/sys/notice/attachment?attachmentID=' + data2[index].attachmentID + '">' +data2[index].savePath +'</a></dd>'
+                                
+                            }
+                            html += '</dl>';
+                            $("#attachments").html(html);
+                        }
+                    })
                 }
             })
         });
@@ -58,11 +81,15 @@
             <br/>
             <small id="sender">子标题1</small>
             <small id="sendTime">子标题2</small>
-        </h1>
-        <h5 id="contentIndication">正文内容:</h5>
+        </h1>      
     </div>
+    <h5 id="contentIndication">正文内容:</h5>
     <div id="content">
         <!-- 公告的正文内容  -->
+    </div>
+    <h5 id="attachmentsIndication">包含附件:</h5>
+    <div id="attachments">
+        <!-- 公告的附件内容  -->
     </div>
     <div class="buttonsGroup">
         <a href="/sys/user/noticesList" class="btn btn-primary"> 
