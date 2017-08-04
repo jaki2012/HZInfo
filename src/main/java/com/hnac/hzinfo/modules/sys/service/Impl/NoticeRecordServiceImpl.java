@@ -99,29 +99,32 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     @Override
     @Transactional
     public int update(NoticeRecord noticeRecord, String deleteAttachments) {
-        String[] deleteAttachmentsStr = deleteAttachments.split(",");
-        String[] existedAttachmentsStr = noticeRecord.getAnnexFileIndex().split(",");
-        List<String> delAttachments = Arrays.asList(deleteAttachmentsStr);
-        List<String> exiAttachments = Arrays.asList(existedAttachmentsStr);
-        List<String> delAttachmentsA = new ArrayList<>(delAttachments);
-        List<String> exiAttachmentsA = new ArrayList<>(exiAttachments);
 
-        if(delAttachments.size() > 0) {
-            List<Integer> delAttachmentsIDs = new ArrayList<>();
-            for(String delAttachment : delAttachments) {
-                delAttachmentsIDs.add(Integer.parseInt(delAttachment));
+        if(null != deleteAttachments && null != noticeRecord.getAnnexFileIndex()) {
+            String[] deleteAttachmentsStr = deleteAttachments.split(",");
+            String[] existedAttachmentsStr = noticeRecord.getAnnexFileIndex().split(",");
+            List<String> delAttachments = Arrays.asList(deleteAttachmentsStr);
+            List<String> exiAttachments = Arrays.asList(existedAttachmentsStr);
+            List<String> delAttachmentsA = new ArrayList<>(delAttachments);
+            List<String> exiAttachmentsA = new ArrayList<>(exiAttachments);
+
+            if (delAttachments.size() > 0) {
+                List<Integer> delAttachmentsIDs = new ArrayList<>();
+                for (String delAttachment : delAttachments) {
+                    delAttachmentsIDs.add(Integer.parseInt(delAttachment));
+                }
+                // 启动线程清理不需要的文件和数据库索引
+                Thread cleanThread = new Thread(new CleanUselessAttachments(delAttachmentsIDs));
+                cleanThread.start();
             }
-            // 启动线程清理不需要的文件和数据库索引
-            Thread cleanThread = new Thread(new CleanUselessAttachments(delAttachmentsIDs));
-            cleanThread.start();
+
+
+            // 暂时忽略排序信息
+
+            exiAttachmentsA.removeAll(delAttachmentsA);
+            String[] exiAttachmentsArr = (String[]) exiAttachmentsA.toArray(new String[]{});
+            noticeRecord.setAnnexFileIndex(StringUtils.join(exiAttachmentsArr, ","));
         }
-
-
-        // 暂时忽略排序信息
-
-        exiAttachmentsA.removeAll(delAttachmentsA);
-        String[] exiAttachmentsArr = (String[]) exiAttachmentsA.toArray(new String[]{});
-        noticeRecord.setAnnexFileIndex(StringUtils.join(exiAttachmentsArr,","));
 
         //更新时间
         noticeRecord.setSendTime(new Date());

@@ -50,8 +50,11 @@
         function initialAttachmentsList(annexFileIndex) {
             // 判断有没有附件
             if(null == annexFileIndex || "" === annexFileIndex) {
+                
+                existedAttachments = ""
                 return
             }
+            existedAttachments = annexFileIndex;
             $("#attachmentsList").show();
             $.ajax({
                 "url": "/sys/notice/attachments",
@@ -170,7 +173,7 @@
                     <!-- <button id="publish" class="btn btn-info">发布公告</button> -->
                     <input id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="更新公告" type="button">
                     <input id="publishBtn" class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="发布公告" type="button">
-                    <input id="resetcontent" class="btn btn-info" value="重置内容" type="button">
+                    <input id="returnNoticesList" class="btn btn-info" value="返回列表" type="button">
                 </div>
             </div>
 
@@ -258,6 +261,7 @@
                 if("edit" === currentMode) {
                     var deleteAttachmentsStr = deleteAttachments.length > 0 ? 
                             "?deleteAttachments="+ deleteAttachments.join(",") : ""; 
+                    var existedAttachmentsStr = existedAttachments === "" ? annexFileIndex.join(",") : existedAttachments + "," + annexFileIndex.join(",");
                     $.ajax({
                         url: "/sys/notice/update" + deleteAttachmentsStr,
                         type: "put",
@@ -268,7 +272,7 @@
                             content: UE.getEditor('ueditorContainer').getContent(),
                             sender: "马海莲",
                             // 拼接已有的
-                            annexFileIndex: existedAttachments + "," + annexFileIndex.join(",")
+                            annexFileIndex: existedAttachmentsStr
                         }),
                         contentType: "application/json",
                         success:function(data){
@@ -346,7 +350,7 @@
                             $("#publish").hide();
                             // 附件操作
                             initialAttachmentsList(data.annexFileIndex);
-                            existedAttachments = data.annexFileIndex;
+
                         }
                     })
                 }
