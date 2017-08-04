@@ -101,3 +101,7 @@ textarea.form-control {
     line-height: 30px;
     overflow: hidden;
 }
+
+#attachmentsList {
+    display: none;
+} 

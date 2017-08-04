@@ -19,4 +19,6 @@ public interface AttachmentDao extends CrudDao<Attachment>{
     Attachment getAttachmentByID(int attachmentID);
 
     List<Attachment> getAttachmentsNameByIDs(@Param("attachmentsID")List<Integer> attachmentIDs);
+
+    int deleteAttachmentsByIDs(@Param("attachmentsID")List<Integer> attachmentIDs);
 }

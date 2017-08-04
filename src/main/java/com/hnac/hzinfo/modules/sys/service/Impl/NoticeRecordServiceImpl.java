@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.hnac.hzinfo.common.utils.FileUtils;
+import com.hnac.hzinfo.common.utils.StringUtils;
 import com.hnac.hzinfo.modules.sys.dao.AnnexDao;
 import com.hnac.hzinfo.modules.sys.dao.AttachmentDao;
 import com.hnac.hzinfo.modules.sys.dao.NoticeRecordDao;
@@ -12,6 +13,7 @@ import com.hnac.hzinfo.modules.sys.entity.Annex;
 import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
+import com.sun.tools.corba.se.idl.constExpr.Not;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -99,7 +98,31 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
 
     @Override
     @Transactional
-    public int update(NoticeRecord noticeRecord) {
+    public int update(NoticeRecord noticeRecord, String deleteAttachments) {
+        String[] deleteAttachmentsStr = deleteAttachments.split(",");
+        String[] existedAttachmentsStr = noticeRecord.getAnnexFileIndex().split(",");
+        List<String> delAttachments = Arrays.asList(deleteAttachmentsStr);
+        List<String> exiAttachments = Arrays.asList(existedAttachmentsStr);
+        List<String> delAttachmentsA = new ArrayList<>(delAttachments);
+        List<String> exiAttachmentsA = new ArrayList<>(exiAttachments);
+
+        if(delAttachments.size() > 0) {
+            List<Integer> delAttachmentsIDs = new ArrayList<>();
+            for(String delAttachment : delAttachments) {
+                delAttachmentsIDs.add(Integer.parseInt(delAttachment));
+            }
+            // 启动线程清理不需要的文件和数据库索引
+            Thread cleanThread = new Thread(new CleanUselessAttachments(delAttachmentsIDs));
+            cleanThread.start();
+        }
+
+
+        // 暂时忽略排序信息
+
+        exiAttachmentsA.removeAll(delAttachmentsA);
+        String[] exiAttachmentsArr = (String[]) exiAttachmentsA.toArray(new String[]{});
+        noticeRecord.setAnnexFileIndex(StringUtils.join(exiAttachmentsArr,","));
+
         //更新时间
         noticeRecord.setSendTime(new Date());
         ArrayList<Integer> stillExistedImages = new ArrayList<>();
@@ -231,6 +254,16 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
             // 传一个size为0的空arraylist进入这个方法相当于删除所有的无用图片
             CleanUselessImages cleanUselessImages = new CleanUselessImages(i, new ArrayList<Integer>());
             pool.execute(cleanUselessImages);
+            NoticeRecord noticeRecord = noticeRecordDao.findByIndex(i);
+            // 数据库设计缺陷
+            String[] annexFileIndexesStr = noticeRecord.getAnnexFileIndex().split(",");
+            List<Integer> annexFileIndexes = new ArrayList<>();
+            for(int j=0 ;j<annexFileIndexesStr.length; j++){
+                annexFileIndexes.add(Integer.parseInt(annexFileIndexesStr[j]));
+            }
+            CleanUselessAttachments cleanUselessAttachments = new CleanUselessAttachments(annexFileIndexes);
+            pool.execute(cleanUselessAttachments);
+
         }
         // 关闭一个线程池
         pool.shutdown();
@@ -384,6 +417,30 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 annexDao.deleteUselessImages(noticeID, imagesID);
             }
             System.out.println("Clean thread ends..");
+        }
+    }
+
+    class CleanUselessAttachments implements Runnable {
+        private List<Integer> attachmentsID;
+
+        public CleanUselessAttachments(List<Integer> attachmentsID) {
+            this.attachmentsID = attachmentsID;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Clean attachments thread starts..");
+            List<Attachment> attachments = attachmentDao.getAttachmentsNameByIDs(attachmentsID);
+            if(null != attachments) {
+                for(Attachment attachment : attachments) {
+                    try {
+                        FileUtils.deleteFile(attachment.getSavePath());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            attachmentDao.deleteAttachmentsByIDs(attachmentsID);
         }
     }
 }

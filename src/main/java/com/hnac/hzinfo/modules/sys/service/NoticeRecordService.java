@@ -29,7 +29,7 @@ public interface NoticeRecordService {
      * @param noticeRecord
      * @return 受影响的行数, 1代表新增成功, 0代表插入失败
      */
-    int update(NoticeRecord noticeRecord);
+    int update(NoticeRecord noticeRecord, String deleteAttachments);
 
     /**
      * 上传附件

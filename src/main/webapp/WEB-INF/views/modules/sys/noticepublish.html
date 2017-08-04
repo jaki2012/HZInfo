@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>公告编辑页</title>
     <link rel="stylesheet" href="../../static/jquery-ui/css/jquery-ui.min.css">
     <link rel="stylesheet" href="../../static/bootstrap/3.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/css/modules/noticepublish.css">
@@ -18,12 +18,19 @@
     <script type="text/javascript" src="../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap-select/js/bootstrap-select.min.js"></script>
     <script>
+        // 离开页面前发送的请求 可用于特殊需求
         window.onbeforeunload = function(event) { 
             $.ajax({
                 url: "/sys/notice/test",
                 type:"get"
             })
         }
+
+        function preDeleteAttachment(attachmentID) {
+            deleteAttachments.push(attachmentID);
+            $("#existedAttachment-"+ attachmentID).hide();
+        }
+        
         // 生成UUID
         function uuid() {
             var s = [];
@@ -38,6 +45,35 @@
             var uuid = s.join("");
             return uuid;
         }
+
+        // 修改附件上传栏初始化附件列表
+        function initialAttachmentsList(annexFileIndex) {
+            // 判断有没有附件
+            if(null == annexFileIndex || "" === annexFileIndex) {
+                return
+            }
+            $("#attachmentsList").show();
+            $.ajax({
+                "url": "/sys/notice/attachments",
+                "type": "get",
+                "data": {
+                    annexFileIndex: annexFileIndex,
+                },
+                "success": function (data) {
+                    var html = '<ul class="list-unstyled">';
+                    for (index in data) {
+                        // 不是parseInt(index+1)
+                        var count = parseInt(index) + 1;
+                        html += '<li id="existedAttachment-' + data[index].attachmentID + '">附件' + count + '：';
+                        html += '<a href="/sys/notice/attachment?attachmentID=' + data[index].attachmentID + '">' +data[index].savePath +'</a>'
+                        html += '<a onclick="preDeleteAttachment(' + data[index].attachmentID + ')" class="btn btn-primary">删除</a></li>'                       
+                    }
+                    html += '</ul>';
+                    $("#attachmentsList .controls").html(html);
+                }
+            })
+        }
+                    
     </script>
 </head>
 
@@ -107,6 +143,15 @@
                 </div>
             </div>
 
+            <div id="attachmentsList" class="control-group">
+                <span class="glyphicon glyphicon-folder-open"></span>
+                <label class="control-label">已有附件</label>
+
+                <!-- Attachments List -->
+                <div class="controls">
+                </div>
+            </div>
+
             <div class="control-group">
                 <span class="glyphicon glyphicon-folder-open"></span>
                 <label class="control-label">添加附件</label>
@@ -158,6 +203,9 @@
     <script type="text/javascript">
         //定义一个全局变量去接受文件名和id
         var uploadedFiles = new Array();
+        var currentMode = "add";
+        var existedAttachments;
+        var deleteAttachments = new Array();
         $("#notice-annexes").fileinput({
             //设置语言
             language: 'zh', 
@@ -168,6 +216,15 @@
             // 当文件尺寸超过25MB就不设置预览
             maxFilePreviewSize: 25600,
             uploadUrl: '/sys/notice/attachment',
+            // 文件拖选框
+            dropZoneEnabled: true,
+            layoutTemplates: {
+                // 设置空字符串即可去掉相应的按钮
+                // 禁用单个上传按钮可以防止先上传 然后取消发送公告后造成的内存浪费情况
+                // 另一种解决思路是像百度Ueditor一样 先放到临时目录 等确定存放了再真正保存
+                // actionDelete: '',
+                // actionUpload: ''
+            }
         }).on('filesuccessremove', function (event, data, previewId, index) {
             if (true) {
                 for(var i=0; i < uploadedFiles.length; i++) {
@@ -198,25 +255,49 @@
                 for (index in uploadedFiles) {
                     annexFileIndex.push(uploadedFiles[index].fileID)
                 }
-                $.ajax({
-                    url: "/sys/notice/add",
-                    type: "POST",
-                    data: JSON.stringify({
-                        title: $("#notice-title").val(),
-                        content: UE.getEditor('ueditorContainer').getContent(),
-                        sender: "胡晓",
-                        annexFileIndex: annexFileIndex.join(",")
-                    }),
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Content-Type', 'application/json');
-                    },
-                    dataType: "json",
-                    success: function (data) {
-                        clickPublish = true;
-                        // 手动隐藏模态框
-                        $('#publishConfirm').modal('hide');
-                    }
-                })
+                if("edit" === currentMode) {
+                    var deleteAttachmentsStr = deleteAttachments.length > 0 ? 
+                            "?deleteAttachments="+ deleteAttachments.join(",") : ""; 
+                    $.ajax({
+                        url: "/sys/notice/update" + deleteAttachmentsStr,
+                        type: "put",
+                        dataType: "json",
+                        data: JSON.stringify({
+                            index: parseInt(noticeIndex),
+                            title: $("#notice-title").val(),
+                            content: UE.getEditor('ueditorContainer').getContent(),
+                            sender: "马海莲",
+                            // 拼接已有的
+                            annexFileIndex: existedAttachments + "," + annexFileIndex.join(",")
+                        }),
+                        contentType: "application/json",
+                        success:function(data){
+                            clickPublish = true;
+                            // 手动隐藏模态框
+                            $('#publishConfirm').modal('hide'); 
+                        }
+                    })
+                } else {
+                    $.ajax({
+                        url: "/sys/notice/add",
+                        type: "POST",
+                        data: JSON.stringify({
+                            title: $("#notice-title").val(),
+                            content: UE.getEditor('ueditorContainer').getContent(),
+                            sender: "胡晓",
+                            annexFileIndex: annexFileIndex.join(",")
+                        }),
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Content-Type', 'application/json');
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            clickPublish = true;
+                            // 手动隐藏模态框
+                            $('#publishConfirm').modal('hide');
+                        }
+                    })
+                }
         });
     </script>
     <!-- 百度UEDITOR JS相关 -->
@@ -248,6 +329,7 @@
             getNoticeIndex(window.location.href, function (value) {
                 noticeIndex = parseInt(value);
                 if (-1 != noticeIndex) {
+                    currentMode = "edit";
                     $.ajax({
                         url: "/sys/notice/notice/" + noticeIndex,
                         type: "get",
@@ -262,6 +344,9 @@
                             $("#publishBtn").hide();
                             $("#edit").show();
                             $("#publish").hide();
+                            // 附件操作
+                            initialAttachmentsList(data.annexFileIndex);
+                            existedAttachments = data.annexFileIndex;
                         }
                     })
                 }

@@ -44,8 +44,8 @@ public class NoticeRecordController {
     }
 
     @RequestMapping(value= "/update", method = RequestMethod.PUT)
-    public int update(@RequestBody NoticeRecord noticeRecord){
-        return noticeRecordService.update(noticeRecord);
+    public int update(@RequestParam("deleteAttachments")String deleteAttachments, @RequestBody NoticeRecord noticeRecord){
+        return noticeRecordService.update(noticeRecord, deleteAttachments);
     }
 
     @RequestMapping(value = "/allNotices", method = RequestMethod.GET)

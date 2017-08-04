@@ -25,28 +25,15 @@ $(function(){
 
     // 更新公告put请求
     $("#edit").on("click", function(){
-        $.ajax({
-            url: "/sys/notice/update",
-            type: "put",
-            dataType: "json",
-            data: JSON.stringify({
-                index: parseInt(noticeIndex),
-                title: $("#notice-title").val(),
-                content: UE.getEditor('ueditorContainer').getContent(),
-                sender: "马海莲"
-            }),
-            contentType: "application/json",
-            success:function(data){
-                clickPublish = true;
-                // 手动隐藏模态框
-                $('#publishConfirm').modal('hide'); 
-            }
-        })
+        var filesCount = $('#notice-annexes').fileinput('getFilesCount');
+        if(filesCount > 0)
+        $("#notice-annexes").fileinput("upload");
     })
     // 新增公告post请求
     $("#publish").on("click", function(){
         // 是fileinput不是fileInput!
-        // 目前需要去解决这个异步问题
+        var filesCount = $('#notice-annexes').fileinput('getFilesCount');
+        if(filesCount > 0)
         $("#notice-annexes").fileinput("upload");
 
     })

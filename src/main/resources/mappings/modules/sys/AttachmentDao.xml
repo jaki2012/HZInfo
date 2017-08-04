@@ -22,6 +22,18 @@
         WHERE a.attachmentID = #{0}
     </delete>
 
+    <delete id="deleteAttachmentsByIDs" >
+        DELETE a FROM t_notice_record_attachment a
+        <where>
+            <if test="attachmentsID.size()>0">
+                a.attachmentID in
+                <foreach collection="attachmentsID" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
     <select id="getAttachmentsNameByIDs" resultType="com.hnac.hzinfo.modules.sys.entity.Attachment">
         SELECT * FROM t_notice_record_attachment a
         <where>

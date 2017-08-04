@@ -424,5 +424,4 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		url = url.replace("~", "%7E");
 		return url;
 	}
-
 }
