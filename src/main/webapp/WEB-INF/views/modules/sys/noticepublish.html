@@ -137,8 +137,9 @@
                 <div class="controls">
                     <div class="textarea">
                         <!-- 加载编辑器的容器 -->
+                        <!-- 请在此输入公告正文内容.. -->
                         <script id="ueditorContainer" name="content" type="text/plain">
-                        请在此输入公告正文内容..
+                        
                         </script>
                         <!-- <textarea id="notice-content" type="" class="form-control"> </textarea> -->
                         <p class="help-block">(* 必填项)</p>
@@ -311,9 +312,31 @@
     <script type="text/javascript" src="../../static/ueditor/ueditor.all.js"></script>
     <!-- 实例化编辑器 -->
     <script type="text/javascript">
+        // 模拟placeholder效果
+        UE.Editor.prototype.placeholder = function (justPlainText) {
+            var _editor = this;
+            _editor.addListener("focus", function () {
+                var localHtml = _editor.getPlainTxt();
+                if ($.trim(localHtml) === $.trim(justPlainText)) {
+                    _editor.setContent(" ");
+                }
+            });
+            _editor.addListener("blur", function () {
+                var localHtml = _editor.getContent();
+                if (!localHtml) {
+                    _editor.setContent(justPlainText);
+                }
+            });
+            _editor.ready(function () {
+                _editor.fireEvent("blur");
+            });
+        };
         var ue = UE.getEditor('ueditorContainer', {
             initialFrameHeight: 400
         });
+
+        //placeholder内容(只能是文本内容)
+        ue.placeholder("请在此编辑公告内容..插入图片后可通过方向键移动光标..");
         UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;  
         // 重写百度Ueditor上传图片的逻辑
         UE.Editor.prototype.getActionUrl = function (action) {
@@ -325,7 +348,7 @@
         }
         ue.ready(function () {
             //设置编辑器的内容
-            ue.setContent('请在此编辑公告内容..插入图片后可通过方向键移动光标..');
+            // ue.setContent('请在此编辑公告内容..插入图片后可通过方向键移动光标..');
             //获取html内容，返回: <p>hello</p>
             var html = ue.getContent();
             //获取纯文本内容，返回: hello
@@ -356,7 +379,6 @@
                 }
             });
         })
-
     </script>
     <script type="text/javascript" src="../../static/js/modules/noticepublish.js"></script>
     <!-- 百度编辑器代码高亮功能相关-->
