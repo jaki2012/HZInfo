@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.hnac.hzinfo.common.config.Global;
 import com.hnac.hzinfo.common.utils.FileUtils;
 import com.hnac.hzinfo.common.utils.StringUtils;
 import com.hnac.hzinfo.modules.sys.dao.AnnexDao;
@@ -16,6 +17,8 @@ import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
 import com.sun.tools.corba.se.idl.constExpr.Not;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +38,7 @@ import java.util.regex.Pattern;
  * @description 不能继承BaseService,因为BaseService中有(Transactional-readonly=true)
  */
 @Service
+@Lazy(false)
 public class NoticeRecordServiceImpl implements NoticeRecordService {
 
     @Autowired
@@ -259,14 +263,15 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
             pool.execute(cleanUselessImages);
             NoticeRecord noticeRecord = noticeRecordDao.findByIndex(i);
             // 数据库设计缺陷
-            String[] annexFileIndexesStr = noticeRecord.getAnnexFileIndex().split(",");
-            List<Integer> annexFileIndexes = new ArrayList<>();
-            for(int j=0 ;j<annexFileIndexesStr.length; j++){
-                annexFileIndexes.add(Integer.parseInt(annexFileIndexesStr[j]));
+            if(null != noticeRecord.getAnnexFileIndex() && noticeRecord.getAnnexFileIndex().length()!=0) {
+                String[] annexFileIndexesStr = noticeRecord.getAnnexFileIndex().split(",");
+                List<Integer> annexFileIndexes = new ArrayList<>();
+                for (int j = 0; j < annexFileIndexesStr.length; j++) {
+                    annexFileIndexes.add(Integer.parseInt(annexFileIndexesStr[j]));
+                }
+                CleanUselessAttachments cleanUselessAttachments = new CleanUselessAttachments(annexFileIndexes);
+                pool.execute(cleanUselessAttachments);
             }
-            CleanUselessAttachments cleanUselessAttachments = new CleanUselessAttachments(annexFileIndexes);
-            pool.execute(cleanUselessAttachments);
-
         }
         // 关闭一个线程池
         pool.shutdown();
@@ -392,6 +397,17 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    @Scheduled(cron = "* 0/30 * * * ?")
+    public void deleteFile(){
+        System.out.println("searching");
+        List<Integer> expiredNotices = noticeRecordDao.findExpiredNoticeIDs(Integer.parseInt(Global.getConfig("noticerecordexpiredays")));
+        // 如果为空 则构造的sql语句为 Delete from t_notice_record 没有where条件 此时不能执行删除方法
+        // 必须加这个参数 否则将删除所有公告
+        if(!expiredNotices.isEmpty()) {
+            this.deleteNoticesByIndexes(expiredNotices);
         }
     }
 

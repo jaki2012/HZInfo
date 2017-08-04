@@ -19,6 +19,8 @@ public interface NoticeRecordDao extends CrudDao<NoticeRecord> {
 
     List<NoticeRecord> findAll();
 
+    List<Integer> findExpiredNoticeIDs(int dayToExpire);
+
     int deleteByIndexes(List<Integer> indexes);
 
     List<NoticeRecord> findAllByPage(int start, int length, int page, @Param("column") String column, @Param("dir") String dir,

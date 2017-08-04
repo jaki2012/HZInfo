@@ -30,11 +30,22 @@
         SELECT CONCAT('《', a.title, '》') as title, a.sender, DATE_FORMAT(a.sendTime,'%Y-%m-%d %T') as sendTime, a.index FROM t_notice_record a
     </select>
 
+    <select id="findExpiredNoticeIDs" resultType="Integer">
+        SELECT a.index FROM t_notice_record a
+        WHERE datediff(now(), a.sendTime) &gt; #{0};
+    </select>
+
     <delete id="deleteByIndexes" parameterType="java.util.List">
-        DELETE a FROM t_notice_record a WHERE a.index IN
-        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
-            #{item}
-        </foreach>
+        DELETE a FROM t_notice_record a
+        <where>
+            <if test="list.size()>0">
+                a.index IN
+                <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+
     </delete>
 
     <update id="update" parameterType="com.hnac.hzinfo.modules.sys.entity.NoticeRecord">
