@@ -1,13 +1,12 @@
 package com.hnac.hzinfo.modules.sys.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hnac.hzinfo.modules.sys.entity.Attachment;
+import com.hnac.hzinfo.modules.sys.entity.Annex;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.entity.SearchNoticesPage;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +42,7 @@ public interface NoticeRecordService {
 
     /**
      * 返回数据库中所有的公告
-     * 在数据量比较小的情况下把分页交给前台做
+     * 在数据量比较小的情况下可调用这个方法,然后把分页排序搜索等交给前台做
      * @return
      */
     List<NoticeRecord> getAllNotices();
@@ -76,13 +75,38 @@ public interface NoticeRecordService {
      */
     Map<String, Object> handleUeditorImageUpload(MultipartFile image);
 
+    /**
+     * 根据图片索引id,以流的方式返回
+     * @param imageID
+     * @return
+     */
     byte[] getUeditorImage(int imageID);
 
-    int uploadAttachment(MultipartFile file);
+    /**
+     * 上传公告附件,添加数据库索引并将文件存到服务器本地
+     * @param file
+     * @return
+     */
+    int uploadAnnex(MultipartFile file);
 
-    int deleteAttachment(int attachmentID);
+    /**
+     * 根据附件的索引ID删除附件
+     * @param annexID
+     * @return
+     */
+    int deleteAnnex(int annexID);
 
-    List<Attachment> getAttachmentsNameByIDs(List<Integer> attachmentIDs);
+    /**
+     * 查找在数组范围内的Annexes
+     * @param annexesIDs
+     * @return 查找出来的附件实体
+     */
+    List<Annex> getAnnexesByIDs(List<Integer> annexesIDs);
 
-    void downloadAttachment(int attachmentID, HttpServletResponse response);
+    /**
+     * 将附件以字节流的方式写进response的返回体 供调用方下载
+     * @param annexID 公告附件的ID
+     * @param response 客户请求的响应体
+     */
+    void downloadAnnex(int annexID, HttpServletResponse response);
 }

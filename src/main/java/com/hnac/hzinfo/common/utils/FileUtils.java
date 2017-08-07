@@ -650,9 +650,10 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		return i > 0 ? (i + 1) == leg ? " " : fullName.substring(i+1, fullName.length()) : " ";
 	}
 
-	public static void saveMulitipartFileToPath(MultipartFile file, String savePath, String filename){
+	public static File saveMultipartFileToPath(MultipartFile file, String savePath, String filename){
+		File targetFile = null;
 		try {
-			File targetFile = new File(savePath, filename);
+			targetFile = new File(savePath, filename);
 			//创建文件夹
 			if(!targetFile.exists()){
 				targetFile.mkdirs();
@@ -661,6 +662,8 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		return targetFile;
 	}
 
 	/**

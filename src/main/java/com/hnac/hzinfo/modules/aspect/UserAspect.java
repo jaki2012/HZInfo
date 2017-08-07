@@ -40,7 +40,11 @@ public class UserAspect {
 
     @Around("joinPointExpression()")
     public int aroundAccessingNoticeRecord(ProceedingJoinPoint proceedingJoinPoint) {
-        int result = 1;
+        // add方法错误码为0 update方法错误码为1 如能顺利进入方法 result返回值由方法执行情况决定
+        int result = 0;
+        if(proceedingJoinPoint.getSignature().getName().equals("update")) {
+            result = 1;
+        }
         try {
             NoticeRecord noticeRecord = (NoticeRecord) proceedingJoinPoint.getArgs()[0];
 

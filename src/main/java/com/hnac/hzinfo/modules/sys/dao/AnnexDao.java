@@ -3,6 +3,7 @@ package com.hnac.hzinfo.modules.sys.dao;
 import com.hnac.hzinfo.common.persistence.CrudDao;
 import com.hnac.hzinfo.common.persistence.annotation.MyBatisDao;
 import com.hnac.hzinfo.modules.sys.entity.Annex;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,15 +11,18 @@ import java.util.List;
 /**
  * @author lijiechu
  * @create on 17/7/20
- * @description
+ * @description 操作数据表t_notice_record_annex
  */
 @MyBatisDao
 public interface AnnexDao extends CrudDao<Annex> {
-    String getAnnexPathByID(int annexID);
 
-    int deleteUselessImages(int noticeIndex, @Param("imagesID") List<Integer> imagesID);
+    int deleteAnnexByID(int annexID);
 
-    List<Annex> findUselessImages(int noticeIndex, @Param("imagesID") List<Integer> imagesID);
+    Annex getAnnexByID(int annexID);
 
-    int deleteAnnicesByNoticeIndex(int noticeIndex);
+    List<Annex> getAnnexesByIDs(@Param("annexesIDs")List<Integer> annexesIDs);
+
+    int deleteAnnexesByIDs(@Param("annexesIDs")List<Integer> annexesIDs);
+
+
 }

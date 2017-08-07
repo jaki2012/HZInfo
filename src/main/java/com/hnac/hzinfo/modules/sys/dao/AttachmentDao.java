@@ -2,6 +2,7 @@ package com.hnac.hzinfo.modules.sys.dao;
 
 import com.hnac.hzinfo.common.persistence.CrudDao;
 import com.hnac.hzinfo.common.persistence.annotation.MyBatisDao;
+import com.hnac.hzinfo.modules.sys.entity.Annex;
 import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,15 +11,16 @@ import java.util.List;
 /**
  * @author lijiechu
  * @create on 17/8/3
- * @description
+ * @description 操作百度ueditor的上传文件类
  */
 @MyBatisDao
 public interface AttachmentDao extends CrudDao<Attachment>{
-    int deleteAttachmentByID(int attachmentID);
+    String getAttachmentPathByID(int attachmentID);
 
-    Attachment getAttachmentByID(int attachmentID);
+    int deleteUselessImages(int noticeIndex, @Param("imagesID") List<Integer> imagesID);
 
-    List<Attachment> getAttachmentsNameByIDs(@Param("attachmentsID")List<Integer> attachmentIDs);
+    List<Attachment> findUselessImages(int noticeIndex, @Param("imagesID") List<Integer> imagesID);
 
-    int deleteAttachmentsByIDs(@Param("attachmentsID")List<Integer> attachmentIDs);
+    int deleteAttachmentsByNoticeIndex(int noticeIndex);
+
 }

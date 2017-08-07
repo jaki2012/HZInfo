@@ -2,48 +2,63 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hnac.hzinfo.modules.sys.dao.AttachmentDao">
     <insert id="insert" parameterType="com.hnac.hzinfo.modules.sys.entity.Attachment">
-        <selectKey keyProperty="attachmentID" resultType="int" order="AFTER" >
+        <selectKey keyProperty="fileID" resultType="int" order="AFTER" >
             SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO t_notice_record_attachment(
-        `savePath`
+        INSERT INTO t_ueditor_attachment(
+        `savePath`,
+        `fileMd5`,
+        `fileType`,
+        `fileName`,
+        `fileSize`,
+        `noticeID`
         ) VALUES (
-        #{savePath}
+        #{savePath},
+        #{fileMd5},
+        #{fileType},
+        #{fileName},
+        #{fileSize},
+        #{noticeID}
         )
     </insert>
 
-    <select id="getAttachmentByID" resultType="com.hnac.hzinfo.modules.sys.entity.Attachment">
-        SELECT * FROM t_notice_record_attachment a
-         WHERE a.attachmentID = #{0}
+    <select id="getAttachmentPathByID"  resultType="String">
+        SELECT f.savePath
+        FROM t_ueditor_attachment f
+        WHERE f.fileID = #{0}
     </select>
 
-    <delete id="deleteAttachmentByID" >
-        DELETE a FROM t_notice_record_attachment a
-        WHERE a.attachmentID = #{0}
-    </delete>
-
-    <delete id="deleteAttachmentsByIDs" >
-        DELETE a FROM t_notice_record_attachment a
+    <select id="findUselessImages" resultType="com.hnac.hzinfo.modules.sys.entity.Attachment">
+        SELECT * from t_ueditor_attachment a
         <where>
-            <if test="attachmentsID.size()>0">
-                a.attachmentID in
-                <foreach collection="attachmentsID" index="index" item="item" open="(" close=")" separator=",">
-                    #{item}
-                </foreach>
-            </if>
-        </where>
-    </delete>
-
-    <select id="getAttachmentsNameByIDs" resultType="com.hnac.hzinfo.modules.sys.entity.Attachment">
-        SELECT * FROM t_notice_record_attachment a
-        <where>
-            <if test="attachmentsID.size()>0">
-            a.attachmentID in
-                <foreach collection="attachmentsID" index="index" item="item" open="(" close=")" separator=",">
+            a.noticeID = #{0}
+            <if test="imagesID.size() >0">
+                AND a.fileID NOT IN
+                <foreach collection="imagesID" index="index" item="item" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
             </if>
         </where>
     </select>
+
+    <delete id="deleteUselessImages">
+         DELETE a FROM t_ueditor_attachment a
+         <where>
+             a.noticeID = #{0}
+             <if test="imagesID.size() >0">
+                 AND a.fileID NOT IN
+                 <foreach collection="imagesID" index="index" item="item" open="(" close=")" separator=",">
+                     #{item}
+                 </foreach>
+             </if>
+         </where>
+    </delete>
+
+    <delete id="deleteAttachmentsByNoticeIndex" >
+        DELETE a FROM t_ueditor_attachment a
+        <where>
+            a.noticeID = #{0}
+        </where>
+    </delete>
 
 </mapper>

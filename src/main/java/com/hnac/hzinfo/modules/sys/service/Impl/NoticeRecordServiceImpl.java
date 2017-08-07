@@ -79,20 +79,20 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         StringBuffer toReplace = new StringBuffer();
         // m.groupCount = 4
         while(m.find()) {
-            Annex annex = new Annex();
-            annex.setFileName(m.group(2));
-            annex.setFileType(m.group(3));
-            annex.setFileSize(Integer.parseInt(m.group(4)));
-            annex.setNoticeID(noticeRecord.getIndex());
+            Attachment attachment = new Attachment();
+            attachment.setFileName(m.group(2));
+            attachment.setFileType(m.group(3));
+            attachment.setFileSize(Integer.parseInt(m.group(4)));
+            attachment.setNoticeID(noticeRecord.getIndex());
             try {
                 File tempFile = new File(servletContext.getRealPath("/") + m.group(1));
-                annex.setFileMd5(FileUtils.getMd5ByFile(tempFile));
+                attachment.setFileMd5(FileUtils.getMd5ByFile(tempFile));
                 String subSavePath = FileUtils.getSubSavePath();
                 String savePath = uploadPath + subSavePath;
                 FileUtils.moveToOtherFolder(servletContext.getRealPath("/") +m.group(1),savePath);
-                annex.setSavePath(savePath + File.separator + tempFile.getName());
-                annexDao.insert(annex);
-                m.appendReplacement(toReplace, "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
+                attachment.setSavePath(savePath + File.separator + tempFile.getName());
+                attachmentDao.insert(attachment);
+                m.appendReplacement(toReplace, "/sys/notice/ueditorimage?imageid="+ attachment.getFileID());
                 System.out.println(m.group(0));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -124,7 +124,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                     delAttachmentsIDs.add(Integer.parseInt(delAttachment));
                 }
                 // 启动线程清理不需要的文件和数据库索引
-                Thread cleanThread = new Thread(new CleanUselessAttachments(delAttachmentsIDs));
+                Thread cleanThread = new Thread(new CleanUselessAnnexes(delAttachmentsIDs));
                 cleanThread.start();
             }
 
@@ -154,24 +154,24 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         StringBuffer toReplace = new StringBuffer();
         // m2.groupCount = 4
         while(m2.find()) {
-            Annex annex = new Annex();
-            annex.setFileName(m2.group(2));
-            annex.setFileType(m2.group(3));
-            annex.setFileSize(Integer.parseInt(m2.group(4)));
-            annex.setNoticeID(noticeRecord.getIndex());
+            Attachment attachment = new Attachment();
+            attachment.setFileName(m2.group(2));
+            attachment.setFileType(m2.group(3));
+            attachment.setFileSize(Integer.parseInt(m2.group(4)));
+            attachment.setNoticeID(noticeRecord.getIndex());
             try {
                 File tempFile = new File(servletContext.getRealPath("/") + m2.group(1));
-                annex.setFileMd5(FileUtils.getMd5ByFile(tempFile));
+                attachment.setFileMd5(FileUtils.getMd5ByFile(tempFile));
                 String subSavePath = FileUtils.getSubSavePath();
                 String savePath = uploadPath + subSavePath;
                 FileUtils.moveToOtherFolder(servletContext.getRealPath("/") +m2.group(1),savePath);
-                annex.setSavePath(savePath + File.separator + tempFile.getName());
-                annexDao.insert(annex);
+                attachment.setSavePath(savePath + File.separator + tempFile.getName());
+                attachmentDao.insert(attachment);
                 // 如下是string的方法 非matcher方法
-                // m2.group(0).replace(".*", "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
-                m2.appendReplacement(toReplace, "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
+                // m2.group(0).replace(".*", "/sys/notice/ueditorimage?imageid="+ attachment.getFileID());
+                m2.appendReplacement(toReplace, "/sys/notice/ueditorimage?imageid="+ attachment.getFileID());
                 // 这句很关键 避免将新增的图片也删除了
-                stillExistedImages.add(annex.getFileID());
+                stillExistedImages.add(attachment.getFileID());
                 System.out.println(m2.group(0));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -200,7 +200,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 Annex newAnnex = new Annex();
                 annexDao.insert(newAnnex);
                 // 添加索引
-                fields.add(String.valueOf(newAnnex.getFileID()));
+                fields.add(String.valueOf(newAnnex.getAnnexID()));
             } catch(FileNotFoundException e) {
                 e.printStackTrace();
                 return 2;
@@ -253,7 +253,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 for (int j = 0; j < annexFileIndexesStr.length; j++) {
                     annexFileIndexes.add(Integer.parseInt(annexFileIndexesStr[j]));
                 }
-                CleanUselessAttachments cleanUselessAttachments = new CleanUselessAttachments(annexFileIndexes);
+                CleanUselessAnnexes cleanUselessAttachments = new CleanUselessAnnexes(annexFileIndexes);
                 pool.execute(cleanUselessAttachments);
             }
         }
@@ -264,7 +264,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
 
     @Override
     public Map<String,Object> handleUeditorImageUpload(MultipartFile image) {
-//        Annex annex = new Annex();
+//        Attachment annex = new Attachment();
         // 获取文件的名字
         String imageName = image.getOriginalFilename();
         // 获取转换后的uuid文件名
@@ -274,7 +274,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         String savePath = servletContext.getRealPath("/") + uploadTempPath + subSavePath;
 
         // 将MultipartFile保存到指定目录
-        FileUtils.saveMulitipartFileToPath(image, savePath, uuidFileName);
+        FileUtils.saveMultipartFileToPath(image, savePath, uuidFileName);
 
         Map<String, java.lang.Object> m = new HashMap<String, java.lang.Object>();
         // 如下为百度Ueditor要求的回调格式
@@ -293,7 +293,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
 
     @Override
     public byte[] getUeditorImage(int imageID) {
-        String imgPath = annexDao.getAnnexPathByID(imageID);
+        String imgPath = attachmentDao.getAttachmentPathByID(imageID);
         File image = new File(imgPath);
         //  测试这个文件路径是否存在（也就是这个文件是否存在）
         if (!image.exists()) {
@@ -310,7 +310,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
-    public int uploadAttachment(MultipartFile file) {
+    public int uploadAnnex(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String uuidFileName = FileUtils.getUUIDFileName(fileName);
         // 获取文件的临时保存目录
@@ -318,33 +318,39 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         String savePath = uploadPath + subSavePath;
 
         // 将MultipartFile保存到指定目录
-        FileUtils.saveMulitipartFileToPath(file, savePath, uuidFileName);
+        File targetFile = FileUtils.saveMultipartFileToPath(file, savePath, uuidFileName);
 
-        Attachment attachment = new Attachment();
-        attachment.setSavePath(savePath + File.separator + uuidFileName);
-        attachmentDao.insert(attachment);
-        return attachment.getAttachmentID();
+        Annex annex = new Annex();
+        annex.setOriginalName(fileName);
+        try {
+            annex.setFileMd5(FileUtils.getMd5ByFile(targetFile));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        annex.setSavePath(savePath + File.separator + uuidFileName);
+        annexDao.insert(annex);
+        return annex.getAnnexID();
     }
 
     @Override
-    public int deleteAttachment(int attachmentID) {
-        Attachment attachmentToDelete = attachmentDao.getAttachmentByID(attachmentID);
-        FileUtils.deleteFile(attachmentToDelete.getSavePath());
-        return attachmentDao.deleteAttachmentByID(attachmentID);
+    public int deleteAnnex(int annexID) {
+        Annex annexToDelete = annexDao.getAnnexByID(annexID);
+        FileUtils.deleteFile(annexToDelete.getSavePath());
+        return annexDao.deleteAnnexByID(annexID);
     }
 
     @Override
-    public List<Attachment> getAttachmentsNameByIDs(List<Integer> attachmentIDs) {
-        return attachmentDao.getAttachmentsNameByIDs(attachmentIDs);
+    public List<Annex> getAnnexesByIDs(List<Integer> annexesIDs) {
+        return annexDao.getAnnexesByIDs(annexesIDs);
     }
 
     @Override
-    public void downloadAttachment(int attachmentID, HttpServletResponse response) {
-        Attachment attachment = attachmentDao.getAttachmentByID(attachmentID);
-        if(null == attachment) {
+    public void downloadAnnex(int annexID, HttpServletResponse response) {
+        Annex annex = annexDao.getAnnexByID(annexID);
+        if(null == annex) {
             return;
         }
-        File file = new File(attachment.getSavePath());
+        File file = new File(annex.getSavePath());
         OutputStream out = null;
         if(null == file || !file.exists()){
             return;
@@ -352,7 +358,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         try {
             response.reset();
             response.setContentType("application/octet-stream; charset=utf-8");
-            response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+            response.setHeader("Content-Disposition", "annex; filename=" + file.getName());
             out = response.getOutputStream();
             out.write(FileUtils.readFileToByteArray(file));
             out.flush();
@@ -370,9 +376,14 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Scheduled(cron = "${autocleancircle}")
-    public void deleteFile(){
+    public void autoCleanNoticeRecords(){
         System.out.println("searching");
-        List<Integer> expiredNotices = noticeRecordDao.findExpiredNoticeIDs(Integer.parseInt(Global.getConfig("noticerecordexpiredays")));
+        int expireDays = Integer.parseInt(Global.getConfig("noticerecordexpiredays"));
+        // 设置为 0 则不自动清理
+        if(0 == expireDays) {
+            return;
+        }
+        List<Integer> expiredNotices = noticeRecordDao.findExpiredNoticeIDs(expireDays);
         // 如果为空 则构造的sql语句为 Delete from t_notice_record 没有where条件 此时不能执行删除方法
         // 必须加这个参数 否则将删除所有公告
         if(!expiredNotices.isEmpty()) {
@@ -393,42 +404,42 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         public void run() {
             System.out.println("Clean images thread starts..");
             if(null != imagesID) {
-                List<Annex> annices = annexDao.findUselessImages(noticeID, imagesID);
-                for(Annex annex : annices){
+                List<Attachment> attachments = attachmentDao.findUselessImages(noticeID, imagesID);
+                for(Attachment attachment : attachments){
                     try{
-                        FileUtils.deleteFile(annex.getSavePath());
+                        FileUtils.deleteFile(attachment.getSavePath());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                 }
-                annexDao.deleteUselessImages(noticeID, imagesID);
+                attachmentDao.deleteUselessImages(noticeID, imagesID);
             }
             System.out.println("Clean images thread ends..");
         }
     }
 
-    class CleanUselessAttachments implements Runnable {
-        private List<Integer> attachmentsID;
+    class CleanUselessAnnexes implements Runnable {
+        private List<Integer> annexesID;
 
-        public CleanUselessAttachments(List<Integer> attachmentsID) {
-            this.attachmentsID = attachmentsID;
+        public CleanUselessAnnexes(List<Integer> annexesID) {
+            this.annexesID = annexesID;
         }
 
         @Override
         public void run() {
-            System.out.println("Clean attachments thread starts..");
-            List<Attachment> attachments = attachmentDao.getAttachmentsNameByIDs(attachmentsID);
-            if(null != attachments) {
-                for(Attachment attachment : attachments) {
+            System.out.println("Clean annexes thread starts..");
+            List<Annex> annexes = annexDao.getAnnexesByIDs(annexesID);
+            if(null != annexes) {
+                for(Annex annex : annexes) {
                     try {
-                        FileUtils.deleteFile(attachment.getSavePath());
+                        FileUtils.deleteFile(annex.getSavePath());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-            attachmentDao.deleteAttachmentsByIDs(attachmentsID);
+            annexDao.deleteAnnexesByIDs(annexesID);
         }
     }
 }
