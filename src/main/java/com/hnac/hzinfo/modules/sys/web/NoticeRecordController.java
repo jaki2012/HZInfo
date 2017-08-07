@@ -4,13 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.entity.NoticesIndexesWrapper;
+import com.hnac.hzinfo.modules.sys.entity.SearchNoticesPage;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
@@ -60,12 +59,9 @@ public class NoticeRecordController {
         return resultJSON;
     }
 
-    @RequestMapping(value = "/allNoticesWithPage", method = RequestMethod.GET)
-    public JSONObject getAllNoticesByPage(@RequestParam int start, @RequestParam int length, @RequestParam int page,
-                                          @RequestParam("orderColumn") int column, @RequestParam("orderType") String dir, @RequestParam(required = false) String titleCondition,
-                                          @RequestParam(required = false) String contentCondition, @RequestParam(required = false) String senderCondition,
-                                          @RequestParam(required = false)  @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date minSendTimeCondition, @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date maxSendTimeCondition){
-        return noticeRecordService.getAllNoticesByPage(start, length, page, column, dir,titleCondition, contentCondition, senderCondition, minSendTimeCondition, maxSendTimeCondition);
+    @RequestMapping(value = "/allNoticesWithPage", method = RequestMethod.POST)
+    public JSONObject getAllNoticesByPage(@RequestBody SearchNoticesPage searchNoticesPage){
+        return noticeRecordService.getAllNoticesByPage(searchNoticesPage);
     }
 
     @RequestMapping(value = "/notice/{noticeID}", method = RequestMethod.GET)
@@ -73,7 +69,6 @@ public class NoticeRecordController {
         // 为了日期格式化
         String noticeJsonStr = JSONObject.toJSONString(noticeRecordService.findNoticeByIndex(noticeID), SerializerFeature.WriteDateUseDateFormat);
         return JSON.parseObject(noticeJsonStr);
-        //return (JSONObject) JSONObject.toJSON(noticeRecordService.findNoticeByIndex(noticeID));
     }
 
     @RequestMapping(value = "/notice", method = RequestMethod.DELETE)
@@ -90,8 +85,8 @@ public class NoticeRecordController {
 
     // 百度Ueditor上传图片
     @RequestMapping(value = "/ueditorimage", method = RequestMethod.POST)
-    public Map<String, Object> handleUeditorImageUpload(@RequestParam(value = "uuid")String uuid, @RequestParam(value = "upfile",required = false)MultipartFile upfile, HttpServletRequest request, HttpServletResponse response) {
-        return noticeRecordService.handleUeditorImageUpload(uuid,upfile);
+    public Map<String, Object> handleUeditorImageUpload(@RequestParam(value = "upfile",required = false)MultipartFile upfile, HttpServletRequest request, HttpServletResponse response) {
+        return noticeRecordService.handleUeditorImageUpload(upfile);
     }
     // 百度Ueditor获取图片回显
     @RequestMapping(value = "ueditorimage", method = RequestMethod.GET)
@@ -111,9 +106,8 @@ public class NoticeRecordController {
     }
 
     @RequestMapping(value = "test")
-    public String haha(){
-        System.out.println("immmmmmmmmmmmm dora 's husband");
-        return "";
+    public String receivePageCloseMsg(){
+        return "I've received your message";
     }
 
     @RequestMapping(value = "attachment", method = RequestMethod.POST)

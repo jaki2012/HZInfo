@@ -99,8 +99,8 @@
                 AND sendTime &lt;= #{maxSendTimeCondition}
             </if>
         </where>
-        ORDER BY ${column} ${dir}
-        LIMIT #{0}, #{1}
+        ORDER BY ${orderColumn} ${orderType}
+        LIMIT #{start}, #{length}
     </select>
 
 </mapper>

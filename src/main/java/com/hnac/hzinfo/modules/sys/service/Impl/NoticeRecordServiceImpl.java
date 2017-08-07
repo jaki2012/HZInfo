@@ -13,8 +13,8 @@ import com.hnac.hzinfo.modules.sys.dao.NoticeRecordDao;
 import com.hnac.hzinfo.modules.sys.entity.Annex;
 import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
+import com.hnac.hzinfo.modules.sys.entity.SearchNoticesPage;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
-import com.oracle.webservices.internal.api.message.PropertySet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -46,9 +46,6 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     @Autowired
     private ServletContext servletContext;
 
-    @Value("#{APP_PROP['jdbc.driver']}")
-    private String autocleancircle;
-
     @Autowired
     NoticeRecordDao noticeRecordDao;
 
@@ -57,6 +54,11 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
 
     @Autowired
     AttachmentDao attachmentDao;
+
+    @Value("${uploadPath}")
+    private String uploadPath;
+    @Value("${uploadTempPath}")
+    private String uploadTempPath;
 
     @Override
     @Transactional
@@ -68,12 +70,12 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         // 无参数时的正则表达式
         // String pattern = "(/ueditor/temp/imageupload/)(\\S)*(\\.)(\\w)*";
         // url带参数时的断言表达式
-        String pattern = "/(ueditor/temp/imageupload/\\S*)\\?fileName=([\\S\\s]*?)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
+        String pattern = "/(" + uploadTempPath + "/\\S*)\\?fileName=([\\S\\s]*?)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
+
         // 创建 Pattern 对象
         Pattern r = Pattern.compile(pattern);
         // 现在创建 matcher 对象
         Matcher m = r.matcher(noticeRecord.getContent());
-        int count = 0;
         StringBuffer toReplace = new StringBuffer();
         // m.groupCount = 4
         while(m.find()) {
@@ -86,12 +88,10 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 File tempFile = new File(servletContext.getRealPath("/") + m.group(1));
                 annex.setFileMd5(FileUtils.getMd5ByFile(tempFile));
                 String subSavePath = FileUtils.getSubSavePath();
-                String savePath = "/Users/lijiechu/Documents/HZInfoTemp" + subSavePath;
+                String savePath = uploadPath + subSavePath;
                 FileUtils.moveToOtherFolder(servletContext.getRealPath("/") +m.group(1),savePath);
                 annex.setSavePath(savePath + File.separator + tempFile.getName());
                 annexDao.insert(annex);
-                // 如下是string的方法 非matcher方法
-                // m.group(0).replace(".*", "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
                 m.appendReplacement(toReplace, "/sys/notice/ueditorimage?imageid="+ annex.getFileID());
                 System.out.println(m.group(0));
             } catch (IOException e) {
@@ -114,6 +114,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
             String[] existedAttachmentsStr = noticeRecord.getAnnexFileIndex().split(",");
             List<String> delAttachments = Arrays.asList(deleteAttachmentsStr);
             List<String> exiAttachments = Arrays.asList(existedAttachmentsStr);
+            // 转换为ArrayList的原因在于 ArraysList$List类并没有对应的add和remove方法
             List<String> delAttachmentsA = new ArrayList<>(delAttachments);
             List<String> exiAttachmentsA = new ArrayList<>(exiAttachments);
 
@@ -127,11 +128,9 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 cleanThread.start();
             }
 
-
             // 暂时忽略排序信息
-
             exiAttachmentsA.removeAll(delAttachmentsA);
-            String[] exiAttachmentsArr = (String[]) exiAttachmentsA.toArray(new String[]{});
+            String[] exiAttachmentsArr = exiAttachmentsA.toArray(new String[]{});
             noticeRecord.setAnnexFileIndex(StringUtils.join(exiAttachmentsArr, ","));
         }
 
@@ -147,7 +146,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         }
 
         // 匹配新增加的图片
-        pattern = "/(ueditor/temp/imageupload/\\S*)\\?fileName=([\\S\\s]*?)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
+        pattern = "/(" + uploadTempPath + "/\\S*)\\?fileName=([\\S\\s]*?)\\&fileType=(\\S*)\\&fileSize=(\\S*)(?=\\\")";
         r = Pattern.compile(pattern);
         //m不能再复用
         Matcher m2 = r.matcher(noticeRecord.getContent());
@@ -164,7 +163,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 File tempFile = new File(servletContext.getRealPath("/") + m2.group(1));
                 annex.setFileMd5(FileUtils.getMd5ByFile(tempFile));
                 String subSavePath = FileUtils.getSubSavePath();
-                String savePath = "/Users/lijiechu/Documents/HZInfoTemp" + subSavePath;
+                String savePath = uploadPath + subSavePath;
                 FileUtils.moveToOtherFolder(servletContext.getRealPath("/") +m2.group(1),savePath);
                 annex.setSavePath(savePath + File.separator + tempFile.getName());
                 annexDao.insert(annex);
@@ -219,33 +218,13 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
-    public JSONObject getAllNoticesByPage(int start, int length, int page, int column, String dir, String titleCondition, String contentCondition
-            ,String senderCondition, Date minSendTimeCondition, Date maxSendTimeCondition) {
+    public JSONObject getAllNoticesByPage(SearchNoticesPage searchNoticesPage) {
         JSONObject result = new JSONObject();
         int totalNoticesSize = this.getAllNotices().size();
-        int filteredNoticesSize = noticeRecordDao.findAllFiltered(titleCondition, contentCondition, senderCondition, minSendTimeCondition, maxSendTimeCondition).size();
+        int filteredNoticesSize = noticeRecordDao.findAllFiltered(searchNoticesPage).size();
         result.put("recordsTotal", totalNoticesSize);
         result.put("recordsFiltered", filteredNoticesSize);
-        String columnName = "";
-        switch(column) {
-            case 2 : {
-                columnName = "title";
-                break;
-            }
-            case 3 : {
-                columnName = "sender";
-                break;
-            }
-            case 4 : {
-                columnName = "sendTime";
-                break;
-            }
-            default: {
-                columnName = "sendTime";
-                break;
-            }
-        }
-        List<NoticeRecord> filteredNotices = noticeRecordDao.findAllByPage(start, length, page, columnName, dir, titleCondition, contentCondition, senderCondition, minSendTimeCondition, maxSendTimeCondition);
+        List<NoticeRecord> filteredNotices = noticeRecordDao.findAllByPage(searchNoticesPage);
         String allNoticesStr = JSON.toJSONString(filteredNotices, SerializerFeature.WriteDateUseDateFormat);
         JSONArray noticesJsonArray = JSONArray.parseArray(allNoticesStr);
         result.put("data", noticesJsonArray);
@@ -263,7 +242,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     public int deleteNoticesByIndexes(List<Integer> indexes) {
         ExecutorService pool  = Executors.newFixedThreadPool(5);
         for(Integer i : indexes) {
-            // 传一个size为0的空arraylist进入这个方法相当于删除所有的无用图片
+            // 传一个size为0的空ArrayList进入这个方法相当于删除所有的无用图片
             CleanUselessImages cleanUselessImages = new CleanUselessImages(i, new ArrayList<Integer>());
             pool.execute(cleanUselessImages);
             NoticeRecord noticeRecord = noticeRecordDao.findByIndex(i);
@@ -284,7 +263,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
-    public Map<String,Object> handleUeditorImageUpload(String uuid, MultipartFile image) {
+    public Map<String,Object> handleUeditorImageUpload(MultipartFile image) {
 //        Annex annex = new Annex();
         // 获取文件的名字
         String imageName = image.getOriginalFilename();
@@ -292,28 +271,20 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         String uuidFileName = FileUtils.getUUIDFileName(imageName);
         // 获取文件的临时保存目录
         String subSavePath = FileUtils.getSubSavePath();
-        String savePath = servletContext.getRealPath("/") + "ueditor/temp/imageupload"+ subSavePath;
+        String savePath = servletContext.getRealPath("/") + uploadTempPath + subSavePath;
 
-
-        try {
-            File targetFile = new File(savePath, uuidFileName);
-            //创建文件夹
-            if(!targetFile.exists()){
-                targetFile.mkdirs();
-            }
-            image.transferTo(targetFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // 将MultipartFile保存到指定目录
+        FileUtils.saveMulitipartFileToPath(image, savePath, uuidFileName);
 
         Map<String, java.lang.Object> m = new HashMap<String, java.lang.Object>();
+        // 如下为百度Ueditor要求的回调格式
         m.put("original",image.getOriginalFilename());
         m.put("name", image.getOriginalFilename());
         StringBuilder urlParams = new StringBuilder();
         urlParams.append("?fileName=").append(imageName)
                 .append("&fileType=").append(image.getContentType())
                 .append("&fileSize=").append(image.getSize());
-        m.put("url", "/ueditor/temp/imageupload" + subSavePath + "/" + uuidFileName + urlParams);
+        m.put("url", File.separator + uploadTempPath + subSavePath + "/" + uuidFileName + urlParams);
         m.put("type",image.getContentType());
         m.put("size",image.getSize());
         m.put("state","SUCCESS");
@@ -344,19 +315,11 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         String uuidFileName = FileUtils.getUUIDFileName(fileName);
         // 获取文件的临时保存目录
         String subSavePath = FileUtils.getSubSavePath();
-        String savePath = "/Users/lijiechu/Documents/HZInfoTemp" + subSavePath;
+        String savePath = uploadPath + subSavePath;
 
+        // 将MultipartFile保存到指定目录
+        FileUtils.saveMulitipartFileToPath(file, savePath, uuidFileName);
 
-        try {
-            File targetFile = new File(savePath, uuidFileName);
-            //创建文件夹
-            if(!targetFile.exists()){
-                targetFile.mkdirs();
-            }
-            file.transferTo(targetFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         Attachment attachment = new Attachment();
         attachment.setSavePath(savePath + File.separator + uuidFileName);
         attachmentDao.insert(attachment);
@@ -428,7 +391,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
 
         @Override
         public void run() {
-            System.out.println("Clean thread starts..");
+            System.out.println("Clean images thread starts..");
             if(null != imagesID) {
                 List<Annex> annices = annexDao.findUselessImages(noticeID, imagesID);
                 for(Annex annex : annices){
@@ -441,7 +404,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 }
                 annexDao.deleteUselessImages(noticeID, imagesID);
             }
-            System.out.println("Clean thread ends..");
+            System.out.println("Clean images thread ends..");
         }
     }
 

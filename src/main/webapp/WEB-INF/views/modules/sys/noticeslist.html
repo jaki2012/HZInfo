@@ -109,7 +109,6 @@
             var contentCondition = $("#notice-content").val();
             var minSendTimeCondition = $("#notice-minSendTime").val();
             var maxSendTimeCondition = $("#notice-maxSendTime").val();
-            // 不要再拼错字母！
             searchConditions.titleCondition = titleCondition;
             // searchConditions.titleCondtion = titleCondition;
             searchConditions.senderCondition = senderCondition;
@@ -240,17 +239,35 @@
                     var param = {}
                     // 添加排序参数
                     extend(param, searchConditions);
-                    param.orderColumn = data.order[0].column;
+                    switch(data.order[0].column){
+                        case 2 :{
+                            param.orderColumn = "title";
+                            break;
+                        }
+                        case 3: {
+                            param.orderColumn = "sender";
+                        }
+                        case 4: {
+                            param.orderColumn = "sendTime";
+                            break;
+                        }
+                        default: {
+                            param.orderColumn = "sendTime";
+                            break;
+                        }
+                    }
+
                     param.orderType = data.order[0].dir;
                     param.length = data.length;
                     param.start = data.start;
                     param.page = (data.start / data.length) + 1;
                     $.ajax({
-                        type: "GET",
+                        type: "POST",
                         url: "/sys/notice/allNoticesWithPage",
                         cache: false, //禁用缓存
                         //data: data, //传入已封装的参数
-                        data: param,
+                        data: JSON.stringify(param),
+                        contentType: "application/json",
                         dataType: "json",
                         success: function (res) {
                             //封装返回数据，这里仅演示了修改属性名

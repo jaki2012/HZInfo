@@ -3,6 +3,7 @@ package com.hnac.hzinfo.modules.sys.service;
 import com.alibaba.fastjson.JSONObject;
 import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
+import com.hnac.hzinfo.modules.sys.entity.SearchNoticesPage;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -49,13 +50,10 @@ public interface NoticeRecordService {
 
     /**
      * 带分页的查询
-     * @param start 起始索引
-     * @param length 每页的长度
-     * @param page 第几页
+     * @param searchNoticesPage 搜索条件实体类
      * @return
      */
-    JSONObject getAllNoticesByPage(int start, int length, int page, int column, String dir, String titleCondition, String contentCondition
-                                   ,String senderCondition, Date minSendTimeCondition, Date maxSendTimeCondition);
+    JSONObject getAllNoticesByPage(SearchNoticesPage searchNoticesPage);
 
     /**
      * 根据index索引查找对应的公告
@@ -73,11 +71,10 @@ public interface NoticeRecordService {
 
     /**
      * 把ueditor富文本编辑器的图片上传服务器中,可根据需求存数据库表
-     * @param uuid
      * @param image
      * @return ueditor要求返回的格式
      */
-    Map<String, Object> handleUeditorImageUpload(String uuid, MultipartFile image);
+    Map<String, Object> handleUeditorImageUpload(MultipartFile image);
 
     byte[] getUeditorImage(int imageID);
 

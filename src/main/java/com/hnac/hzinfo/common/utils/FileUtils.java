@@ -18,6 +18,7 @@ import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 文件操作工具类
@@ -624,7 +625,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		return p;
 	}
 
-	/************************* jaki, tongji intern 2017.08.01 modified. ********************/
+	/************************* jaki, tongji intern modified on 2017.08.01. ********************/
 	/**
 	 * 把文件名转换成uuid表示，防止文件名上传重复.
 	 * @param fileName 文件的原始名
@@ -647,6 +648,19 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		int i = fullName.lastIndexOf(split);
 		int leg = fullName.length();
 		return i > 0 ? (i + 1) == leg ? " " : fullName.substring(i+1, fullName.length()) : " ";
+	}
+
+	public static void saveMulitipartFileToPath(MultipartFile file, String savePath, String filename){
+		try {
+			File targetFile = new File(savePath, filename);
+			//创建文件夹
+			if(!targetFile.exists()){
+				targetFile.mkdirs();
+			}
+			file.transferTo(targetFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

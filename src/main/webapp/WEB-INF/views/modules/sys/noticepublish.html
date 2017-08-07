@@ -341,7 +341,7 @@
         // 重写百度Ueditor上传图片的逻辑
         UE.Editor.prototype.getActionUrl = function (action) {
                 if (action == 'uploadimage' || action == 'uploadscrawl' || action == 'uploadvideo') {
-                    return '/sys/notice/ueditorimage?' + "uuid=" + uuid();
+                    return '/sys/notice/ueditorimage';
                 } else {
                     return this._bkGetActionUrl.call(this, action);
                 }  
