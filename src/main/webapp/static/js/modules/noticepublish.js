@@ -44,7 +44,7 @@ $(function(){
                     index: parseInt(noticeIndex),
                     title: $("#notice-title").val(),
                     content: UE.getEditor('ueditorContainer').getContent(),
-                    sender: "马海莲",
+                    sender: "胡晓Huxiao",
                     annexFileIndex: existedAttachmentsStr
                 }),
                 contentType: "application/json",
@@ -70,7 +70,7 @@ $(function(){
             data: JSON.stringify({
                 title: $("#notice-title").val(),
                 content: UE.getEditor('ueditorContainer').getContent(),
-                sender: "胡晓",
+                sender: "胡晓Huxiao",
                 //annexFileIndex: annexFileIndex.join(",")
             }),
             beforeSend: function (xhr) {
@@ -78,9 +78,13 @@ $(function(){
             },
             dataType: "json",
             success: function (data) {
-                clickPublish = true;
-                // 手动隐藏模态框
-                $('#publishConfirm').modal('hide');
+                if(data == 1) 
+                    console.log("发布失败，没有相应的权限")
+                else {
+                    clickPublish = true;
+                    // 手动隐藏模态框
+                    $('#publishConfirm').modal('hide');
+                }
             }
         })           
         }

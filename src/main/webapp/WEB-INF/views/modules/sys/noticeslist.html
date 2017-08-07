@@ -366,7 +366,7 @@
                             var html = "<a href='/sys/user/noticeDetail/" + data + "'  class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 查看</a>";
                             //   /sys 和 sys开头差别很大  绝对路径与相对路径
                             html += "<a class='delete btn btn-default btn-xs' target='_blank' href='/sys/user/noticePublish?noticeIndex=" + row.index +"'> <i class='fa fa-times'></i> 修改</a>"
-                            html += "<a onclick=initBeforeDelete('" + row.index + "','" + row.title + "') data-toggle='modal' data-target='#deleteConfirm' class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 删除</a>";
+                            html += '<a onclick=\"initBeforeDelete(' + row.index + ',\'' + row.title + '\')\" data-toggle="modal" data-target="#deleteConfirm" class="delete btn btn-default btn-xs"  ><i class="fa fa-times"></i> 删除</a>';
                             return html;
                         }, "bSortable": false
                     }

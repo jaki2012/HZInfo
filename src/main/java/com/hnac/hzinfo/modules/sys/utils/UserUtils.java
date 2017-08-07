@@ -66,7 +66,17 @@ public class UserUtils {
 		return menuDao.unbindMenuByRole(roleid, menuid);
 	}
 
+	public static String getUserNameBySession(){
+		return "胡晓Huxiao";
+	}
 
+	public static boolean acquirePermission(String username){
+		if("胡晓Huxiao".equals(username)){
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	
 

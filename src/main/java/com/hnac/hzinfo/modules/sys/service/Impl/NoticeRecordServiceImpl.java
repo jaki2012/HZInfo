@@ -14,10 +14,11 @@ import com.hnac.hzinfo.modules.sys.entity.Annex;
 import com.hnac.hzinfo.modules.sys.entity.Attachment;
 import com.hnac.hzinfo.modules.sys.entity.NoticeRecord;
 import com.hnac.hzinfo.modules.sys.service.NoticeRecordService;
-import com.sun.tools.corba.se.idl.constExpr.Not;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import com.oracle.webservices.internal.api.message.PropertySet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,10 +40,14 @@ import java.util.regex.Pattern;
  */
 @Service
 @Lazy(false)
+@PropertySource("classpath:hzinfo.properties")
 public class NoticeRecordServiceImpl implements NoticeRecordService {
 
     @Autowired
     private ServletContext servletContext;
+
+    @Value("#{APP_PROP['jdbc.driver']}")
+    private String autocleancircle;
 
     @Autowired
     NoticeRecordDao noticeRecordDao;
@@ -300,6 +305,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         Map<String, java.lang.Object> m = new HashMap<String, java.lang.Object>();
         m.put("original",image.getOriginalFilename());
         m.put("name", image.getOriginalFilename());
@@ -400,7 +406,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         }
     }
 
-    @Scheduled(cron = "* 0/30 * * * ?")
+    @Scheduled(cron = "${autocleancircle}")
     public void deleteFile(){
         System.out.println("searching");
         List<Integer> expiredNotices = noticeRecordDao.findExpiredNoticeIDs(Integer.parseInt(Global.getConfig("noticerecordexpiredays")));
