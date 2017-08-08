@@ -68,7 +68,7 @@
                         // 不是parseInt(index+1)
                         var count = parseInt(index) + 1;
                         html += '<li id="existedAttachment-' + data[index].attachmentID + '">附件' + count + '：';
-                        html += '<a href="/sys/notice/annex?annexID=' + data[index].attachmentID + '">' +data[index].savePath +'</a>'
+                        html += '<a href="/sys/notice/annex?annexID=' + data[index].attachmentID + '">' +data[index].originalName +'</a>'
                         html += '<a onclick="preDeleteAttachment(' + data[index].attachmentID + ')" class="btn btn-primary">删除</a></li>'                       
                     }
                     html += '</ul>';

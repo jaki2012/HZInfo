@@ -384,7 +384,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
             return;
         }
         List<Integer> expiredNotices = noticeRecordDao.findExpiredNoticeIDs(expireDays);
-        // 如果为空 则构造的sql语句为 Delete from t_notice_record 没有where条件 此时不能执行删除方法
+        // 如果数组为空 则构造的sql语句为 Delete from t_notice_record 没有where条件 此时不能执行删除方法
         // 必须加这个参数 否则将删除所有公告
         if(!expiredNotices.isEmpty()) {
             this.deleteNoticesByIndexes(expiredNotices);

@@ -1,5 +1,6 @@
 package com.hnac.hzinfo.modules.sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -27,10 +28,10 @@ public class SearchNoticesPage {
 
     private String senderCondition;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date minSendTimeCondition;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date maxSendTimeCondition;
 
     public int getStart() {

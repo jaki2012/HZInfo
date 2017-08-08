@@ -1,3 +1,22 @@
+body {
+    /* -webkit-font-smoothing: antialiased; */
+}
+
+.dt-buttons .dt-button {
+    color: #fff;
+    border: 1px solid #357ebd;
+    border-radius: 4px;
+    background-color: #428bca;
+    background-image: none; 
+}
+
+.dt-buttons .dt-button:hover {
+    color: #fff;
+    border-color: #285e8e!important;
+    background-color: #3071a9!important;
+    background-image: none!important;
+}
+
 td.highlight {
     background-color: whitesmoke !important;
 }
