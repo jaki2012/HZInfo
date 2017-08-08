@@ -107,7 +107,7 @@ public class NoticeRecordController {
 
     @RequestMapping(value = "test")
     public String receivePageCloseMsg(){
-        return "I've received your message";
+        return "I've received the close message";
     }
 
     @RequestMapping(value = "/annex", method = RequestMethod.POST)
@@ -116,7 +116,7 @@ public class NoticeRecordController {
         jsonObject.put("error", "");
         int annexID = noticeRecordService.uploadAnnex(uploadAnnex);
         JSONObject initialPreviewConfig = new JSONObject();
-        initialPreviewConfig.put("url", "/sys/notice/annex/delete");
+        //initialPreviewConfig.put("url", "/sys/notice/annex/delete");
         initialPreviewConfig.put("key",  annexID);
         JSONObject extraInfo = new JSONObject();
         extraInfo.put("annexID", annexID);
@@ -124,7 +124,10 @@ public class NoticeRecordController {
         initialPreviewConfig.put("extra", extraInfo);
         initialPreviewConfigArr.add(initialPreviewConfig);
         jsonObject.put("initialPreviewConfig", initialPreviewConfigArr);
-        jsonObject.put("initialPreview", new JSONArray());
+        List<String> initialPreview = new ArrayList<>();
+        // initialPreview.add("'<img src='/sys/notice/annex?annexID=" + annexID +"' class='file-preview-image' alt='Desert' title='Desert'>'");
+        // 此前不生效的原因在于传了一个jsonarray作为参数而不是json
+        jsonObject.put("initialPreview", initialPreview);
         return  jsonObject;
     }
 

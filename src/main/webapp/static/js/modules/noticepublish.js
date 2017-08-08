@@ -29,12 +29,22 @@ $(function(){
 
     // 更新公告put请求
     $("#edit").on("click", function(){
+        // 初始化附件索引
+        var annexFileIndex = new Array()
+        for (index in uploadedFiles) {
+            annexFileIndex.push(uploadedFiles[index].fileID)
+        }
+        var annexFileIndexStr = annexFileIndex.join(",");
         var filesCount = $('#notice-annexes').fileinput('getFilesCount');
         if(filesCount > 0)
             $("#notice-annexes").fileinput("upload");
         else {
             var deleteAttachmentsStr = deleteAttachments.length > 0 ? 
                     "?deleteAttachments="+ deleteAttachments.join(",") : ""; 
+            if(0 != annexFileIndexStr.length){
+                existedAttachments += ',';
+                existedAttachments += annexFileIndexStr;
+            }
             var existedAttachmentsStr = existedAttachments;
             $.ajax({
                 url: "/sys/notice/update" + deleteAttachmentsStr,
@@ -64,6 +74,11 @@ $(function(){
         if(filesCount > 0)
             $("#notice-annexes").fileinput("upload");
         else {
+            // 初始化附件索引
+            var annexFileIndex = new Array()
+            for (index in uploadedFiles) {
+                annexFileIndex.push(uploadedFiles[index].fileID)
+            }
             $.ajax({
             url: "/sys/notice/add",
             type: "POST",
@@ -71,7 +86,7 @@ $(function(){
                 title: $("#notice-title").val(),
                 content: UE.getEditor('ueditorContainer').getContent(),
                 sender: "胡晓Huxiao",
-                //annexFileIndex: annexFileIndex.join(",")
+                annexFileIndex: annexFileIndex.join(",")
             }),
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('Content-Type', 'application/json');
