@@ -2,7 +2,7 @@
 
 Before using, you should add webapp/WEB-INF/lib/* into JAR libraries
 
-t_notice_record and t_notice_record_file related sql
+t_notice_record and t_notice_record_annex related sql
 ----
 
 ```
@@ -12,7 +12,7 @@ CREATE TABLE `t_notice_record` (
   `title` varchar(100) NOT NULL,
   `content` varchar(4000) DEFAULT NULL,
   `sendTime` datetime NOT NULL,
-  `annexFileIndex` varchar(20) DEFAULT NULL,
+  `annexFileIndex` varchar(2000) DEFAULT NULL,
   `contentFileIndex` varchar(2000) DEFAULT NULL,
   PRIMARY KEY (`index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -42,7 +42,9 @@ $(function(){
             var deleteAttachmentsStr = deleteAttachments.length > 0 ? 
                     "?deleteAttachments="+ deleteAttachments.join(",") : ""; 
             if(0 != annexFileIndexStr.length){
-                existedAttachments += ',';
+                if(0 != existedAttachments.length){
+                    existedAttachments += ',';
+                }      
                 existedAttachments += annexFileIndexStr;
             }
             var existedAttachmentsStr = existedAttachments;
