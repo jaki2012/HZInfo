@@ -107,3 +107,12 @@ textarea.form-control {
 #annexesList {
     display: none;
 } 
+
+/* 模态框的宽度 */
+.modal-content {
+    width: 500px;
+}
+
+.modal-content .modal-body {
+    height: 100px;
+}

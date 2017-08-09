@@ -55,7 +55,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/noticeDetail/{noticeID}")
 	public String noticeDetail(@PathVariable("noticeID") int noticeID, HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("noticeID", noticeID);
-		return "modules/sys/noticeDetail";
+		return "modules/sys/noticedetail";
 	}
 
 	@RequestMapping(value = "/userManage")

@@ -14,7 +14,7 @@ function getNoticeIndex(url, callback) {
 }
 
 // 验证表单输入是否合理
-// 如果缜密编程的话 后端也应对数据进行验证
+// 如果缜密编程的话 后端也应对数据的有孝心进行验证
 function validateForm(){
     // 手动触发验证
     $("form").data("bootstrapValidator").validate();
@@ -24,6 +24,76 @@ function validateForm(){
     } else {
         return true;
     }
+}
+
+// 用于检测是否上传文件后但最后放弃了发布公告
+var normalExist = false;
+// 离开页面前发送的请求 清除上传的多余公告
+window.onbeforeunload = function (event) {
+    if (!normalExist && uploadedFiles.length != 0) {
+        // 初始化附件索引
+        var annexesIDs = new Array()
+        for (index in uploadedFiles) {
+            annexesIDs.push(uploadedFiles[index].fileID)
+        }
+        $.ajax({
+            url: "/sys/notice/annexes",
+            type: "delete",
+            contentType: "application/json",
+            data: JSON.stringify(annexesIDs)
+        })
+    }
+}
+
+function preDeleteAnnex(annexID) {
+    deleteAnnexes.push(annexID);
+    $("#existedAnnex-"+ annexID).hide();
+}
+        
+// 生成UUID的方法
+function uuid() {
+    var s = [];
+    var hexDigits = "0123456789abcdef";
+    for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[8] = s[13] = s[18] = s[23] = "-";
+
+    var uuid = s.join("");
+    return uuid;
+}
+
+// 修改附件上传栏初始化附件列表
+function initialAnnexesList(annexFileIndex) {
+    // 判断有没有附件
+    if(null == annexFileIndex || "" === annexFileIndex) {
+        
+        existedAnnexes = ""
+        return
+    }
+    existedAnnexes = annexFileIndex;
+    $("#annexesList").show();
+    $.ajax({
+        "url": "/sys/notice/annexes",
+        "type": "get",
+        "data": {
+            annexFileIndex: annexFileIndex,
+        },
+        "success": function (data) {
+            var html = '<ul class="list-unstyled">';
+            for (index in data) {
+                // 不是parseInt(index+1)
+                var count = parseInt(index) + 1;
+                html += '<li id="existedAnnex-' + data[index].annexID + '">附件' + count + '：';
+                html += '<a href="/sys/notice/annex?annexID=' + data[index].annexID + '">' +data[index].originalName +'</a>'
+                html += '<a onclick="preDeleteAnnex(' + data[index].annexID + ')" class="btn btn-primary">删除</a></li>'                       
+            }
+            html += '</ul>';
+            $("#annexesList .controls").html(html);
+        }
+    })
 }
 
 // 用于确保发布成功弹窗是在公告发布成功之后

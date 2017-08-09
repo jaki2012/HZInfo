@@ -283,6 +283,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 String[] annexFileIndexesStr = noticeRecord.getAnnexFileIndex().split(",");
                 List<Integer> annexFileIndexes = new ArrayList<>();
                 for (int j = 0; j < annexFileIndexesStr.length; j++) {
+                    if(annexFileIndexesStr[j].length() == 0) continue;
                     annexFileIndexes.add(Integer.parseInt(annexFileIndexesStr[j]));
                 }
                 CleanUselessAnnexes cleanUselessAttachments = new CleanUselessAnnexes(annexFileIndexes);
@@ -398,7 +399,8 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         try {
             response.reset();
             response.setContentType("application/octet-stream; charset=utf-8");
-            response.setHeader("Content-Disposition", "annex; filename=" + annex.getOriginalName());
+            // 解决中文乱码问题
+            response.setHeader("Content-Disposition", "annex; filename=" + new String(annex.getOriginalName().getBytes("gbk"),"iso-8859-1"));
             out = response.getOutputStream();
             out.write(FileUtils.readFileToByteArray(file));
             out.flush();
