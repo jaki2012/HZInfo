@@ -69,17 +69,17 @@ $(function(){
         if(filesCount > 0)
             $("#notice-annexes").fileinput("upload");
         else {
-            var deleteAttachmentsStr = deleteAttachments.length > 0 ? 
-                    "?deleteAttachments="+ deleteAttachments.join(",") : ""; 
+            var deleteAnnexesStr = deleteAnnexes.length > 0 ? 
+                    "?deleteAnnexes="+ deleteAnnexes.join(",") : ""; 
             if(0 != annexFileIndexStr.length){
-                if(0 != existedAttachments.length){
-                    existedAttachments += ',';
+                if(0 != existedAnnexes.length){
+                    existedAnnexes += ',';
                 }      
-                existedAttachments += annexFileIndexStr;
+                existedAnnexes += annexFileIndexStr;
             }
-            var existedAttachmentsStr = existedAttachments;
+            var existedAnnexesStr = existedAnnexes;
             $.ajax({
-                url: "/sys/notice/update" + deleteAttachmentsStr,
+                url: "/sys/notice/update" + deleteAnnexesStr,
                 type: "put",
                 dataType: "json",
                 data: JSON.stringify({
@@ -87,7 +87,7 @@ $(function(){
                     title: $("#notice-title").val(),
                     content: UE.getEditor('ueditorContainer').getContent(),
                     sender: "胡晓Huxiao",
-                    annexFileIndex: existedAttachmentsStr
+                    annexFileIndex: existedAnnexesStr
                 }),
                 contentType: "application/json",
                 success:function(data){

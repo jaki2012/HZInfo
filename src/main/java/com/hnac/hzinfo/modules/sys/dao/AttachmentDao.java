@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author lijiechu
  * @create on 17/8/3
- * @description 操作百度ueditor的上传文件类
+ * @description 操作百度Ueditor上传文件的dao类
  */
 @MyBatisDao
 public interface AttachmentDao extends CrudDao<Attachment>{

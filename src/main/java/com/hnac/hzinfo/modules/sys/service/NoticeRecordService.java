@@ -29,16 +29,26 @@ public interface NoticeRecordService {
      * @param noticeRecord
      * @return 受影响的行数, 1代表新增成功, 0代表插入失败
      */
-    int update(NoticeRecord noticeRecord, String deleteAttachments);
+    int update(NoticeRecord noticeRecord, String deleteAnnexes);
 
     /**
      * 上传附件
-     * @param fields 附件索引列表
+     * @param file 上传的附件
+     * @param fileIds 附件索引列表
      * @param filePath 文件的上传路径
      * @param fileMd5 文件md5码
-     * @return 0代表新增成功, 1代表服务器空间不足, 2代表插入失败
+     * @return resultCode 0代表新增成功, 1代表服务器空间不足, 2代表插入失败
      */
-    int uploadAnnex(List<String> fields, MultipartFile file, String filePath, String fileMd5);
+    JSONObject uploadAnnex(MultipartFile file, int[] fileIds, String filePath, String fileMd5);
+
+    /**
+     * 删除附件
+     * @param messageId 消息id,暂时不懂用处是什么
+     * @param fileIds 附件索引列表
+     * @param fileId 需要删除的文件索引
+     * @return 删除文件结果result为false代表上传失败
+     */
+    JSONObject deleteAnnex(long messageId, int[] fileIds, int fileId);
 
     /**
      * 返回数据库中所有的公告
@@ -76,7 +86,7 @@ public interface NoticeRecordService {
     Map<String, Object> handleUeditorImageUpload(MultipartFile image);
 
     /**
-     * 根据图片索引id,以流的方式返回
+     * 根据图片索引id查找图片并以流的方式返回
      * @param imageID
      * @return
      */

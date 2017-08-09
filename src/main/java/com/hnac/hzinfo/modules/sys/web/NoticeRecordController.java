@@ -37,14 +37,19 @@ public class NoticeRecordController {
         return "Hello, Notice_Record_Module start to rock!";
     }
 
+    @RequestMapping(value = "test")
+    public String receivePageCloseMsg(){
+        return "I've received the close message";
+    }
+
     @RequestMapping(value="/add", method = RequestMethod.POST)
     public int add(@RequestBody NoticeRecord noticeRecord){
         return noticeRecordService.add(noticeRecord);
     }
 
     @RequestMapping(value= "/update", method = RequestMethod.PUT)
-    public int update(@RequestParam(value = "deleteAttachments",required = false)String deleteAttachments, @RequestBody NoticeRecord noticeRecord){
-        return noticeRecordService.update(noticeRecord, deleteAttachments);
+    public int update(@RequestParam(value = "deleteAnnexes",required = false)String deleteAnnexes, @RequestBody NoticeRecord noticeRecord){
+        return noticeRecordService.update(noticeRecord, deleteAnnexes);
     }
 
     @RequestMapping(value = "/allNotices", method = RequestMethod.GET)
@@ -78,9 +83,13 @@ public class NoticeRecordController {
     }
 
     @RequestMapping(value="/uploadAnnex", method = RequestMethod.POST)
-    public int uploadAnnex(@RequestParam("noticeIndex") int noticeIndex, @RequestParam("file") MultipartFile file){
-        String filePath = "/Users/lijiechu/Documents/HZInfoTemp";
-        return noticeRecordService.uploadAnnex(null, file, filePath,"0");
+    public JSONObject uploadAnnex(@RequestParam("file") MultipartFile file,@RequestParam("fields") int[] fileIDs, @RequestParam("filePath") String filePath,@RequestParam("fileMd5") String fileMd5){
+        return noticeRecordService.uploadAnnex(file, fileIDs, filePath,fileMd5);
+    }
+
+    @RequestMapping(value="/deleteAnnex", method = RequestMethod.POST)
+    public JSONObject deleteAnnex(@RequestParam("messageId")long messageId, @RequestParam("fileIds") int[] fileIds, @RequestParam("fileId")int fileId){
+        return noticeRecordService.deleteAnnex(messageId,fileIds,fileId);
     }
 
     // 百度Ueditor上传图片
@@ -105,13 +114,8 @@ public class NoticeRecordController {
 
     }
 
-    @RequestMapping(value = "test")
-    public String receivePageCloseMsg(){
-        return "I've received the close message";
-    }
-
     @RequestMapping(value = "/annex", method = RequestMethod.POST)
-    public JSONObject uploadAttachment(MultipartFile uploadAnnex) {
+    public JSONObject uploadAnnex(MultipartFile uploadAnnex) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("error", "");
         int annexID = noticeRecordService.uploadAnnex(uploadAnnex);
@@ -126,7 +130,7 @@ public class NoticeRecordController {
         jsonObject.put("initialPreviewConfig", initialPreviewConfigArr);
         List<String> initialPreview = new ArrayList<>();
         // initialPreview.add("'<img src='/sys/notice/annex?annexID=" + annexID +"' class='file-preview-image' alt='Desert' title='Desert'>'");
-        // 此前不生效的原因在于传了一个jsonarray作为参数而不是json
+        // 百度UEDITOR要求initialPreview是一个数组而不是jsonarray
         jsonObject.put("initialPreview", initialPreview);
         return  jsonObject;
     }
@@ -138,10 +142,9 @@ public class NoticeRecordController {
         for(String annexStrID:annexesStrIDs){
             annexesIDs.add(Integer.parseInt(annexStrID));
         }
-
-        String allAttachmentsStr = JSON.toJSONString( noticeRecordService.getAnnexesByIDs(annexesIDs));
-        JSONArray attachmentsJsonArray = JSONArray.parseArray(allAttachmentsStr);
-        return  attachmentsJsonArray;
+        String allAnnexesStr = JSON.toJSONString( noticeRecordService.getAnnexesByIDs(annexesIDs));
+        JSONArray annexesJsonArray = JSONArray.parseArray(allAnnexesStr);
+        return  annexesJsonArray;
     }
 
     @RequestMapping(value = "/annex", method = RequestMethod.GET)

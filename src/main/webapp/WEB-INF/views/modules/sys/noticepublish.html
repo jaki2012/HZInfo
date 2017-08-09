@@ -28,9 +28,9 @@
             })
         }
 
-        function preDeleteAttachment(attachmentID) {
-            deleteAttachments.push(attachmentID);
-            $("#existedAttachment-"+ attachmentID).hide();
+        function preDeleteAnnex(annexID) {
+            deleteAnnexes.push(annexID);
+            $("#existedAnnex-"+ annexID).hide();
         }
         
         // 生成UUID
@@ -49,15 +49,15 @@
         }
 
         // 修改附件上传栏初始化附件列表
-        function initialAttachmentsList(annexFileIndex) {
+        function initialAnnexesList(annexFileIndex) {
             // 判断有没有附件
             if(null == annexFileIndex || "" === annexFileIndex) {
                 
-                existedAttachments = ""
+                existedAnnexes = ""
                 return
             }
-            existedAttachments = annexFileIndex;
-            $("#attachmentsList").show();
+            existedAnnexes = annexFileIndex;
+            $("#annexesList").show();
             $.ajax({
                 "url": "/sys/notice/annexes",
                 "type": "get",
@@ -69,12 +69,12 @@
                     for (index in data) {
                         // 不是parseInt(index+1)
                         var count = parseInt(index) + 1;
-                        html += '<li id="existedAttachment-' + data[index].attachmentID + '">附件' + count + '：';
-                        html += '<a href="/sys/notice/annex?annexID=' + data[index].attachmentID + '">' +data[index].originalName +'</a>'
-                        html += '<a onclick="preDeleteAttachment(' + data[index].attachmentID + ')" class="btn btn-primary">删除</a></li>'                       
+                        html += '<li id="existedAnnex-' + data[index].annexID + '">附件' + count + '：';
+                        html += '<a href="/sys/notice/annex?annexID=' + data[index].annexID + '">' +data[index].originalName +'</a>'
+                        html += '<a onclick="preDeleteAnnex(' + data[index].axxexID + ')" class="btn btn-primary">删除</a></li>'                       
                     }
                     html += '</ul>';
-                    $("#attachmentsList .controls").html(html);
+                    $("#annexesList .controls").html(html);
                 }
             })
         }
@@ -149,11 +149,11 @@
                 </div>
             </div>
 
-            <div id="attachmentsList" class="control-group">
+            <div id="annexesList" class="control-group">
                 <span class="glyphicon glyphicon-folder-open"></span>
                 <label class="control-label">已有附件</label>
 
-                <!-- Attachments List -->
+                <!-- Annexes List -->
                 <div class="controls">
                 </div>
             </div>
@@ -209,8 +209,8 @@
         //定义一个全局变量去接受文件名和id
         var uploadedFiles = new Array();
         var currentMode = "add";
-        var existedAttachments;
-        var deleteAttachments = new Array();
+        var existedAnnexes;
+        var deleteAnnexes = new Array();
         $("#notice-annexes").fileinput({
             //设置语言
             language: 'zh', 
@@ -261,11 +261,11 @@
                     annexFileIndex.push(uploadedFiles[index].fileID)
                 }
                 if("edit" === currentMode) {
-                    var deleteAttachmentsStr = deleteAttachments.length > 0 ? 
-                            "?deleteAttachments="+ deleteAttachments.join(",") : ""; 
-                    var existedAttachmentsStr = existedAttachments === "" ? annexFileIndex.join(",") : existedAttachments + "," + annexFileIndex.join(",");
+                    var deleteAnnexesStr = deleteAnnexes.length > 0 ? 
+                            "?deleteAnnexes="+ deleteAnnexes.join(",") : ""; 
+                    var existedAnnexesStr = existedAnnexes === "" ? annexFileIndex.join(",") : existedAnnexes + "," + annexFileIndex.join(",");
                     $.ajax({
-                        url: "/sys/notice/update" + deleteAttachmentsStr,
+                        url: "/sys/notice/update" + deleteAnnexesStr,
                         type: "put",
                         dataType: "json",
                         data: JSON.stringify({
@@ -274,7 +274,7 @@
                             content: UE.getEditor('ueditorContainer').getContent(),
                             sender: "胡晓Huxiao",
                             // 拼接已有的
-                            annexFileIndex: existedAttachmentsStr
+                            annexFileIndex: existedAnnexesStr
                         }),
                         contentType: "application/json",
                         success:function(data){
@@ -373,7 +373,7 @@
                             $("#edit").show();
                             $("#publish").hide();
                             // 附件操作
-                            initialAttachmentsList(data.annexFileIndex);
+                            initialAnnexesList(data.annexFileIndex);
 
                         }
                     })

@@ -107,31 +107,32 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
 
     @Override
     @Transactional
-    public int update(NoticeRecord noticeRecord, String deleteAttachments) {
+    public int update(NoticeRecord noticeRecord, String deleteAnnexes) {
 
-        if(null != deleteAttachments && null != noticeRecord.getAnnexFileIndex()) {
-            String[] deleteAttachmentsStr = deleteAttachments.split(",");
-            String[] existedAttachmentsStr = noticeRecord.getAnnexFileIndex().split(",");
-            List<String> delAttachments = Arrays.asList(deleteAttachmentsStr);
-            List<String> exiAttachments = Arrays.asList(existedAttachmentsStr);
+        if(null != deleteAnnexes && null != noticeRecord.getAnnexFileIndex()) {
+            String[] deleteAnnexesStr = deleteAnnexes.split(",");
+            String[] existedAnnexesStr = noticeRecord.getAnnexFileIndex().split(",");
+            List<String> delAnnexes = Arrays.asList(deleteAnnexesStr);
+            List<String> exiAnnexes = Arrays.asList(existedAnnexesStr);
             // 转换为ArrayList的原因在于 ArraysList$List类并没有对应的add和remove方法
-            List<String> delAttachmentsA = new ArrayList<>(delAttachments);
-            List<String> exiAttachmentsA = new ArrayList<>(exiAttachments);
+            // 此处我们通过求集合的差集 更新公告的附件索引
+            List<String> delAnnexesA = new ArrayList<>(delAnnexes);
+            List<String> exiAnnexesA = new ArrayList<>(exiAnnexes);
 
-            if (delAttachments.size() > 0) {
-                List<Integer> delAttachmentsIDs = new ArrayList<>();
-                for (String delAttachment : delAttachments) {
-                    delAttachmentsIDs.add(Integer.parseInt(delAttachment));
+            if (delAnnexes.size() > 0) {
+                List<Integer> delAnnexesIDs = new ArrayList<>();
+                for (String delAnnex : delAnnexes) {
+                    delAnnexesIDs.add(Integer.parseInt(delAnnex));
                 }
                 // 启动线程清理不需要的文件和数据库索引
-                Thread cleanThread = new Thread(new CleanUselessAnnexes(delAttachmentsIDs));
+                Thread cleanThread = new Thread(new CleanUselessAnnexes(delAnnexesIDs));
                 cleanThread.start();
             }
 
             // 暂时忽略排序信息
-            exiAttachmentsA.removeAll(delAttachmentsA);
-            String[] exiAttachmentsArr = exiAttachmentsA.toArray(new String[]{});
-            noticeRecord.setAnnexFileIndex(StringUtils.join(exiAttachmentsArr, ","));
+            exiAnnexesA.removeAll(delAnnexesA);
+            String[] exiAnnexesArr = exiAnnexesA.toArray(new String[]{});
+            noticeRecord.setAnnexFileIndex(StringUtils.join(exiAnnexesArr, ","));
         }
 
         //更新时间
@@ -188,28 +189,61 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     }
 
     @Override
-    public int uploadAnnex(List<String> fields, MultipartFile file, String filePath, String fileMd5) {
-        // 判断公告是否已存在
+    public JSONObject uploadAnnex(MultipartFile file, int[] fileIds,  String filePath, String fileMd5) {
+        int resultCode = 0;
+        int[] newFileIds = null;
         // 判断文件是否非空
         if(!file.isEmpty()){
             try {
                 // 文件保存路径
                 String savePath = filePath + "/" + file.getOriginalFilename();
+                // 此处应当调用文件上传模块接口, 暂时用转存本地服务器与数据库代替
                 file.transferTo(new File(savePath));
-                // 数据库更新
                 Annex newAnnex = new Annex();
+                newAnnex.setFileMd5(fileMd5);
+                newAnnex.setOriginalName(file.getOriginalFilename());
+                newAnnex.setSavePath(filePath);
                 annexDao.insert(newAnnex);
-                // 添加索引
-                fields.add(String.valueOf(newAnnex.getAnnexID()));
+                // 插入后获取自动更新的主键
+                int newAnnexID = newAnnex.getAnnexID();
+                int originalFileIdsLength = fileIds.length;
+                newFileIds = new int[originalFileIdsLength + 1];
+                System.arraycopy(fileIds,0,newFileIds,0,originalFileIdsLength);
+                newFileIds[originalFileIdsLength] = newAnnexID;
             } catch(FileNotFoundException e) {
                 e.printStackTrace();
-                return 2;
+                resultCode = 2;
             } catch (IOException e){
                 e.printStackTrace();
-                return 2;
+                resultCode = 2;
             }
         }
-        return 0;
+        resultCode = 0;
+
+        JSONObject result = new JSONObject();
+        // 返回加上了新上传文件索引的索引列表
+        result.put("fileIds",newFileIds);
+        // 上传操作结果码 可能从调用文件模块接口返回
+        result.put("resultCode",resultCode);
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public JSONObject deleteAnnex(long messageId, int[] fileIds, int fileId) {
+        JSONObject deleteResult = new JSONObject();
+        boolean result = false;
+        int[] newFileIds = new int[fileIds.length-1];
+        int index = 0;
+        result = annexDao.deleteAnnexByID(fileId) == 1 ? true : false;
+        for(int i: fileIds ){
+            if(fileId != fileIds[i]){
+                newFileIds[index++] = fileIds[i];
+            }
+        }
+        deleteResult.put("newFileIds", newFileIds);
+        deleteResult.put("result", result);
+        return deleteResult;
     }
 
     @Override
@@ -309,6 +343,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         }
     }
 
+    // TODO: 在异步上传文件模式下, 可以先点击单个附件的上传按钮实现文件上传 此时若取消发布公告会造成服务器存储空间泄露与浪费
     @Override
     public int uploadAnnex(MultipartFile file) {
         String fileName = file.getOriginalFilename();
