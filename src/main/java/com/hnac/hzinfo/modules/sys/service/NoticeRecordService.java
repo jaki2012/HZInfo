@@ -102,10 +102,16 @@ public interface NoticeRecordService {
     /**
      * 根据附件的索引ID删除附件
      * @param annexID
-     * @return
+     * @return 受影响的行数,删除单个若返回0则代表删除成功
      */
     int deleteAnnex(int annexID);
 
+    /**
+     * 删除list中包含的索引所对应的附件
+     * @param annexesIDs
+     * @return
+     */
+    int deleteAnnexes(List<Integer> annexesIDs);
     /**
      * 查找在数组范围内的Annexes
      * @param annexesIDs

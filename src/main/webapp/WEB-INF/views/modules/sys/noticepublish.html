@@ -20,12 +20,26 @@
     <script src="../../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
     <link href="../../static/bootstrap-validator/css/bootstrapValidator.min.css" rel="stylesheet" />
     <script>
-        // 离开页面前发送的请求 可用于特殊需求
-        window.onbeforeunload = function(event) { 
-            $.ajax({
-                url: "/sys/notice/test",
-                type:"get"
-            })
+        // 用于检测是否上传文件后但最后放弃了发布公告
+        var normalExist = false;
+        // 离开页面前发送的请求 清除上传的多余公告
+        window.onbeforeunload = function (event) {
+            if (!normalExist && uploadedFiles.length != 0) {
+                // 初始化附件索引
+                var annexesIDs = new Array()
+                for (index in uploadedFiles) {
+                    annexesIDs.push(uploadedFiles[index].fileID)
+                }
+                $.ajax({
+                    url: "/sys/notice/annexes",
+                    type: "delete",
+                    contentType: "application/json",
+                    // data: JSON.stringify({
+                    //     annexesIDs: annexesIDs
+                    // })
+                    data: JSON.stringify(annexesIDs)
+                })
+            }
         }
 
         function preDeleteAnnex(annexID) {
@@ -279,6 +293,7 @@
                         contentType: "application/json",
                         success:function(data){
                             clickPublish = true;
+                            normalExist = true;                            
                             // 手动隐藏模态框
                             $('#publishConfirm').modal('hide'); 
                         }
@@ -299,6 +314,7 @@
                         dataType: "json",
                         success: function (data) {
                             clickPublish = true;
+                            normalExist = true;
                             // 手动隐藏模态框
                             $('#publishConfirm').modal('hide');
                         }

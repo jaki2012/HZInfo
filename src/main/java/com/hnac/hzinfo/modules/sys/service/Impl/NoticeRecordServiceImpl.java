@@ -218,8 +218,6 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
                 resultCode = 2;
             }
         }
-        resultCode = 0;
-
         JSONObject result = new JSONObject();
         // 返回加上了新上传文件索引的索引列表
         result.put("fileIds",newFileIds);
@@ -232,7 +230,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
     @Transactional
     public JSONObject deleteAnnex(long messageId, int[] fileIds, int fileId) {
         JSONObject deleteResult = new JSONObject();
-        boolean result = false;
+        boolean result;
         int[] newFileIds = new int[fileIds.length-1];
         int index = 0;
         result = annexDao.deleteAnnexByID(fileId) == 1 ? true : false;
@@ -343,7 +341,6 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         }
     }
 
-    // TODO: 在异步上传文件模式下, 可以先点击单个附件的上传按钮实现文件上传 此时若取消发布公告会造成服务器存储空间泄露与浪费
     @Override
     public int uploadAnnex(MultipartFile file) {
         String fileName = file.getOriginalFilename();
@@ -372,6 +369,14 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         Annex annexToDelete = annexDao.getAnnexByID(annexID);
         FileUtils.deleteFile(annexToDelete.getSavePath());
         return annexDao.deleteAnnexByID(annexID);
+    }
+
+    @Override
+    public int deleteAnnexes(List<Integer> annexesIDs) {
+        CleanUselessAnnexes cleanUselessAnnexes = new CleanUselessAnnexes(annexesIDs);
+        Thread thread = new Thread(cleanUselessAnnexes);
+        thread.start();
+        return 0;
     }
 
     @Override

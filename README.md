@@ -17,7 +17,7 @@ CREATE TABLE `t_notice_record` (
   PRIMARY KEY (`index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-// 公告包含的附件
+// 公告包含的上传附件(代码中以annex指代公告中的附件)
 CREATE TABLE `t_notice_record_annex` (
   `annexID` int(11) NOT NULL AUTO_INCREMENT,
   `originalName` varchar(255) DEFAULT '',
@@ -26,7 +26,7 @@ CREATE TABLE `t_notice_record_annex` (
   PRIMARY KEY (`attachmentID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
 
-//公告中带的百度Ueditor图片\视频\等上传文件
+// 公告中带的百度Ueditor图片\视频\等上传文件(代码中以attachment指代Ueditor中的上传图片等)
 CREATE TABLE `t_ueditor_attachment` (
   `fileID` int(4) NOT NULL AUTO_INCREMENT,
   `savePath` varchar(255) NOT NULL DEFAULT '',

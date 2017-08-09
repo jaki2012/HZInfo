@@ -92,6 +92,7 @@ $(function(){
                 contentType: "application/json",
                 success:function(data){
                     clickPublish = true;
+                    normalExist = true;
                     // 手动隐藏模态框
                     $('#publishConfirm').modal('hide'); 
                 }
@@ -129,6 +130,7 @@ $(function(){
                     console.log("发布失败，没有相应的权限")
                 else {
                     clickPublish = true;
+                    normalExist = true;
                     // 手动隐藏模态框
                     $('#publishConfirm').modal('hide');
                 }

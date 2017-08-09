@@ -147,6 +147,12 @@ public class NoticeRecordController {
         return  annexesJsonArray;
     }
 
+    @RequestMapping(value = "/annexes", method = RequestMethod.DELETE)
+    public int deleteAnnexes(@RequestBody List<Integer> annexesIDs){
+        noticeRecordService.deleteAnnexes(annexesIDs);
+        return 0;
+    }
+
     @RequestMapping(value = "/annex", method = RequestMethod.GET)
     public void downloadAnnexByID(@RequestParam("annexID") int annexID, HttpServletRequest request, HttpServletResponse response){
         noticeRecordService.downloadAnnex(annexID,response);
