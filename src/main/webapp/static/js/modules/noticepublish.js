@@ -13,6 +13,19 @@ function getNoticeIndex(url, callback) {
     xhr.send();
 }
 
+// 验证表单输入是否合理
+// 如果缜密编程的话 后端也应对数据进行验证
+function validateForm(){
+    // 手动触发验证
+    $("form").data("bootstrapValidator").validate();
+    // 没有通过验证
+    if(!$("form").data("bootstrapValidator").isValid()){
+        return false;
+    } else {
+        return true;
+    }
+}
+
 // 用于确保发布成功弹窗是在公告发布成功之后
 var clickPublish = false;
 var noticeIndex = -1;
@@ -20,12 +33,29 @@ var noticeIndex = -1;
 $("#returnNoticesList").on("click", function() {
     window.location.href = "/sys/user/noticesList";
 })
-
 $(function(){
     // 覆盖原有bootstrap 上传文件样式
     $('input[id=lefile]').change(function() {
         $('#photoCover').val($(this).val());
     });
+
+    $("#publishBtn").on("click", function() {
+        if(!validateForm()){
+            alert("输入信息内容不符合要求")
+            return
+        } else {
+            $("#publishConfirm").modal("show");
+        }
+    })
+
+    $("#editBtn").on("click", function () {
+        if (!validateForm()) {
+            alert("输入信息内容不符合要求")
+            return
+        } else {
+            $("#publishConfirm").modal("show");
+        }
+    })
 
     // 更新公告put请求
     $("#edit").on("click", function(){

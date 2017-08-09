@@ -17,6 +17,8 @@
     <script type="text/javascript" src="../../static/jquery-ui/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <script src="../../static/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+    <link href="../../static/bootstrap-validator/css/bootstrapValidator.min.css" rel="stylesheet" />
     <script>
         // 离开页面前发送的请求 可用于特殊需求
         window.onbeforeunload = function(event) { 
@@ -102,13 +104,13 @@
                 <legend class="">发布公告</legend>
                 <br>
             </div>
-            <div class="control-group">
+            <div class="control-group form-group">
 
                 <!-- Text input-->
                 <span class="glyphicon glyphicon-file"></span>
                 <label class="control-label">公告标题</label>
                 <div class="controls">
-                    <input id="notice-title" type="text" placeholder="请在这里输入公告的标题" class="form-control">
+                    <input id="notice-title" name="notice-title" type="text" placeholder="请在这里输入公告的标题" class="form-control">
                     <p class="help-block">(* 必填项)</p>
                 </div>
             </div>
@@ -171,9 +173,8 @@
 
                 <!-- Button -->
                 <div class="controls buttons-group">
-                    <!-- <button id="publish" class="btn btn-info">发布公告</button> -->
-                    <input id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="更新公告" type="button">
-                    <input id="publishBtn" class="btn btn-info" data-toggle="modal" data-target="#publishConfirm" value="发布公告" type="button">
+                    <input id="editBtn" class="btn btn-info" data-toggle="modal" value="更新公告" type="button">
+                    <input id="publishBtn" class="btn btn-info" data-toggle="modal" value="发布公告" type="button">
                     <input id="returnNoticesList" class="btn btn-info" value="返回列表" type="button">
                 </div>
             </div>
@@ -386,6 +387,33 @@
     <link rel="stylesheet" type="text/css" href="../../static/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
     <script>
         SyntaxHighlighter.all();
+</script>
+<script>
+    $(function() {
+        $("form").bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                "notice-title" :{
+                    message: "公告标题验证失败",
+                    validators: {
+                        notEmpty: {
+                            message: "公告标题为必填项，不能为空"
+                        },
+                        stringLength :{
+                            min: 6,
+                            max: 20,
+                            message: "公告标题长度必须在6-20位之间"
+                        }
+                    }
+                }
+            }
+        })
+    });
     </script>
 </body>
 </html>
