@@ -398,7 +398,7 @@ public class NoticeRecordServiceImpl implements NoticeRecordService {
         try {
             response.reset();
             response.setContentType("application/octet-stream; charset=utf-8");
-            response.setHeader("Content-Disposition", "annex; filename=" + file.getName());
+            response.setHeader("Content-Disposition", "annex; filename=" + annex.getOriginalName());
             out = response.getOutputStream();
             out.write(FileUtils.readFileToByteArray(file));
             out.flush();
